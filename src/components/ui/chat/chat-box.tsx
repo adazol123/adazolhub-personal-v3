@@ -119,8 +119,8 @@ const parseMarkdownLinks = (text: string) => {
   const parts = []
   let lastIndex = 0
 
-  // Combined regex for both markdown links and plain URLs
-  const regex = /\[([^\]]+)\]\(([^)]+)\)|https?:\/\/[^\s)]+/g
+  // Updated regex to not capture trailing periods
+  const regex = /\[([^\]]+)\]\(([^)]+)\)|https?:\/\/[^\s)]+?(?=\.|$)/g
   let match
 
   while ((match = regex.exec(text)) !== null) {
