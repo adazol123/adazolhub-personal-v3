@@ -12,7 +12,7 @@ const ai = genkit({
   promptDir: './prompts'
 })
 
-const askFlow = ai.prompt(process.env.PROMPT_CHATBOT!)
+const askFlow = ai.prompt('danyel')
 
 // Start the conversation with a greeting
 
