@@ -3,14 +3,18 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    remotePatterns: [{ hostname: 'localhost' }]
+    remotePatterns: [
+      { hostname: 'localhost' },
+      { hostname: 'adazol.com' },
+      { hostname: 'ik.imagekit.io' }
+    ]
   },
 
   async rewrites () {
     return [
       {
-        source: '/_/images/:path',
-        destination: `https://firebasestorage.googleapis.com/v0/b/daniel-lozada.appspot.com/o/:path`
+        source: '/_/assets/:path',
+        destination: `https://ik.imagekit.io/adazol/assets/:path`
       },
       {
         source: '/resume',

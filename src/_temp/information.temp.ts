@@ -128,43 +128,37 @@ export const infoPayload = {
       title: 'Full-Stack (Web) Development',
       description:
         'Expertise in developing end-to-end applications using modern frameworks and technologies for both frontend and backend systems.',
-      thumbnail:
-        'http://localhost:3000/_/images/assets%2Fimages%2Fgenarated-full-stack-development.png?alt=media&token=177a563e-238a-4687-abbc-e23345c68d97'
+      thumbnail: `${process.env.MEDIA_URL}/assets/images/genarated-full-stack-development.png`
     },
     {
       title: 'Backend Technologies',
       description:
         'Specialized in server-side programming, API development, and database management to create robust application infrastructures.',
-      thumbnail:
-        'http://localhost:3000/_/images/assets%2Fimages%2Fgenerated-backend-technologies.png?alt=media&token=5d683719-297a-4bf4-8650-6f4ba616cfc1'
+      thumbnail: `${process.env.MEDIA_URL}/assets/images/generated-backend-technologies.png`
     },
     {
       title: 'Cloud Services',
       description:
         'Proficient in deploying and managing applications across cloud platforms, optimizing for scalability and performance.',
-      thumbnail:
-        'http://localhost:3000/_/images/assets%2Fimages%2Fgenerated-cloud-services.png?alt=media&token=9e1d7c6b-3081-4d08-aa06-1c8d269e536f'
+      thumbnail: `${process.env.MEDIA_URL}/assets/images/generated-cloud-services.png`
     },
     {
       title: 'System Design',
       description:
         'Skilled in designing efficient and scalable system architectures.',
-      thumbnail:
-        'http://localhost:3000/_/images/assets%2Fimages%2Fgenerated-system-design.png?alt=media&token=4ecd058e-e1ef-4e5d-afb9-137e627ed5ae'
+      thumbnail: `${process.env.MEDIA_URL}/assets/images/generated-system-design.png`
     },
     {
       title: 'Collaborative Development',
       description:
         'Experience working effectively with cross-functional teams to deliver high-quality solutions that meet business objectives.',
-      thumbnail:
-        'http://localhost:3000/_/images/assets%2Fimages%2Fgenerated-collaborative-development.png?alt=media&token=3615f4d5-9f77-4f05-a67c-d504c7c6ef2b'
+      thumbnail: `${process.env.MEDIA_URL}/assets/images/generated-collaborative-development.png`
     },
     {
       title: 'Technical Troubleshooting',
       description:
         'Strong diagnostic skills for identifying and resolving complex system issues, ensuring optimal performance and reliability.',
-      thumbnail:
-        'http://localhost:3000/_/images/assets%2Fimages%2Fgenerated-technical-troubleshooting.png?alt=media&token=1945841a-0440-4057-a87f-6b230ab3b77b'
+      thumbnail: `${process.env.MEDIA_URL}/assets/images/generated-technical-troubleshooting.png`
     }
   ],
   contacts_label: 'Contacts',
