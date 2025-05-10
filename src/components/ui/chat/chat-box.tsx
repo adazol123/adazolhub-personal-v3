@@ -119,8 +119,10 @@ const parseMarkdownLinks = (text: string) => {
   const parts = []
   let lastIndex = 0
 
-  // Updated regex to not capture trailing periods
-  const regex = /\[([^\]]+)\]\(([^)]+)\)|https?:\/\/[^\s)]+?(?=\.|$)/g
+  // Updated regex to properly handle domain names with dots
+  // Using negative lookbehind to avoid capturing trailing periods
+  const regex =
+    /\[([^\]]+)\]\(([^)]+)\)|https?:\/\/[^\s)]+(?<![.])|(?<!https?:\/\/)[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?<![.])/g
   let match
 
   while ((match = regex.exec(text)) !== null) {
@@ -143,13 +145,16 @@ const parseMarkdownLinks = (text: string) => {
         </a>
       )
     } else {
-      // Plain URL case: http(s)://example.com
+      // Plain URL or domain case
       const url = match[0]
-      const displayText = url.replace(/^https?:\/\//, '')
+      const hasProtocol = url.startsWith('http')
+      const displayText = hasProtocol ? url.replace(/^https?:\/\//, '') : url
+      const fullUrl = hasProtocol ? url : `https://${url}`
+
       parts.push(
         <a
           key={match.index}
-          href={url}
+          href={fullUrl}
           target='_blank'
           rel='noopener noreferrer'
           className='text-forest-green-500 underline'
