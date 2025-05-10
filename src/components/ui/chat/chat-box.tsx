@@ -1,117 +1,117 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
-import { MessageSquare, Calendar, Send, Loader } from 'lucide-react'
+import { Calendar, Loader } from 'lucide-react'
 import { IconSend2 } from '@tabler/icons-react'
 import { chat } from '@/app/(personal)/(home)/_actions/genkit'
 
 // Gemini AI API integration
-const getGeminiResponse = async (message: string, apiKey: string) => {
-  try {
-    // Updated Gemini API endpoint for Gemini 2.0 Flash
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `You are a helpful AI assistant that helps users book appointments through Calendly. 
-                       The user message is: "${message}"
-                       If the user is asking about booking or scheduling, suggest showing Calendly options.
-                       Respond in a friendly, concise manner.`
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 200
-          }
-        })
-      }
-    )
+// const getGeminiResponse = async (message: string, apiKey: string) => {
+//   try {
+//     // Updated Gemini API endpoint for Gemini 2.0 Flash
+//     const response = await fetch(
+//       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+//       {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//           contents: [
+//             {
+//               parts: [
+//                 {
+//                   text: `You are a helpful AI assistant that helps users book appointments through Calendly.
+//                        The user message is: "${message}"
+//                        If the user is asking about booking or scheduling, suggest showing Calendly options.
+//                        Respond in a friendly, concise manner.`
+//                 }
+//               ]
+//             }
+//           ],
+//           generationConfig: {
+//             temperature: 0.7,
+//             maxOutputTokens: 200
+//           }
+//         })
+//       }
+//     )
 
-    const data = await response.json()
+//     const data = await response.json()
 
-    // Extract the text response from Gemini
-    let textResponse = ''
-    try {
-      textResponse = data.candidates[0].content.parts[0].text
-    } catch (e) {
-      console.error('Error parsing Gemini response:', e)
-      textResponse =
-        'I had trouble processing that. How can I help you with scheduling?'
-    }
+//     // Extract the text response from Gemini
+//     let textResponse = ''
+//     try {
+//       textResponse = data.candidates[0].content.parts[0].text
+//     } catch (e) {
+//       console.error('Error parsing Gemini response:', e)
+//       textResponse =
+//         'I had trouble processing that. How can I help you with scheduling?'
+//     }
 
-    // Determine if we should show Calendly options
-    const shouldShowCalendly =
-      message.toLowerCase().includes('schedule') ||
-      message.toLowerCase().includes('book') ||
-      message.toLowerCase().includes('appointment') ||
-      message.toLowerCase().includes('meeting') ||
-      message.toLowerCase().includes('calendly') ||
-      textResponse.toLowerCase().includes('schedule') ||
-      textResponse.toLowerCase().includes('book') ||
-      textResponse.toLowerCase().includes('appointment') ||
-      textResponse.toLowerCase().includes('calendly')
+//     // Determine if we should show Calendly options
+//     const shouldShowCalendly =
+//       message.toLowerCase().includes('schedule') ||
+//       message.toLowerCase().includes('book') ||
+//       message.toLowerCase().includes('appointment') ||
+//       message.toLowerCase().includes('meeting') ||
+//       message.toLowerCase().includes('calendly') ||
+//       textResponse.toLowerCase().includes('schedule') ||
+//       textResponse.toLowerCase().includes('book') ||
+//       textResponse.toLowerCase().includes('appointment') ||
+//       textResponse.toLowerCase().includes('calendly')
 
-    return {
-      text: textResponse,
-      action: shouldShowCalendly ? 'show_calendly_options' : null
-    }
-  } catch (error) {
-    console.error('Error with Gemini API:', error)
-    return {
-      text: "I'm having trouble connecting to my AI services. Would you like to schedule an appointment anyway?",
-      action: null
-    }
-  }
-}
+//     return {
+//       text: textResponse,
+//       action: shouldShowCalendly ? 'show_calendly_options' : null
+//     }
+//   } catch (error) {
+//     console.error('Error with Gemini API:', error)
+//     return {
+//       text: "I'm having trouble connecting to my AI services. Would you like to schedule an appointment anyway?",
+//       action: null
+//     }
+//   }
+// }
 
 // Fallback to mock response if API key is not provided or API fails
-const mockAIResponse = async (message: string) => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000))
+// const mockAIResponse = async (message: string) => {
+//   // Simulate API delay
+//   await new Promise(resolve => setTimeout(resolve, 1000))
 
-  const message_lower = message.toLowerCase()
+//   const message_lower = message.toLowerCase()
 
-  // Check if message is about scheduling or booking
-  if (
-    message_lower.includes('schedule') ||
-    message_lower.includes('book') ||
-    message_lower.includes('appointment') ||
-    message_lower.includes('meeting') ||
-    message_lower.includes('calendly')
-  ) {
-    return {
-      text: "I'd be happy to help you book an appointment! What type of meeting would you like to schedule?",
-      action: 'show_calendly_options'
-    }
-  }
-  // Simple responses for greeting messages
-  else if (
-    message_lower.includes('hello') ||
-    message_lower.includes('hi') ||
-    message_lower.includes('hey')
-  ) {
-    return {
-      text: "Hello! I'm your AI assistant. I can help you book appointments through Calendly. How can I assist you today?",
-      action: null
-    }
-  }
-  // Default response
-  else {
-    return {
-      text: "I'm here to help you schedule appointments through Calendly. Would you like to book a meeting?",
-      action: null
-    }
-  }
-}
+//   // Check if message is about scheduling or booking
+//   if (
+//     message_lower.includes('schedule') ||
+//     message_lower.includes('book') ||
+//     message_lower.includes('appointment') ||
+//     message_lower.includes('meeting') ||
+//     message_lower.includes('calendly')
+//   ) {
+//     return {
+//       text: "I'd be happy to help you book an appointment! What type of meeting would you like to schedule?",
+//       action: 'show_calendly_options'
+//     }
+//   }
+//   // Simple responses for greeting messages
+//   else if (
+//     message_lower.includes('hello') ||
+//     message_lower.includes('hi') ||
+//     message_lower.includes('hey')
+//   ) {
+//     return {
+//       text: "Hello! I'm your AI assistant. I can help you book appointments through Calendly. How can I assist you today?",
+//       action: null
+//     }
+//   }
+//   // Default response
+//   else {
+//     return {
+//       text: "I'm here to help you schedule appointments through Calendly. Would you like to book a meeting?",
+//       action: null
+//     }
+//   }
+// }
 
 const parseMarkdownLinks = (text: string) => {
   if (!text) return ''
@@ -193,20 +193,26 @@ const meetingTypes = [
 ]
 
 const ChatBox = () => {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<
+    {
+      id: number
+      text: string
+      sender: string
+      action?: string | null
+      meetingUrl?: string
+    }[]
+  >([
     {
       id: 1,
       text: "Hello! I'm PattyBOT, your AI assistant. How can I help you today?",
       sender: 'ai',
-      action: null
+      action: null,
+      meetingUrl: ''
     }
   ])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showCalendlyOptions, setShowCalendlyOptions] = useState(false)
-  const [selectedMeeting, setSelectedMeeting] = useState(null)
-  const [apiKey, setApiKey] = useState('') // State for Gemini API key
-  const [showApiKeyInput, setShowApiKeyInput] = useState(true) // Show API key input initially
 
   const messagesEndRef = useRef(null)
 
@@ -226,7 +232,8 @@ const ChatBox = () => {
       id: Date.now(),
       text: currentMessage,
       sender: 'user',
-      action: null
+      action: null,
+      meeetingUrl: ''
     }
 
     setMessages(prevMessages => [...prevMessages, userMessage])
@@ -235,14 +242,17 @@ const ChatBox = () => {
 
     try {
       // Use the server action to get AI response
-      const aiResponse = await chat(currentMessage)
+      const aiResponse = await chat(
+        currentMessage,
+        messages.flatMap(message => message.text)
+      )
       console.log(aiResponse)
 
       // Add AI response to chat
       const aiMessage = {
         id: Date.now() + 1,
-        text: aiResponse,
-        sender: 'ai',
+        text: aiResponse.text,
+        sender: aiResponse.sender,
         action: aiResponse.action
       }
 
@@ -253,22 +263,21 @@ const ChatBox = () => {
       }
     } catch (error) {
       console.error('Error getting AI response:', error)
-      setMessages(prevMessages => [
-        ...prevMessages,
-        {
-          id: Date.now() + 1,
-          text: 'Sorry, I encountered an error. Please try again.',
-          sender: 'ai',
-          action: null
-        }
-      ])
+
+      const errorResponse = {
+        id: Date.now() + 1,
+        text: 'Sorry, I encountered an error. Please try again.',
+        sender: 'ai',
+        action: null,
+        meetingUrl: null
+      }
+      setMessages(prevMessages => [...prevMessages, errorResponse])
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleMeetingSelect = meeting => {
-    setSelectedMeeting(meeting)
     setShowCalendlyOptions(false)
 
     // Add message about selected meeting
@@ -300,7 +309,8 @@ const ChatBox = () => {
           id: Date.now() + 2,
           text: "I've opened Calendly in a new tab. Once you complete your booking there, let me know if you need anything else!",
           sender: 'ai',
-          action: null
+          action: null,
+          meetingUrl: ''
         }
       ])
     }, 2000)

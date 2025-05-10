@@ -8,7 +8,8 @@ const ai = genkit({
       apiVersion: ['v1beta']
     })
   ],
-  model: gemini20Flash // set default model
+  model: gemini20Flash, // set default model
+  promptDir: './prompts'
 })
 
 const askFlow = ai.prompt(process.env.PROMPT_CHATBOT!)
@@ -29,25 +30,50 @@ function extractJSONFromResponse (response: string) {
   }
 }
 
-export async function chat (userInput: string) {
+export async function chat (userInput: string, history: string[] = []) {
   try {
-    let text = ''
+    const result = {
+      text: '',
+      action: '',
+      history: [],
+      sender: ''
+    }
     if (userInput && typeof userInput === 'string') {
       const { text: response, output } = await askFlow({
-        text: userInput
+        text: userInput,
+        history
       })
 
       const res = extractJSONFromResponse(response)
 
       if (!!output) {
-        if (output.text !== undefined) text = output.text
-        else text = res?.text || res || ''
-      } else text = res?.text || res || ''
+        if (output.text !== undefined) {
+          result.text = output.text
+          result.action = output?.action || ''
+          result.history = output?.history || []
+          result.sender = output?.sender || 'ai'
+        } else {
+          result.text = res?.text || res || ''
+          result.action = res?.action || ''
+          result.history = res?.history || []
+          result.sender = res?.sender || 'ai'
+        }
+      } else {
+        result.text = res?.text || res || ''
+        result.action = res?.action || ''
+        result.history = res?.history || []
+        result.sender = res?.sender || 'ai'
+      }
 
-      return text
+      return result
     }
   } catch (error) {
     console.error(error)
-    return 'Something went wrong. Please try again in a few minutes'
+    return {
+      text: 'Something went wrong. Please try again in a few minutes',
+      action: '',
+      history: [],
+      sender: 'ai'
+    }
   }
 }

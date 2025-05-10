@@ -1,7 +1,9 @@
 'use client'
+import { infoPayload } from '@/_temp/information.temp'
 import { Button } from '@/components/shared/elements/button'
 import { IconFileDownload } from '@tabler/icons-react'
 import { useScroll, useSpring, useTransform, motion } from 'motion/react'
+import Link from 'next/link'
 import React from 'react'
 
 const HeadingSection = () => {
@@ -42,20 +44,22 @@ const HeadingSection = () => {
       }}
     >
       <header aria-label='Information'>
-        <p aria-label='Role' className='text-xs text-neutral-400 mb-1'>
-          Software Engineer
-        </p>
+        <h3 aria-label='Role' className='text-xs text-neutral-400 mb-1'>
+          {infoPayload.job}
+        </h3>
         <motion.h1
           aria-label='Name'
           className='font-bold text-3xl transition-all antialiased animate-collapsible-down'
           style={{ fontSize }}
         >
-          Daniel Josaphat Lozada
+          {infoPayload.name}
         </motion.h1>
       </header>
       <div>
-        <Button size='sm'>
-          <IconFileDownload />
+        <Button size='sm' asChild title='Download Resume'>
+          <Link href='/resume'>
+            <IconFileDownload />
+          </Link>
         </Button>
       </div>
     </motion.div>
