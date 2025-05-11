@@ -1,0 +1,15 @@
+{
+  "output": "CHANGELOG.md",
+  "template": "keepachangelog",
+  "unreleased": true,
+  "commitLimit": false,
+  "breakingPattern": "BREAKING CHANGE",
+  "hideCredit": true,
+  "sortCommits": "date",
+  "includeBranch": ["main"],
+  "ignoreCommitPattern": "^chore\\(release\\)|^docs: update changelog|^Merge ",
+  "commitGroupsSort": "title",
+  "commitGroupsOmitTitle": false,
+  "issuePattern": "#[0-9]+",
+  "refLinkPattern": "\\[([^\\]]+)\\]\\(([^)]+)\\)"
+}
