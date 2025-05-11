@@ -35,7 +35,7 @@ const SocialCard = ({
         <div className='p-4'>
           {createElement(icon, {
             className:
-              'size-12 transition-all stroke-1 group-hover:text-accent text-forest-green-400/10 group-hover:scale-[1.26]'
+              'size-12 transition-all stroke-1 group-hover:text-accent text-forest-green-400/30 group-hover:scale-[1.26]'
           })}
         </div>
       )}
