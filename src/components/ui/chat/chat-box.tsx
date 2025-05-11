@@ -3,6 +3,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Calendar, Loader } from 'lucide-react'
 import { IconSend2 } from '@tabler/icons-react'
 import { chat } from '@/app/(personal)/(home)/_actions/genkit'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/shared/elements/badge'
+import { Separator } from '@/components/shared/elements/separator'
 
 // Gemini AI API integration
 // const getGeminiResponse = async (message: string, apiKey: string) => {
@@ -197,6 +200,14 @@ const meetingTypes = [
   }
 ]
 
+const inputSuggestions = [
+  'Hello',
+  'Who are you?',
+  'Tell me about yourself',
+  'How to reach you out?',
+  'Are you open for work?'
+]
+
 const ChatBox = () => {
   const [messages, setMessages] = useState<
     {
@@ -322,7 +333,7 @@ const ChatBox = () => {
   }
 
   return (
-    <div className='flex flex-col bg-neutral-100/30 w-full rounded-2xl '>
+    <div className='flex flex-col bg-forest-green-200/5 w-full rounded-2xl '>
       {/* Header */}
       {/* <header className='bg-white shadow p-4 flex items-center justify-between'>
         <div className='flex items-center'>
@@ -404,7 +415,8 @@ const ChatBox = () => {
       )} */}
 
       {/* Chat container */}
-      <div className='flex-1 overflow-y-auto py-4 pl-1 pr-2 max-h-[50vh] my-0.5'>
+      <Separator />
+      <div className='flex-1 overflow-y-auto py-4 pl-1 pr-2 max-h-[50dvh]'>
         <div className=' mx-auto'>
           {messages.map(message => (
             <div
@@ -414,14 +426,19 @@ const ChatBox = () => {
               }`}
             >
               <div>
-                <span className='text-[0.5rem] text-neutral-300 text-end'>
+                <span
+                  className={cn(
+                    'text-[0.5rem] text-neutral-300 ',
+                    message.sender === 'user' ? 'text-end' : 'text-start'
+                  )}
+                >
                   {message.sender === 'user' ? 'me' : 'PattyBOT'}
                 </span>
                 <div
-                  className={`p-3 rounded-lg max-w-[280px] md:max-w-sm lg:max-w-md text-sm ${
+                  className={`p-3 rounded-2xl max-w-[33ch] md:max-w-sm sm:max-w-[40ch] text-sm overflow-auto text-wrap  ${
                     message.sender === 'user'
                       ? 'bg-forest-green-700 text-forest-green-50 rounded-br-none'
-                      : 'bg-neutral-200 shadow-xs text-forest-green-700 rounded-bl-none'
+                      : 'bg-forest-green-50/50 shadow-xs text-forest-green-700 rounded-bl-none'
                   }`}
                 >
                   {typeof message.text === 'string'
@@ -477,9 +494,7 @@ const ChatBox = () => {
             <div className='mb-4 flex justify-start'>
               <div className='bg-neutral-200 shadow rounded-lg p-3 flex items-center rounded-tl-none'>
                 <Loader className='animate-spin h-4 w-4 mr-2 text-forest-green-500' />
-                <span className='text-gray-500 text-xs'>
-                  Patty is typing...
-                </span>
+                <span className='text-forest-green-700 text-xs'>Typing...</span>
               </div>
             </div>
           )}
@@ -489,33 +504,57 @@ const ChatBox = () => {
       </div>
 
       {/* Message input */}
-      <div className='bg-neutral-50 border-t w-full pt-4'>
-        <form onSubmit={handleSendMessage} className='mx-auto flex'>
-          <input
-            type='text'
-            className='flex-1 border text-base scale-z-[0.8] border-neutral-200 text-forest-green-500 placeholder:text-neutral-300 rounded-l-lg px-4 py-4 focus:outline-none  focus:border-forest-green-400'
-            placeholder='Ask me about Daniel...'
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            disabled={isLoading}
-            onKeyPress={e => {
-              if (e.key === 'Enter' && inputValue.trim() && !isLoading) {
-                e.preventDefault()
-                handleSendMessage(e)
-              }
-            }}
-          />
-          <button
-            type='button'
-            onClick={handleSendMessage}
-            className='bg-forest-green-500 hover:bg-forest-green-700 text-white px-4 py-2 rounded-r-lg flex items-center justify-center disabled:bg-forest-green-100'
-            disabled={!inputValue.trim() || isLoading}
-          >
-            <IconSend2 className='size-4' />
-          </button>
+      <div className='bg-neutral-50 w-full'>
+        <Separator />
+        {messages.length < 4 && !inputValue && (
+          <div className='mt-2'>
+            <span className='text-[0.5rem] text-neutral-300'>Suggestions</span>
+            <div className='overflow-x-auto flex flex-nowrap gap-1.5  pb-2'>
+              {inputSuggestions.map(suggestion => (
+                <Badge
+                  key={suggestion}
+                  role='button'
+                  variant='outline'
+                  className='rounded-2xl p-0 py-1 px-3 text-forest-green-600 bg-forest-green-50/50 border-forest-green-300 font-light'
+                  onClick={e => {
+                    setInputValue(suggestion)
+                    handleSendMessage(e)
+                  }}
+                >
+                  {suggestion}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+        <form onSubmit={handleSendMessage} className='mx-auto flex mt-3'>
+          <div className='flex-1 border border-neutral-200 text-forest-green-500 rounded-3xl flex relative focus-within:outline-none  focus-within:border-forest-green-400 '>
+            <input
+              type='text'
+              className=' text-base scale-[0.85] -translate-x-2 placeholder:text-neutral-300 pr-10 py-2 focus:outline-none  focus:border-forest-green-400 w-full'
+              placeholder='Ask me about Daniel...'
+              value={inputValue}
+              onChange={e => setInputValue(e.target.value)}
+              disabled={isLoading}
+              onKeyPress={e => {
+                if (e.key === 'Enter' && inputValue.trim() && !isLoading) {
+                  e.preventDefault()
+                  handleSendMessage(e)
+                }
+              }}
+            />
+            <button
+              type='button'
+              onClick={handleSendMessage}
+              className='bg-forest-green-600 absolute right-1 top-1/2 -translate-y-1/2 hover:bg-forest-green-700 text-white px-4 py-2 rounded-2xl flex items-center justify-center disabled:bg-forest-green-400/50'
+              disabled={!inputValue.trim() || isLoading}
+            >
+              <IconSend2 className='size-4' />
+            </button>
+          </div>
         </form>
-        <span className='text-[0.6rem] text-center block pt-2 text-neutral-300'>
-          PattyBOT (AI) is still learing (beta) and can make mistakes.
+        <span className='text-[0.5rem] text-center block pt-2 text-neutral-400'>
+          PattyBOT (AI) is still learning (beta) and can make mistakes.
         </span>
       </div>
     </div>
