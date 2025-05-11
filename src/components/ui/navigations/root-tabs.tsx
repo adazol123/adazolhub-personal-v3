@@ -59,6 +59,7 @@ const RootTabs = () => {
           >
             <Link
               href={item.path}
+              replace
               // className='flex flex-col items-center gap-0.5 sm:gap-1 p-1 sm:p-3'
             >
               <item.icon className='h-5 w-5 sm:h-6 sm:w-6' />
