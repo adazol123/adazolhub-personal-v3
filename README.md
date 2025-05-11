@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Daniel Adazolhub Portfolio
 
-## Getting Started
+My personal portfolio website showcasing my projects and skills. Visit [daniel.adazol.com](https://daniel.adazol.com)
 
-First, run the development server:
+## Tech Stack
 
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Animation:** Framer Motion
+- **AI Integration:** 
+  - Genkit AI
+  - Google AI
+  - Firebase ML
+- **Icons:** Tabler React Icons
+- **Data & Caching:**
+  - Upstash Redis
+- **Media:**
+  - ImageKit
+- **Cloud Services:**
+  - Google Cloud Platform
+  - Firebase
+  - Vercel (Deployment)
+
+## Local Development
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/adazolhub-personal-v3.git
+cd adazolhub-personal-v3
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-To learn more about Next.js, take a look at the following resources:
+## Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 🎨 Responsive modern UI with Tailwind CSS
+- ✨ Smooth animations with Framer Motion
+- 🤖 AI-powered interactions
+- 🔥 Firebase backend integration
+- 🚀 Server-side rendering with Next.js
+- 📱 Mobile-first design approach
+- 📦 Redis caching for improved performance
+- 🖼️ Optimized image delivery with ImageKit
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/           # Next.js app router pages
+├── components/    # Reusable UI components
+├── lib/          # Utility functions and helpers
+├── hooks/        # Custom React hooks
+├── styles/       # Global styles and Tailwind config
+└── types/        # TypeScript type definitions
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The site is automatically deployed to Vercel with each push to the main branch.
+
+## Contact
+
+- Website: [daniel.adazol.com](https://daniel.adazol.com)
+- GitHub: [@adazol123](https://github.com/adazol123)
+- LinkedIn: [Daniel Josaphat Lozada](https://linkedin.com/in/daniel-josaphat-lozada)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
