@@ -43,3 +43,8 @@ next-env.d.ts
 #prompts
 prompts/danyel.prompt
 src/app/(auth)
+
+#dev
+functions
+.firebaserc
+firebase.json
