@@ -14,16 +14,19 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/_/assets/:path',
-        destination: `https://ik.imagekit.io/adazol/assets/:path`
+        destination: `${process.env.MEDIA_URL}/assets/:path`
       },
       {
         source: '/resume',
-        destination:
-          'https://firebasestorage.googleapis.com/v0/b/daniel-lozada.appspot.com/o/resume%2FDaniel%20Lozada%20-%20SE.pdf?alt=media&token=e094bf3f-032b-4b31-b069-a0d98f475d60'
+        destination: process.env.RESUME_URL
       },
       {
         source: '/old/:path',
-        destination: 'https://daniel-lozada.web.app/:path'
+        destination: `${process.env.DOMAIN_OLD_URL}/:path`
+      },
+      {
+        source: '/_/chat',
+        destination: `${process.env.API_URL}/chat`
       }
     ]
   }
