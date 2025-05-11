@@ -6,6 +6,9 @@ import Header from '@/components/ui/navigations/header'
 import Footer from '@/components/ui/navigations/footer'
 import AnnouncementBanner from '@/components/ui/banners/annoucement.banner'
 
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin']
@@ -40,7 +43,7 @@ export default function RootLayout ({
         <meta name='google-adsense-account' content='ca-pub-3357103377634730' />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
       >
         {/* Announcement Banner */}
         <AnnouncementBanner>
@@ -68,6 +71,8 @@ export default function RootLayout ({
             <div className='w-[200vw] h-[200vw] max-w-[1200px] max-h-[1200px] rounded-full bg-gradient-radial from-forest-green-200  to-transparent opacity-0 animate-pulse-light transition-all'></div>
           </div>
         </div>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
