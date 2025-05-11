@@ -7,6 +7,7 @@ import { Button } from '@/components/shared/elements/button'
 import { Separator } from '@/components/shared/elements/separator'
 import Link from 'next/link'
 import { alumniPayload, infoPayload } from '@/_temp/information.temp'
+import { getServerDomain } from '@/lib/domain.parser'
 
 const personSchema: PersonSchemaProps = {
   name: infoPayload.name,
@@ -34,6 +35,7 @@ const personSchema: PersonSchemaProps = {
 }
 
 export default async function Home () {
+  const domain = await getServerDomain()
   return (
     <>
       <PersonSchema {...personSchema} />
@@ -41,7 +43,7 @@ export default async function Home () {
         <header
           id='headline'
           aria-label='Professional Overview'
-          className='grid place-content-center text-center min-h-[40svh] gap-1 sm:gap-2'
+          className='grid place-content-center text-center min-h-[50dvh] sm:min-h-[60dvh] gap-1 sm:gap-2'
         >
           <Badge variant='secondary' className='text-xs mb-1 mx-auto'>
             {infoPayload.job}
@@ -54,7 +56,7 @@ export default async function Home () {
               {infoPayload.headline_short}
             </p>
           </article>
-          <div className='mx-auto mt-6 flex flex-col gap-2 items-center'>
+          <div className='mx-auto mt-4 flex gap-2 items-center flex-wrap'>
             <Button className='w-fit ' asChild>
               <Link href='/availability'>
                 Open for work <Icons.IconArrowRight />
@@ -62,7 +64,7 @@ export default async function Home () {
             </Button>
             <Button variant='outline' className='w-fit ' asChild>
               <Link
-                href='http://localhost:3000/resume'
+                href={`${domain}/resume`}
                 target='_blank'
                 rel='noopener noreferrer'
               >
