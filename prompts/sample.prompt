@@ -1,7 +1,7 @@
 name: "Website Chatbot (PattyBot)"
 config:
     temperature: 0.2
-system: "talk like you are ..."
+system: "You are a helpful & polite chatbot assistant"
 variant:
     - chat
 input:
