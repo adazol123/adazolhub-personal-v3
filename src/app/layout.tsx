@@ -4,10 +4,9 @@ import './globals.css'
 import RootTabs from '@/components/ui/navigations/root-tabs'
 import Header from '@/components/ui/navigations/header'
 import Footer from '@/components/ui/navigations/footer'
-import AnnouncementBanner from '@/components/ui/banners/annoucement.banner'
-
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import AnnouncementsSection from './(personal)/(home)/_components/annoucements.section'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -46,19 +45,7 @@ export default function RootLayout ({
         className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
       >
         {/* Announcement Banner */}
-        <AnnouncementBanner>
-          <p className='sm:text-left text-xs'>
-            🚧 This site is currently being upgraded from old{' '}
-            <a
-              href='https://daniel-lozada.web.app'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='underline underline-offset-4 hover:text-forest-green-100'
-            >
-              daniel.adazol.com
-            </a>
-          </p>
-        </AnnouncementBanner>
+        <AnnouncementsSection />
         <main className='px-4 snap-y snap-mandatory'>
           <Header />
           {children}
