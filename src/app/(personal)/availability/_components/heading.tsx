@@ -16,17 +16,17 @@ const HeadingSection = () => {
 
   // Interpolate background color from transparent to black
   const backgroundColor = useTransform(
-    scrollY,
+    debouncedScrollY,
     [10, 100],
-    ['rgba(255,255,255,0)', 'oklch(0.931 0.016 164)']
+    ['rgba(223,236,229,0.02)', 'rgba(223,236,229,1)']
   )
 
   // Interpolate backdrop blur
-  //   const backdropBlur = useTransform(
-  //     scrollY,
-  //     [0, 100],
-  //     ['blur(0px)', 'blur(10px)']
-  //   )
+  const backdropBlur = useTransform(
+    debouncedScrollY,
+    [0, 100],
+    ['blur(1px)', 'blur(3px)']
+  )
 
   // Interpolate font size and description position
   const fontSize = useTransform(debouncedScrollY, [19, 20], ['2rem', '1rem'])
@@ -34,35 +34,42 @@ const HeadingSection = () => {
   // const opacityDescriptionTransition = useTransform(debouncedScrollY, [2, 100], ["1", "0"])
 
   return (
-    <motion.div
-      className='flex mt-6 justify-between items-baseline bg-forest-green-50 sticky top-0 container max-w-prose mx-auto py-4 gap-6 transition-all'
-      style={{
-        zIndex: 20,
-        backgroundColor
-        // WebkitBackdropFilter: backdropBlur, // For Safari support
-        // backdropFilter: backdropBlur
-      }}
-    >
-      <header aria-label='Information'>
-        <h3 aria-label='Role' className='text-xs text-neutral-400 mb-1'>
-          {infoPayload.job}
-        </h3>
-        <motion.h1
-          aria-label='Name'
-          className='font-bold text-3xl transition-all antialiased animate-collapsible-down'
-          style={{ fontSize }}
+    <>
+      <div className='bg-background sticky top-0 py-4 gap-6 transition-all z-20 -mx-4 px-4'>
+        <motion.div
+          id='heading__container'
+          className='flex w-full justify-between max-w-prose mx-auto items-center container '
+          style={{
+            backgroundColor,
+            // WebkitBackdropFilter: backdropBlur, // For Safari support
+            backdropFilter: backdropBlur
+          }}
         >
-          {infoPayload.name}
-        </motion.h1>
-      </header>
-      <div>
-        <Button size='sm' asChild title='Download Resume'>
-          <Link href='/resume'>
-            <IconFileDownload />
-          </Link>
-        </Button>
+          <header aria-label='Information'>
+            <h3
+              aria-label='Job Description'
+              className='text-xs text-neutral-400 mb-1'
+            >
+              {infoPayload.job}
+            </h3>
+            <motion.h1
+              aria-label='Name'
+              className='font-extrabold text-3xl transition-all antialiased animate-collapsible-down text-forest-green-700'
+              style={{ fontSize }}
+            >
+              {infoPayload.name}
+            </motion.h1>
+          </header>
+          <div>
+            <Button size='sm' asChild title='Download Resume'>
+              <Link href='/resume'>
+                <IconFileDownload />
+              </Link>
+            </Button>
+          </div>
+        </motion.div>
       </div>
-    </motion.div>
+    </>
   )
 }
 
