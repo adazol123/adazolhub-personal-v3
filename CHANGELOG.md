@@ -1,35 +1,35 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
-# [0.3.0](https://github.com/adazol123/adazolhub-personal-v3/compare/v0.2.3...v0.3.0) (2025-05-14)
-
-
-### Features
-
-* create basic contact page layout ([07403c3](https://github.com/adazol123/adazolhub-personal-v3/commit/07403c3f8f1e7cb69542aaf874180cb9fbd00169))
-* create basic get-in-touch section ([18f1ec4](https://github.com/adazol123/adazolhub-personal-v3/commit/18f1ec418377dbe09c3b750c8928c563be88632c))
-* create basic projects section ([3b4e50b](https://github.com/adazol123/adazolhub-personal-v3/commit/3b4e50b814b845d22d1b8f31c068c00beb650353))
-* create experience section to availability page ([c7af745](https://github.com/adazol123/adazolhub-personal-v3/commit/c7af745ad870012683c24f7a6bb58bc9053b5613))
-* create expertise section to availability page ([8e41cd3](https://github.com/adazol123/adazolhub-personal-v3/commit/8e41cd314ebb2701b00f043fe7a10705768fca5c))
-* create service worker hearbeat component trigger ([407038c](https://github.com/adazol123/adazolhub-personal-v3/commit/407038c1db25d2f14c8220897d4c5dcd52e3b77e))
-* implement expertise & experience section component, attach props value to summary section component ([0b97a9b](https://github.com/adazol123/adazolhub-personal-v3/commit/0b97a9bb91e08b132e5bb9fbeb16f075c5173933))
-* implement service worker - heartbeat ([8735d95](https://github.com/adazol123/adazolhub-personal-v3/commit/8735d9571217c76f700f2bdc4a7b698eb3b44437))
-* implement service worker hearbeat trigger and add projects, get-in-touch section component to home page ([6f00b53](https://github.com/adazol123/adazolhub-personal-v3/commit/6f00b53ce86e4b407ed3e653057e9df474f0cc50))
-* install  dayjs & react-label lib ([446f509](https://github.com/adazol123/adazolhub-personal-v3/commit/446f509d324d3c1449be0635e3acc0c18ea88277))
-* install shadcn component [input,label,textarea] ([5725369](https://github.com/adazol123/adazolhub-personal-v3/commit/572536902e5e30a3e53dcb490298e2c1dec34da0))
-* make availability header section bleed full width and update styles ([734a6b2](https://github.com/adazol123/adazolhub-personal-v3/commit/734a6b218f353297de17dd04472de24a211f35c1))
-
-
-
-# Changelog
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v0.2.3](https://github.com/adazol123/adazolhub-personal-v3/compare/v0.2.3...v0.2.3)
+## [v0.3.0](https://github.com/adazol123/adazolhub-personal-v3/compare/v0.3.0...v0.3.0)
+
+## [v0.3.0](https://github.com/adazol123/adazolhub-personal-v3/compare/v0.2.3...v0.3.0) - 2025-05-14
+
+### Commits
+
+- feat: install  dayjs & react-label lib [`446f509`](https://github.com/adazol123/adazolhub-personal-v3/commit/446f509d324d3c1449be0635e3acc0c18ea88277)
+- style: rename useBannerState hooks extension from tsx to ts [`d9883e9`](https://github.com/adazol123/adazolhub-personal-v3/commit/d9883e9172f7f7858e054b0ce10f0ae5eeeee41a)
+- feat: implement service worker - heartbeat [`8735d95`](https://github.com/adazol123/adazolhub-personal-v3/commit/8735d9571217c76f700f2bdc4a7b698eb3b44437)
+- feat: install shadcn component [input,label,textarea] [`5725369`](https://github.com/adazol123/adazolhub-personal-v3/commit/572536902e5e30a3e53dcb490298e2c1dec34da0)
+- refactor: make header font smaller [`33c19cb`](https://github.com/adazol123/adazolhub-personal-v3/commit/33c19cb0e4fd4e805d70923868d1762226ea58e5)
+- feat: create basic get-in-touch section [`18f1ec4`](https://github.com/adazol123/adazolhub-personal-v3/commit/18f1ec418377dbe09c3b750c8928c563be88632c)
+- feat: create basic projects section [`3b4e50b`](https://github.com/adazol123/adazolhub-personal-v3/commit/3b4e50b814b845d22d1b8f31c068c00beb650353)
+- feat: make availability header section bleed full width and update styles [`734a6b2`](https://github.com/adazol123/adazolhub-personal-v3/commit/734a6b218f353297de17dd04472de24a211f35c1)
+- refactor: implement props on summary section & add collapse toggler [`f3f5142`](https://github.com/adazol123/adazolhub-personal-v3/commit/f3f51423088b059dc62d85924652bb5b037b1c86)
+- feat: create expertise section to availability page [`8e41cd3`](https://github.com/adazol123/adazolhub-personal-v3/commit/8e41cd314ebb2701b00f043fe7a10705768fca5c)
+- feat: create experience section to availability page [`c7af745`](https://github.com/adazol123/adazolhub-personal-v3/commit/c7af745ad870012683c24f7a6bb58bc9053b5613)
+- feat: implement expertise & experience section component, attach props value to summary section component [`0b97a9b`](https://github.com/adazol123/adazolhub-personal-v3/commit/0b97a9bb91e08b132e5bb9fbeb16f075c5173933)
+- feat: create basic contact page layout [`07403c3`](https://github.com/adazol123/adazolhub-personal-v3/commit/07403c3f8f1e7cb69542aaf874180cb9fbd00169)
+- chore: add availability payload to temp file [`afd72ea`](https://github.com/adazol123/adazolhub-personal-v3/commit/afd72eac58c2c84a428234d2e50ac5ff3d4f635d)
+- feat: create service worker hearbeat component trigger [`407038c`](https://github.com/adazol123/adazolhub-personal-v3/commit/407038c1db25d2f14c8220897d4c5dcd52e3b77e)
+- refactor:  remove some unavailable route and add social links (icons) to footer [`68e3bda`](https://github.com/adazol123/adazolhub-personal-v3/commit/68e3bda2419d9f97aa84859a224a7fb3875930bd)
+- feat: implement service worker hearbeat trigger and add projects, get-in-touch section component to home page [`6f00b53`](https://github.com/adazol123/adazolhub-personal-v3/commit/6f00b53ce86e4b407ed3e653057e9df474f0cc50)
+- refactor: reduce gradient background size from 200vw to 160 vw [`8bf2946`](https://github.com/adazol123/adazolhub-personal-v3/commit/8bf294638cd397edc4e0ecdc041d0f14e5a9884b)
+- refactor: change radial-gardient color contrast [`90dcb64`](https://github.com/adazol123/adazolhub-personal-v3/commit/90dcb6444618281a6cc4d75f511949b6f10443a6)
 
 ## [v0.2.3](https://github.com/adazol123/adazolhub-personal-v3/compare/v0.2.2...v0.2.3) - 2025-05-11
 
