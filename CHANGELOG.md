@@ -1,5 +1,29 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+# [0.3.0](https://github.com/adazol123/adazolhub-personal-v3/compare/v0.2.3...v0.3.0) (2025-05-14)
+
+
+### Features
+
+* create basic contact page layout ([07403c3](https://github.com/adazol123/adazolhub-personal-v3/commit/07403c3f8f1e7cb69542aaf874180cb9fbd00169))
+* create basic get-in-touch section ([18f1ec4](https://github.com/adazol123/adazolhub-personal-v3/commit/18f1ec418377dbe09c3b750c8928c563be88632c))
+* create basic projects section ([3b4e50b](https://github.com/adazol123/adazolhub-personal-v3/commit/3b4e50b814b845d22d1b8f31c068c00beb650353))
+* create experience section to availability page ([c7af745](https://github.com/adazol123/adazolhub-personal-v3/commit/c7af745ad870012683c24f7a6bb58bc9053b5613))
+* create expertise section to availability page ([8e41cd3](https://github.com/adazol123/adazolhub-personal-v3/commit/8e41cd314ebb2701b00f043fe7a10705768fca5c))
+* create service worker hearbeat component trigger ([407038c](https://github.com/adazol123/adazolhub-personal-v3/commit/407038c1db25d2f14c8220897d4c5dcd52e3b77e))
+* implement expertise & experience section component, attach props value to summary section component ([0b97a9b](https://github.com/adazol123/adazolhub-personal-v3/commit/0b97a9bb91e08b132e5bb9fbeb16f075c5173933))
+* implement service worker - heartbeat ([8735d95](https://github.com/adazol123/adazolhub-personal-v3/commit/8735d9571217c76f700f2bdc4a7b698eb3b44437))
+* implement service worker hearbeat trigger and add projects, get-in-touch section component to home page ([6f00b53](https://github.com/adazol123/adazolhub-personal-v3/commit/6f00b53ce86e4b407ed3e653057e9df474f0cc50))
+* install  dayjs & react-label lib ([446f509](https://github.com/adazol123/adazolhub-personal-v3/commit/446f509d324d3c1449be0635e3acc0c18ea88277))
+* install shadcn component [input,label,textarea] ([5725369](https://github.com/adazol123/adazolhub-personal-v3/commit/572536902e5e30a3e53dcb490298e2c1dec34da0))
+* make availability header section bleed full width and update styles ([734a6b2](https://github.com/adazol123/adazolhub-personal-v3/commit/734a6b218f353297de17dd04472de24a211f35c1))
+
+
+
+# Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
