@@ -8,6 +8,9 @@ import { Separator } from '@/components/shared/elements/separator'
 import Link from 'next/link'
 import { alumniPayload, infoPayload } from '@/_temp/information.temp'
 import { getServerDomain } from '@/lib/domain.parser'
+import GetInTouchSection from './(personal)/(home)/_components/get-in-touch.section'
+import ProjectSection from './(personal)/(home)/_components/projects.section'
+import ClientHeartbeat from '@/components/ui/client-heartbeat'
 
 const personSchema: PersonSchemaProps = {
   name: infoPayload.name,
@@ -39,6 +42,7 @@ export default async function Home () {
   return (
     <>
       <PersonSchema {...personSchema} />
+      <ClientHeartbeat />
       <div className='container mx-auto max-w-prose space-y-16 min-h-svh'>
         <header
           id='headline'
@@ -90,15 +94,9 @@ export default async function Home () {
           label={infoPayload.competencies_label}
           competencies={infoPayload.competencies}
         />
-        <div className='grid place-content-center'>
-          <Button asChild>
-            <Link href='/portfolio'>
-              Check Portfolio <Icons.IconArrowRight />
-            </Link>
-          </Button>
-        </div>
+        <ProjectSection />
         <Separator />
-        <section id='social__information' className='grid'>
+        <section id='social__information' className='grid mb-6'>
           <Badge variant='secondary' className='text-xs mb-6 mx-auto'>
             {infoPayload.social_information_label}
           </Badge>
@@ -115,14 +113,8 @@ export default async function Home () {
             ))}
           </div>
         </section>
-        <div className='grid place-content-center'>
-          <Button asChild>
-            <Link href='/contact'>
-              Get in touch <Icons.IconArrowRight />
-            </Link>
-          </Button>
-        </div>
       </div>
+      <GetInTouchSection />
     </>
   )
 }
