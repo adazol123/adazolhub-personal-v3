@@ -46,7 +46,7 @@ export default function RootLayout ({
       >
         {/* Announcement Banner */}
         <AnnouncementsSection />
-        <main className='px-4 snap-y snap-mandatory'>
+        <main className='px-4 scroll-smooth'>
           <Header />
           {children}
           <RootTabs />
@@ -55,7 +55,7 @@ export default function RootLayout ({
         {/* Gradient Background */}
         <div className='fixed inset-0 select-none -z-1' aria-hidden>
           <div className='absolute inset-x-0 -bottom-1/2 flex items-center justify-center'>
-            <div className='w-[200vw] h-[200vw] max-w-[1200px] max-h-[1200px] rounded-full bg-gradient-radial from-forest-green-200  to-transparent opacity-0 animate-pulse-light transition-all'></div>
+            <div className='w-[160vw] h-[160vw] max-w-[1200px] max-h-[1200px] rounded-full bg-gradient-radial from-forest-green-200  to-transparent opacity-0 animate-pulse-light transition-all'></div>
           </div>
         </div>
         <Analytics />
