@@ -20,10 +20,6 @@ const sitemaps = [
     path: '/resume'
   },
   {
-    label: 'Core Competencies',
-    path: '/competencies'
-  },
-  {
     label: 'Portfolio',
     path: '/portfolio'
   },
@@ -36,11 +32,7 @@ const sitemaps = [
     path: '/thread'
   },
   {
-    label: 'Lets connection',
-    path: '/connect'
-  },
-  {
-    label: 'Get in touch (About)',
+    label: 'Get in touch (Contact)',
     path: '/contact'
   },
 
@@ -121,12 +113,20 @@ const Footer = () => {
           ))}
         </ul>
       </div>
-      <div id='footer__rights' className='flex justify-center mb-4'>
-        <span className='text-xs opacity-50 font-light inline-flex items-center gap-0.5'>
-          {footerInfo.rights}
-          <Icons.IconAt className='size-[0.7rem] stroke-1 p-0' />
-          {footerInfo.year}
-        </span>
+      <div id='footer__rights' className='grid place-content-center mb-4'>
+        <div className='flex gap-3 items-center justify-center text-forest-green-700/80 py-3'>
+          <Icons.IconBrandLinkedin />
+          <Icons.IconBrandGithub />
+          <Icons.IconBrandFacebook />
+          <Icons.IconBrandInstagram />
+        </div>
+        <div>
+          <span className='text-xs opacity-50 font-light inline-flex items-center gap-0.5'>
+            {footerInfo.rights}
+            <Icons.IconAt className='size-[0.7rem] stroke-1 p-0' />
+            {footerInfo.year}
+          </span>
+        </div>
       </div>
     </div>
   )
