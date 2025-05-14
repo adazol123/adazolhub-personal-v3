@@ -29,6 +29,19 @@ const nextConfig: NextConfig = {
         destination: `${process.env.API_URL}/chat`
       }
     ]
+  },
+  headers: async () => {
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate'
+          }
+        ]
+      }
+    ]
   }
 }
 
