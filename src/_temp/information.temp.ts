@@ -240,3 +240,115 @@ export const footerPayload = {
   rights: 'All rights reserved.',
   year: 'Copyright 2025'
 }
+
+export const availabilityPayload = {
+  expertise_label: 'Key Areas of Development Expertise',
+  expertise: [
+    {
+      title: 'Full-Stack Development Capabilities',
+      description:
+        'Ability to contribute to all layers of application development.'
+    },
+    {
+      title: 'Proficient in Multiple Programming Paradigms',
+      description: 'Adaptable to different coding styles and approaches.'
+    },
+    {
+      title: 'Cloud Infrastructure and Deployment',
+      description:
+        'Experience with building and deploying applications in cloud environments.'
+    },
+    {
+      title: 'Data Handling and Management',
+      description:
+        'Skilled in working with diverse data structures and systems.'
+    },
+    {
+      title: 'Commitment to Code Quality',
+      description:
+        'Strong emphasis on writing clean, maintainable, and well-tested code.'
+    },
+    {
+      title: 'Agile Development Practices',
+      description:
+        'Experienced in collaborative and iterative development workflows.'
+    }
+  ],
+
+  cta: {
+    title: "Let's Connect!",
+    description:
+      'I am eager to discuss how my skills and experience can contribute to your team. Please feel free to reach out.',
+    email_label: 'Email Me to Discuss Opportunities',
+    linkedin_label: 'Connect on LinkedIn to Explore Synergies'
+  },
+  cta2: {
+    title: "Let's Build Something Great Together!",
+    description:
+      "I'm excited about the prospect of joining a dynamic team and contributing my software engineering skills to innovative projects. If you're looking for a passionate and dedicated engineer, I'm ready to explore how I can make a valuable impact. Reach out today!",
+    email_label: 'Get in Touch to Discuss Potential Roles',
+    linkedin_label: 'Connect on LinkedIn for Professional Inquiries'
+  },
+  experience_label: 'Professional Experience',
+  experience: [
+    {
+      start_date: '2022-11-01',
+      end_date: null,
+      id: 'experience_04',
+      job_title: 'Software Engineer',
+      employeer: 'Supafaya PTE, Ltd.',
+      job_location: 'Remote',
+      job_type: 'Full-Time',
+      job_details: [
+        'Designed and deployed full-stack web applications using Next.js, Node.js, NestJS, Firebase, Vercel, TypeScript, Google Cloud Platform ecosystem services (Cloud Run, Cloud Function, etc.) and more.',
+        'Developed and integrated high performance RESTful APIs.',
+        'Maintained cloud infrastructure on Google Cloud Platform'
+      ]
+    },
+    {
+      start_date: '2022-05-01',
+      end_date: '2022-11-01',
+      id: 'experience_03',
+      job_title: 'Junior Software Developer',
+      employeer: 'MetaverseGo',
+      job_location: 'Remote',
+      job_type: 'Contract-Based',
+      job_details: [
+        'Maintained and enhanced core frontend site ReactJS, cloud infrastructure with AWS, Lambda, MongoDB and Serverless Framework.',
+        ' Built and deployed scalable backend microservices using Fastify (NodeJS framework).',
+        'Collaborated in Agile/Scrum teams to deliver high-quality, efficient solutions',
+        'Integrated internal and third-party APIs, including secure payment gateways'
+      ]
+    },
+    {
+      start_date: '2019-08-15',
+      end_date: '2022-02-01',
+      id: 'experience_02',
+      job_title: 'System Engineer (Service Desk Analyst)',
+      employeer: 'Tata Consultancy Services',
+      job_location: 'BGC, Taguig City, Philippines',
+      job_type: 'Full-Time',
+      job_details: [
+        'First line of Support (Service Desk / Help Desk Support)',
+        'Provided technical support via phone, ticketing system, remote assistance, and live chat.',
+        'Documented, updated, and tracked incident and request tickets with attention to detail.'
+      ]
+    },
+    {
+      start_date: '2019-03-01',
+      end_date: '2019-06-01',
+      id: 'experience_01',
+      job_title: 'Technical Support Intern',
+      employeer: 'Maralabs, Inc. of 8Layer Tech, Inc.',
+      job_type: 'OJT/Internship',
+      job_details: [
+        'Exposed to linux technology stach (Linux, Apache, Mysql, PHP)',
+        'Assembled and deploy computer network',
+        'Monitor, analyze and troubleshoot server network connectivity issues',
+        'Maintain and monitor server infrastructure',
+        'Provide technical support'
+      ],
+      job_location: 'Pasig City, Philippines'
+    }
+  ]
+}
