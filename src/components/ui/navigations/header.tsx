@@ -5,7 +5,7 @@ import React from 'react'
 const Header = () => {
   return (
     <nav className='flex justify-between container max-w-prose mx-auto py-2 items-center'>
-      <h2 className='text-sm'>Adazol | Personal</h2>
+      <h2 className='text-xs select-none'>Adazol | Personal</h2>
 
       {/* <Button
         size='icon'
