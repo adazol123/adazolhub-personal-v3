@@ -1,6 +1,5 @@
 import { Icon, IconProps } from '@tabler/icons-react'
 import React from 'react'
-
 type ExpertiseSectionProps = {
   label: string
   expertises: {
@@ -18,11 +17,11 @@ const ExpertiseSection = ({ label, expertises }: ExpertiseSectionProps) => {
       <h3 className='from-forest-green-700 mb-3 font-medium text-sm'>
         {label}
       </h3>
-      <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4'>
+      <div className='grid gap-6 mt-4'>
         {expertises.map(expertise => (
           <div
             key={expertise.title}
-            className='flex gap-3 group transition-all duration-500 items-center sm:items-start'
+            className='flex gap-3 group transition-all duration-500 items-center'
           >
             {!!expertise?.icons && (
               <div className=' bg-forest-green-700/5 h-fit w-fit grid place-content-center p-4 rounded-full'>
