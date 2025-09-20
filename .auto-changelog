@@ -1,0 +1,62 @@
+{
+  "output": "CHANGELOG.md",
+  "template": "keepachangelog",
+  "unreleased": true,
+  "commitLimit": false,
+  "breakingPattern": "BREAKING CHANGE",
+  "hideCredit": true,
+  "sortCommits": "date",
+  "includeBranch": [
+    "main",
+    "initial/next"
+  ],
+  "ignoreCommitPattern": "^chore\\(release\\)|^docs: update changelog|^Merge ",
+  "commitGroupsSort": "title",
+  "commitGroupsOmitTitle": false,
+  "issuePattern": "#[0-9]+",
+  "refLinkPattern": "\\[([^\\]]+)\\]\\(([^)]+)\\)",
+  "package": "./package.json",
+  "title": "# Daniel Adazolhub Portfolio Changelog\n\n> All notable changes to this portfolio project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n",
+  "commitGroups": [
+    {
+      "title": "Features",
+      "regexp": "^feat"
+    },
+    {
+      "title": "Bug Fixes",
+      "regexp": "^fix"
+    },
+    {
+      "title": "Performance Improvements",
+      "regexp": "^perf"
+    },
+    {
+      "title": "Refactoring",
+      "regexp": "^refactor"
+    },
+    {
+      "title": "Build System",
+      "regexp": "^build"
+    },
+    {
+      "title": "Continuous Integration",
+      "regexp": "^ci"
+    },
+    {
+      "title": "Documentation",
+      "regexp": "^docs"
+    },
+    {
+      "title": "Styles",
+      "regexp": "^style"
+    },
+    {
+      "title": "Tests",
+      "regexp": "^test"
+    },
+    {
+      "title": "Chores",
+      "regexp": "^chore(?!\\(release\\))"
+    }
+  ]
+}

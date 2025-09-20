@@ -1,0 +1,19 @@
+name: "Website Chatbot (PattyBot)"
+config:
+    temperature: 0.2
+system: "You are a helpful & polite chatbot assistant"
+variant:
+    - chat
+input:
+    schema:
+        text: string
+        history: { type: 'string[]' },
+output: 
+    type: object
+    schema:
+        text: string
+        history: { type: 'string[]' },
+---
+{{role "user"}}
+
+// your custom prompt here
