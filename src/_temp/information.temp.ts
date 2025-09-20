@@ -1,22 +1,30 @@
 export const infoPayload = {
-  name: 'Daniel Josaphat Lozada',
+  name: 'Daniel Lozada',
   first_name: 'Daniel Josaphat',
   alternate_name: 'Daniel',
   middle_name: 'Padayao',
   last_name: 'Lozada',
-  job: 'Software Engineer',
+  job: 'Software Engineer/Developer',
   gender: 'Male',
-  email: 'dpadayao40@outlook.ph',
+  email: 'info@adazol.com',
   brand: ['adazol', 'adazolhub'],
   image: [''],
   nationality: 'Philippines',
   address: {
-    postal_code: '1630',
+    postal_code: '1632',
     region: 'Metro Manila',
     locality: 'Taguig City'
   },
-  telephone: '(63) 926-762-1542',
-  phone: '+639267621542',
+  telephone: '(63) 910-728-7115',
+  phone: '+639107284115',
+  profile_avatar_md:
+    'https://firebasestorage.googleapis.com/v0/b/daniel-lozada.appspot.com/o/assets%2Fimages%2Fpersonal_avatar_md.png?alt=media&token=01245cc5-51cc-4eac-9161-0fa0ac862767',
+  bio_description: [
+    'Hey, I’m Daniel—a software engineer who builds reliable, scalable full-stack applications using modern web technologies.',
+    'I specialize in React, Next.js, NestJS, Node.js, and TypeScript, with a strong focus on clean architecture, maintainable code, and performance. Over the past 3+ years, I’ve worked with startups across various domains—delivering full-stack features, integrating third-party APIs (including Stripe, Xendit, and Google Maps), and deploying serverless systems on AWS and GCP.',
+    'From UI implementation to backend logic and cloud infrastructure, I aim to build systems that are easy to reason about, easy to extend, and built to last.',
+    'Currently open to new opportunities or collaborations. Let’s build something that works—and works well.'
+  ],
   headline_short:
     'Full-stack expert crafting scalable solutions with 3+ years in modern development.',
   highlights: [
@@ -166,20 +174,20 @@ export const infoPayload = {
     {
       type: 'email',
       icon_name: 'IconMail',
-      label: 'dp****o40@****.ph',
-      value: 'dpadayao40@outlook.ph'
+      label: 'info@adazol.com',
+      value: 'info@adazol.com'
     },
     {
       type: 'phone',
       icon_name: 'IconPhone',
-      label: '(63) 926 *** 1542',
-      value: '+63926762 542'
+      label: '(63) 910 *** 4115',
+      value: '+639107284115'
     },
     {
       type: 'whatsapp',
       icon_name: 'IconBrandWhatsapp',
-      label: '(63) 926 *** 1542',
-      value: '+639267621542'
+      label: '(63) 910 *** 4115',
+      value: '+639107284115'
     }
   ],
   occupation: [
@@ -216,17 +224,20 @@ export const footerPayload = {
     {
       type: 'email',
       icon_name: 'IconMail',
-      value: 'dpadayao40@outlook.ph'
+      value: 'da***ada@outlook.ph',
+      raw: 'mailto:daniel.lozada@outlook.ph'
     },
     {
       type: 'phone',
       icon_name: 'IconPhone',
-      value: '(+63) 926 762 1542'
+      value: '(+63) 910 *** *115',
+      raw: 'tel:+639107284115'
     },
     {
       type: 'whatsapp',
       icon_name: 'IconBrandWhatsapp',
-      value: '(+63) 926 762 1542'
+      value: 'Whatsapp',
+      raw: 'https://wa.me/639267621542?text=Hello Daniel%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services.'
     }
   ],
   analytics: {
@@ -289,11 +300,24 @@ export const availabilityPayload = {
     email_label: 'Get in Touch to Discuss Potential Roles',
     linkedin_label: 'Connect on LinkedIn for Professional Inquiries'
   },
-  experience_label: 'Professional Experience',
+  experience_label: 'Experience',
   experience: [
-    {
-      start_date: '2022-11-01',
+        {
+      start_date: '2025-08-01',
       end_date: null,
+      id: 'experience_05',
+      job_title: 'Software Developer',
+      employeer: '---',
+      job_location: 'Remote',
+      job_type: 'Full-Time',
+      job_details: [
+        'Designed and deployed full-stack web applications using Node.js, NestJS, PostgreSQL, TypeScript, Serverless, Microservices, React.js, AWS ecosystem services and more.',
+        'Developed and integrated high performance RESTful APIs.',
+      ]
+    },
+    {
+      start_date: '2022-11-15',
+      end_date: '2025-08-01',
       id: 'experience_04',
       job_title: 'Software Engineer',
       employeer: 'Supafaya PTE, Ltd.',
@@ -349,6 +373,204 @@ export const availabilityPayload = {
         'Provide technical support'
       ],
       job_location: 'Pasig City, Philippines'
+    }
+  ]
+}
+
+export const projectShowcasePayload = {
+  projects: [
+    {
+      title: 'ProdSight AI',
+      description:
+        'Explore real products built with ProdSight—from MVPs to full-scale apps. See how our AI tools help turn raw ideas into structured plans, user stories, wireframes, and ready-to-launch builds. Whether solo or in a team, ProdSight makes product development faster, smarter, and stress-free.',
+      status: 'preview',
+      thumbnail:
+        'https://firebasestorage.googleapis.com/v0/b/daniel-lozada.appspot.com/o/assets%2Fimages%2Fproject_thumbnail_prodsight.png?alt=media&token=e0537211-291a-4bac-ae45-967048d813a6',
+      techstacks: [
+        'Next.js',
+        'Supabase',
+        'Node.js',
+        'GCP',
+        'Gemini AI',
+        'Typescript'
+      ],
+      type: ['Personal', 'Proof of Concept', 'Education'],
+      tags: [
+        'AI',
+        'Full-Stack',
+        'Frontend',
+        'Backend',
+        'Generative AI',
+        'Prompt'
+      ]
+    },
+    {
+      title: 'Dan AI',
+      description:
+        "Dan (AI) — A personalized AI chatbot assistant enhances portfolio accessibility by answering questions about the individual's resume, projects, and software engineering experience. Acting as a virtual proxy, it streamlines user interaction and showcases the practical use of AI in personal branding.",
+      status: 'live',
+      thumbnail:
+        'https://firebasestorage.googleapis.com/v0/b/daniel-lozada.appspot.com/o/assets%2Fimages%2Fproject_thumbnail_dan_ai.png?alt=media&token=d9fa051d-5f74-435b-b08e-de9ea5543f43',
+      techstacks: [
+        'Node.js',
+        'GCP',
+        'Gemini AI',
+        'Typescript',
+        'Cloud Function'
+      ],
+      type: ['Personal', 'Education'],
+      tags: ['AI', 'Backend', 'Generative AI', 'Cloud Function', 'Rest API'],
+      details: {
+        contents: [
+          'As part of a broader effort to improve user engagement and accessibility on a personal portfolio website, a personalized AI chatbot assistant was implemented. The chatbot acts as a virtual proxy, answering questions in the third person about the individual’s resume, technical background, and professional experience as a software engineer. By leveraging natural language processing, it enables visitors to quickly access relevant information without navigating through static content. This solution enhances the user experience and demonstrates practical application of AI in personal branding and web interaction.'
+        ]
+      }
+    },
+    {
+      title: 'Winner’s Circle Guild - Pegaxy Discord BOT Stats Checker',
+      description:
+        "Exclusively for the Winner's Circle Guild, this bot lets members check Pegaxy stats, race history, and cooldowns right in Discord. Quick commands, real-time insights—perfect for managing your stable and planning your next win.",
+      status: 'live',
+      thumbnail:
+        'https://firebasestorage.googleapis.com/v0/b/daniel-lozada.appspot.com/o/assets%2Fimages%2Fproject_thumbnail_wcg_discord_bot.png?alt=media&token=7aa5013e-0d2f-41ad-b439-daeb743a08b0',
+      techstacks: ['Node.js', 'Discord API', 'Firebase', 'Javascript'],
+      type: ['Volunter', 'Community'],
+      tags: ['Backend', 'API Integration', 'Bots']
+    }
+  ]
+}
+
+export const siteSpecifications = {
+  tech_stack_description:
+    "This site was handcrafted with modern tools I use in production every day. It's built for performance, readability, and ease of maintenance.",
+  tech_stack_specifications: [
+    {
+      label: 'Framework',
+      values: [
+        {
+          label: 'Next.JS (App Router)',
+          url: 'https://nextjs.org/',
+          type: 'link'
+        }
+      ]
+    },
+    {
+      label: 'Styling',
+      values: [
+        { label: 'Tailwind CSS', url: 'https://tailwindcss.com/', type: 'link' }
+      ]
+    },
+    {
+      label: 'Components',
+      values: [
+        { label: 'shadcn/ui', url: 'https://ui.shadcn.com/', type: 'link' }
+      ]
+    },
+    {
+      label: 'Type System',
+      values: [
+        { label: 'Typescript', url: 'https://ui.shadcn.com/', type: 'link' }
+      ]
+    },
+    {
+      label: 'Icons',
+      values: [
+        {
+          label: 'Tabler Icons (react)',
+          url: 'https://tabler.io/icons',
+          type: 'link'
+        }
+      ]
+    },
+    {
+      label: 'AI',
+      values: [
+        {
+          label: 'Gemini (Vertex AI)',
+          url: 'https://ai.google.dev/',
+          type: 'link'
+        }
+      ]
+    },
+    {
+      label: 'Deployment',
+      values: [{ label: 'Vercel', url: 'https://vercel.com/', type: 'link' }]
+    },
+    {
+      label: 'Other',
+      values: [
+        { label: 'Github', url: 'https://github.com/', type: 'link' },
+        {
+          label: 'Firebase',
+          url: 'https://firebase.google.com/',
+          type: 'link'
+        },
+        { label: 'Node.JS', url: 'https://nodejs.org/en', type: 'link' },
+        {
+          label: 'Google Cloud Platform (GCP)',
+          url: 'https://cloud.google.com/',
+          type: 'link'
+        },
+        { label: 'Express JS', url: 'https://expressjs.com/', type: 'link' },
+        {
+          label: 'VS Code',
+          url: 'https://code.visualstudio.com/',
+          type: 'link'
+        }
+      ]
+    }
+  ],
+  design_system_description:
+    'This site follows a minimal, developer-focused design language, inspired by the system-first approach of shadcn/ui and the accessibility-first principles of modern web design.',
+  design_system_specifications: [
+    {
+      label: 'Typography',
+      values: [
+        { label: 'Primary font: Tektur, Fallback: sans-serif', type: 'text' }
+      ]
+    },
+    {
+      label: 'Color Palette',
+      values: [
+        { label: '#DFECE5', type: 'color' },
+        { label: '#080D0A', type: 'color' },
+        { label: '#757F79', type: 'color' },
+        { label: '#426C57', type: 'color' }
+      ]
+    },
+    {
+      label: 'Accent Colors',
+      values: [
+        { label: '#426C57', type: 'color' },
+        { label: '#05BF6F', type: 'color' }
+      ]
+    },
+    {
+      label: 'Border Radius',
+      values: [
+        {
+          label: 'Default: 1rem (rounded-2xl), adjustable per component',
+          type: 'text'
+        }
+      ]
+    },
+    {
+      label: 'Spacing Scale',
+      values: [
+        {
+          label: 'Based on Tailwind: 4px, 8px, 16px, 24px, 32px, etc.',
+          type: 'text'
+        }
+      ]
+    },
+    {
+      label: 'Reusable Components',
+      values: [
+        {
+          label: 'Button, Input, Tab, Badge, Separator, etc. (via shadcn/ui)',
+          type: 'text'
+        }
+      ]
     }
   ]
 }
