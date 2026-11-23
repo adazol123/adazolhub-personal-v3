@@ -1,48 +1,22 @@
-import React from 'react'
-import HeadingSection from './_components/heading'
-import SummarySection from './_components/summary'
-import ExpertiseSection from './_components/expertise.section'
-import { availabilityPayload, infoPayload } from '@/_temp/information.temp'
-import {
-  IconBrandAws,
-  IconBrandTypescript,
-  IconCodeDots,
-  IconMoodCheck,
-  IconServerBolt,
-  IconUsersGroup
-} from '@tabler/icons-react'
-import ExperienceSection from './_components/experience.section'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { getSiteContent } from '@/lib/site-content-store'
 
-const IconsExpertisesMapper = [
-  IconCodeDots,
-  IconBrandTypescript,
-  IconServerBolt,
-  IconBrandAws,
-  IconMoodCheck,
-  IconUsersGroup
-]
+export const metadata: Metadata = { title: 'Availability', alternates: { canonical: '/availability' } }
 
-const ResumePage = () => {
+export default async function AvailabilityPage() {
+  const { site } = await getSiteContent()
   return (
-    <>
-      <HeadingSection />
-      <SummarySection
-        label={infoPayload.summary_label}
-        summary={infoPayload.summary}
-      />
-      <ExpertiseSection
-        label={availabilityPayload.expertise_label}
-        expertises={availabilityPayload.expertise.map((expertise, index) => ({
-          ...expertise,
-          icons: IconsExpertisesMapper[index]
-        }))}
-      />
-      <ExperienceSection
-        label={availabilityPayload.experience_label}
-        experiences={availabilityPayload.experience}
-      />
-    </>
+    <div className="interior-page">
+      <header className="page-heading">
+        <h1>{site.availability}</h1>
+        <p>{site.availabilityIntroduction}</p>
+      </header>
+      <div className="reading-body reading-card">
+        <h2>{site.availabilityHeading}</h2>
+        <p>{site.availabilityDetails}</p>
+        <div className="hero-actions"><Link className="portfolio-button" href="/contact">Get in touch</Link><Link className="text-link" href="/cv">Read my resume</Link></div>
+      </div>
+    </div>
   )
 }
-
-export default ResumePage

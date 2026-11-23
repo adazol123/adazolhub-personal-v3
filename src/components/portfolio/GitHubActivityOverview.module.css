@@ -1,0 +1,36 @@
+.heading {
+  flex-wrap: wrap;
+  gap: .55rem 1rem;
+}
+
+.overview {
+  padding: clamp(.85rem, 3vw, 1.75rem);
+  border-radius: var(--portfolio-radius, 0);
+  background: var(--portfolio-raised, transparent);
+  box-shadow: var(--portfolio-raised-shadow, none);
+}
+
+.summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .4rem 1rem;
+  margin-bottom: 1rem;
+  color: var(--portfolio-muted);
+  font-size: .9rem;
+}
+
+.summary strong {
+  margin-right: .22rem;
+  color: var(--portfolio-paper);
+  font: 500 clamp(1.65rem, 4vw, 2.35rem)/1 var(--portfolio-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.04em;
+}
+
+.snapshot {
+  margin-top: .55rem;
+  color: var(--portfolio-muted);
+  font-size: .8rem;
+}
