@@ -518,7 +518,7 @@ main.site-shell:focus { outline: none; }
 .thread-list { display: grid; gap: .85rem; }
 .thread-list :is(h2, p) { max-width: 65ch; }
 .thread-list .eyebrow { margin-bottom: .45rem; }
-.thread-list :target { box-shadow: var(--portfolio-raised-shadow), 0 0 0 1px var(--portfolio-muted); }
+.thread-list :target { outline: 1px solid var(--portfolio-muted); outline-offset: .35rem; }
 
 @media (min-width: 42.5rem) {
   .portfolio-site { --portfolio-gutter: 2rem; }

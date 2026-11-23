@@ -17,13 +17,13 @@ export default async function ThreadsPage() {
           {notes.entries.map(note => <a href={'#' + note.slug} key={note.slug}>{note.title}</a>)}
         </nav>}
         <div className="thread-list">
-        {!notes.entries.length && <p>{notes.emptyMessage}</p>}
-        {notes.entries.map(note => <article className="reading-body reading-card" id={note.slug} key={note.slug} aria-labelledby={`${note.slug}-heading`} tabIndex={-1}>
-          <p className="eyebrow">{note.topic}</p>
-          <h2 id={`${note.slug}-heading`}>{note.title}</h2>
-          {note.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-          <Link className="text-link" href={note.link.href}>{note.link.label}</Link>
-        </article>)}
+          {!notes.entries.length && <p>{notes.emptyMessage}</p>}
+          {notes.entries.map(note => <article className="reading-body reading-card" id={note.slug} key={note.slug} aria-labelledby={`${note.slug}-heading`} tabIndex={-1}>
+            <p className="eyebrow">{note.topic}</p>
+            <h2 id={`${note.slug}-heading`}>{note.title}</h2>
+            {note.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+            <Link className="text-link" href={note.link.href}>{note.link.label}</Link>
+          </article>)}
         </div>
       </div>
     </div>

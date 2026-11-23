@@ -5,12 +5,14 @@ import { animate, motion, MotionConfig, useReducedMotion } from 'motion/react'
 import { MoveHorizontal, Mountain, RotateCcw } from 'lucide-react'
 import { projectTerrain, sampleTerrain, terrainTypes, type TerrainType } from './terrain-geometry'
 
-const clampTurn = (angle: number) => Math.max(-24, Math.min(42, angle))
+const minTurn = -24
+const maxTurn = 42
+const clampTurn = (angle: number) => Math.max(minTurn, Math.min(maxTurn, angle))
 
 export default function TerrainStudy() {
   const [type, setType] = useState<TerrainType>('Ridgeline')
   const [turn, setTurn] = useState(0)
-  const drag = useRef<{ x: number; angle: number } | null>(null)
+  const drag = useRef<{ x: number; angle: number; moved: boolean } | null>(null)
   const help = useId()
   const id = useId()
   const reduceMotion = useReducedMotion()
@@ -45,16 +47,28 @@ export default function TerrainStudy() {
   function startDrag(event: PointerEvent<HTMLDivElement>) {
     if (!event.isPrimary || event.button !== 0) return
     event.currentTarget.setPointerCapture(event.pointerId)
-    drag.current = { x: event.clientX, angle: turn }
+    drag.current = { x: event.clientX, angle: turn, moved: false }
   }
 
   function move(event: PointerEvent<HTMLDivElement>) {
     if (!drag.current || !event.isPrimary) return
-    setTurn(clampTurn(drag.current.angle + (event.clientX - drag.current.x) * 0.2))
+    const distance = event.clientX - drag.current.x
+    if (Math.abs(distance) > 4) drag.current.moved = true
+    if (drag.current.moved) setTurn(clampTurn(drag.current.angle + distance * 0.2))
+  }
+
+  function endDrag(event: PointerEvent<HTMLDivElement>) {
+    if (!drag.current || !event.isPrimary) return
+    if (!drag.current.moved) {
+      const bounds = event.currentTarget.getBoundingClientRect()
+      const fraction = (event.clientX - bounds.left) / bounds.width
+      setTurn(clampTurn(minTurn + fraction * (maxTurn - minTurn)))
+    }
+    drag.current = null
   }
 
   function keyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const turns: Record<string, number> = { ArrowRight: turn + 4, ArrowUp: turn + 4, ArrowLeft: turn - 4, ArrowDown: turn - 4, Home: -24, End: 42 }
+    const turns: Record<string, number> = { ArrowRight: turn + 4, ArrowUp: turn + 4, ArrowLeft: turn - 4, ArrowDown: turn - 4, Home: minTurn, End: maxTurn }
     if (!(event.key in turns)) return
     event.preventDefault()
     setTurn(clampTurn(turns[event.key]))
@@ -64,8 +78,8 @@ export default function TerrainStudy() {
     <figure className="terrain-study">
       <figcaption><span><Mountain size={17} aria-hidden="true" /> Terrain study</span><span className="terrain-format">Interactive 3D</span></figcaption>
       <div className="terrain-plot" role="slider" tabIndex={0} aria-label="Terrain rotation" aria-describedby={help}
-        aria-valuemin={-24} aria-valuemax={42} aria-valuenow={Math.round(turn)} aria-valuetext={Math.round(turn) + ' degrees'}
-        onKeyDown={keyDown} onPointerDown={startDrag} onPointerMove={move} onLostPointerCapture={() => { drag.current = null }}>
+        aria-valuemin={minTurn} aria-valuemax={maxTurn} aria-valuenow={Math.round(turn)} aria-valuetext={Math.round(turn) + ' degrees'}
+        onKeyDown={keyDown} onPointerDown={startDrag} onPointerMove={move} onPointerUp={endDrag} onLostPointerCapture={() => { drag.current = null }}>
         <svg className="terrain-surface" viewBox="0 0 640 353" aria-hidden="true">
           <defs>
             <linearGradient id={id} x1="15%" y1="0%" x2="85%" y2="100%">
@@ -85,7 +99,7 @@ export default function TerrainStudy() {
         </div>
         <button className="terrain-reset" type="button" aria-label="Reset terrain rotation" onClick={() => setTurn(0)}><RotateCcw size={15}/></button>
       </div>
-      <p className="terrain-help" id={help}><MoveHorizontal size={15} aria-hidden="true"/> Drag to rotate<span className="sr-only"> or use the arrow keys when the terrain is focused</span></p>
+      <p className="terrain-help" id={help}><MoveHorizontal size={15} aria-hidden="true"/> Tap or drag to rotate<span className="sr-only"> or use the arrow keys when the terrain is focused</span></p>
     </figure>
   </MotionConfig>
 }
