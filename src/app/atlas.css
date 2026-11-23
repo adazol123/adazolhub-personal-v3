@@ -195,7 +195,8 @@ body:has(.atlas-hero) .ambient-background { opacity: .08; }
   background-size: auto, 15px 15px; background-position: center;
 }
 .hardware-stage > svg { display: block; width: 100%; height: auto; overflow: hidden; }
-.hardware-camera, .hardware-layer { transform-origin: 0 0; }
+.hardware-layer { transform-origin: 0 0; }
+.hardware-annotation[data-visible=false] { opacity: 0; }
 .hardware-layer { cursor: pointer; }
 .hardware-layer[data-hidden=true] { opacity: 0; pointer-events: none; }
 .hardware-guides, .hardware-callouts path { fill: none; stroke: var(--portfolio-muted); stroke-width: .8; }
@@ -217,14 +218,23 @@ body:has(.atlas-hero) .ambient-background { opacity: .08; }
 .hardware-parts { gap: .4rem; border-bottom: 1px solid var(--atlas-line); }
 .hardware-parts button { position: relative; padding-inline: .75rem; }
 .hardware-parts button[aria-pressed=true] { color: var(--portfolio-heading-tint); }
-.hardware-parts button[aria-pressed=true]::after { content: ''; position: absolute; bottom: -1px; height: 2px; inset-inline: .65rem; background: currentColor; }
-.hardware-reading { margin-top: .7rem; min-height: 4.2rem; }
+.hardware-parts button::after { transform: scaleX(0); content: ''; position: absolute; bottom: -1px; height: 2px; inset-inline: .65rem; background: currentColor; }
+.hardware-parts button[aria-pressed=true]::after { transform: scaleX(1); }
+.hardware-reading { display: grid; margin-top: .7rem; min-height: 4.2rem; }
+.hardware-reading > div { grid-area: 1 / 1; }
+.hardware-reading > [aria-hidden=true] { opacity: 0; pointer-events: none; user-select: none; }
 .hardware-reading strong { display: block; font: 500 1.06rem/1.4 var(--atlas-type); }
 .hardware-reading p { margin-top: .2rem; color: var(--portfolio-muted); font: .94rem/1.45 var(--atlas-type); }
 .hardware-placeholder { position: relative; aspect-ratio: 1.15; }
 @media (prefers-reduced-motion: no-preference) {
   .hardware-study { animation: atlas-enter .65s ease-out backwards; }
-  .hardware-camera, .hardware-layer { transition: transform .47s cubic-bezier(.22,.8,.25,1), opacity .23s ease; }
+  .hardware-layer { transition: transform .56s cubic-bezier(.32,0,.18,1), opacity .28s ease-in-out; }
+  .hardware-annotation { transition: opacity .12s ease-out; }
+  .hardware-annotation[data-visible=true] { transition: opacity .2s ease-in .28s; }
+  .hardware-reading > div { transition: opacity .19s ease-in .1s; }
+  .hardware-reading > [aria-hidden=true] { transition: opacity .12s ease-out; }
+  .hardware-callouts path, .hardware-callouts text { transition: stroke .2s, fill .2s; }
+  .hardware-parts button::after { transition: transform .22s ease-out; }
   .hardware-controls button, .hardware-parts button { transition: background-color .18s, color .18s, border-color .18s; }
 }
 @media (max-width: 58rem) {
