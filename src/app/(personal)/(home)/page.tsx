@@ -4,7 +4,7 @@ import AskDan from '@/components/portfolio/AskDan'
 import GitHubActivityOverview from '@/components/portfolio/GitHubActivityOverview'
 import JumpLink from '@/components/portfolio/JumpLink'
 import Portrait from '@/components/portfolio/Portrait'
-import TerrainStudy from '@/components/portfolio/TerrainStudy'
+import HardwareStudy from '@/components/portfolio/HardwareStudy'
 import WorkList from '@/components/portfolio/WorkList'
 import { getSiteContent } from '@/lib/site-content-store'
 
@@ -24,7 +24,7 @@ export default async function Home() {
             <JumpLink className="quiet-link" href="#ask-dan" smooth><AudioLines size={17} aria-hidden="true" />{landing.assistantButton}</JumpLink>
           </div>
         </div>
-        <TerrainStudy />
+        <HardwareStudy />
       </section>
       <div className="field-strip">
         <div><span><MapPin size={14} aria-hidden="true"/>{landing.location}</span>

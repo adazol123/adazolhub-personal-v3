@@ -24,7 +24,7 @@ export function HomeSkeleton() {
           <SkeletonLines />
           <div className="hero-actions"><Skeleton className="skeleton-button" /><Skeleton className="skeleton-button" /></div>
         </div>
-        <div className="terrain-study terrain-placeholder"><Skeleton className="skeleton-fill" /></div>
+        <div className="hardware-study hardware-placeholder"><Skeleton className="skeleton-fill" /></div>
       </div>
       <div className="field-strip"><Skeleton className="skeleton-short" /></div>
       <div className="editorial-section">
