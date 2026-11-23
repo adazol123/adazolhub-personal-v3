@@ -57,6 +57,25 @@ function Field({ name, value, template, onChange, path }: {
   }
   if (typeof value === 'string') {
     if (name === 'theme') return <ThemeField value={value} onChange={onChange} />
+    if (path[0] === 'contactTemplates') {
+      if (name === 'subject') return <label>Subject
+        <small>{'Use {{name}} or {{email}} to personalize the subject.'}</small>
+        <input required maxLength={200} value={value} onChange={event => onChange(event.target.value)} />
+      </label>
+      if (name === 'replyTo') return <label>Reply-To
+        <small>{'Use an email address or {{email}} for the visitor’s address. Leave blank to use the sender for replies.'}</small>
+        <input maxLength={254} value={value} onChange={event => onChange(event.target.value)} />
+      </label>
+      const bodyField = name === 'text'
+      return <label>{bodyField ? 'Plain-text body' : name === 'html' ? 'HTML body (optional)' : 'Custom headers (optional)'}
+        <small>{bodyField
+          ? 'Use {{name}}, {{email}}, and {{message}} to include the submitted details.'
+          : name === 'html'
+            ? 'Use the same placeholders in text between HTML tags.'
+            : 'Enter one X- header per line, such as X-Portfolio-Type: contact.'}</small>
+        <textarea rows={bodyField ? 7 : 4} required={bodyField} maxLength={6000} value={value} onChange={event => onChange(event.target.value)} />
+      </label>
+    }
     if (path[0] === 'assistant' && name === 'model') return (
       <label>{label}
         <small>Enter a Gemini model ID. Leave blank to use {defaultAssistantSettings.model}.</small>
@@ -126,7 +145,8 @@ function Field({ name, value, template, onChange, path }: {
     <Field key={key} name={key} value={record[key]} template={sample} path={currentPath} onChange={updated => onChange({ ...record, [key]: updated })} />
   ))
   if (path.length === 0 || ['note', 'project', 'role', 'skill'].includes(name)) return <div className={styles.fields}>{children}</div>
-  return <fieldset className={styles.group}><legend>{label}</legend>{children}</fieldset>
+  const legend = path[0] === 'contactTemplates' ? (name === 'notification' ? 'Inbox notification' : 'Visitor summary') : label
+  return <fieldset className={styles.group}><legend>{legend}</legend>{children}</fieldset>
 }
 
 type PublishResult = { error: string; revision?: never } | { revision: string; error?: never }
@@ -169,7 +189,7 @@ export function Editor({ content, revisions, publish, credentials }: {
         }
         setSaved(prior => ({ ...prior, [section]: value }))
         setVersions(prior => ({ ...prior, [section]: result.revision }))
-        setFeedback({ section, text: 'Published to the portfolio.', error: false })
+        setFeedback({ section, text: section === 'contactTemplates' ? 'Email templates published.' : 'Published to the portfolio.', error: false })
       } catch {
         setFeedback({ section, text: 'The request was interrupted. Reload to check the published version.', error: true })
       }

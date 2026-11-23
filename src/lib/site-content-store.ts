@@ -148,6 +148,10 @@ export function readPublishedContent() {
   return readSections(editorSections)
 }
 
+export async function readContactTemplates() {
+  return (await readSections(['contactTemplates'])).content.contactTemplates
+}
+
 export async function readAssistantContent() {
   try {
     return (await readSections(['work', 'assistant'])).content

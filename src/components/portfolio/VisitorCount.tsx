@@ -12,7 +12,7 @@ let pendingVisit = Promise.resolve()
 export default function VisitorCount ({ projectPaths }: { projectPaths: string[] }) {
   const pathname = usePathname()
   const tracked = isTrackedVisitorPath(pathname, projectPaths)
-  const [result, setResult] = useState<{ path: string, count: number | null } | null>(null)
+  const [count, setCount] = useState<number | null>()
 
   useEffect(() => {
     if (!tracked) return
@@ -22,8 +22,9 @@ export default function VisitorCount ({ projectPaths }: { projectPaths: string[]
       if (document.visibilityState !== 'visible') return
       document.removeEventListener('visibilitychange', trackVisiblePage)
       pendingVisit = pendingVisit.then(async () => {
+        if (!active) return
         const count = await requestVisitorCount(pathname)
-        if (active) setResult({ path: pathname, count })
+        if (active) setCount(count)
       })
     }
 
@@ -36,11 +37,9 @@ export default function VisitorCount ({ projectPaths }: { projectPaths: string[]
   }, [pathname, tracked])
 
   if (!tracked) return null
-  const count = result?.path === pathname ? result.count : undefined
-
   return (
     <span className={styles.metric} role="status">
-      <span>Unique visitors on this page</span>
+      <span>Unique site visitors</span>
       <strong className={styles.value}>
         {count === undefined
           ? <><span className="sr-only">Loading visitor count</span><Skeleton className="skeleton-inline" /></>

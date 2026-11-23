@@ -7,12 +7,12 @@ type LocalDatabase = {
   close: () => void,
   exec: (sql: string) => void,
   prepare: (sql: string) => {
-    run: (path: string, fingerprint: string) => unknown,
-    get: (path: string) => { count: number } | undefined
+    run: (fingerprint: string) => unknown,
+    get: () => { count: number } | undefined
   }
 }
 
-export function recordLocalVisitor (filename: string, path: string, fingerprint: string): number {
+export function recordLocalVisitor (filename: string, fingerprint: string): number {
   const sqlite = process.getBuiltinModule('node:sqlite') as { DatabaseSync: new (path: string) => LocalDatabase } | undefined
   if (!sqlite) throw new Error('SQLite is unavailable')
 
@@ -21,18 +21,16 @@ export function recordLocalVisitor (filename: string, path: string, fingerprint:
   try {
     database.exec(`
       PRAGMA busy_timeout = 3000;
-      CREATE TABLE IF NOT EXISTS portfolio_visitors (
-        path TEXT NOT NULL,
-        fingerprint TEXT NOT NULL,
-        PRIMARY KEY (path, fingerprint)
+      CREATE TABLE IF NOT EXISTS portfolio_site_visitors (
+        fingerprint TEXT NOT NULL PRIMARY KEY
       ) WITHOUT ROWID;
     `)
     database.prepare(`
-      INSERT INTO portfolio_visitors (path, fingerprint) VALUES (?, ?)
-      ON CONFLICT (path, fingerprint) DO NOTHING
-    `).run(path, fingerprint)
+      INSERT INTO portfolio_site_visitors (fingerprint) VALUES (?)
+      ON CONFLICT (fingerprint) DO NOTHING
+    `).run(fingerprint)
 
-    const count = database.prepare('SELECT COUNT(*) AS count FROM portfolio_visitors WHERE path = ?').get(path)?.count
+    const count = database.prepare('SELECT COUNT(*) AS count FROM portfolio_site_visitors').get()?.count
     if (!isVisitorCount(count)) throw new Error('Invalid SQLite count')
     return count
   } finally {
@@ -51,8 +49,8 @@ export function createRedisVisitorRecorder (url: string | undefined, token: stri
     return null
   }
 
-  return async function recordRedisVisitor (path: string, fingerprint: string, signal: AbortSignal): Promise<number> {
-    const key = `adazol:portfolio:visitors:v1:${path}`
+  return async function recordRedisVisitor (fingerprint: string, signal: AbortSignal): Promise<number> {
+    const key = 'adazol:portfolio:visitors:v2:site'
     const response = await send(endpoint, {
       method: 'POST',
       headers: { authorization: `Bearer ${token.trim()}`, 'content-type': 'application/json' },

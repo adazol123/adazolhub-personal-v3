@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
 import test from 'node:test'
 import { createVisitorHandler } from '../src/lib/portfolio-visitor-server.ts'
@@ -45,8 +45,18 @@ async function bootstrap (handle, { origin = localOrigin, ...options } = {}) {
   return cookie.split(';')[0]
 }
 
-test('a returning cookie counts once per page across route instances and only per-page hashes are stored', async (t) => {
+test('each browser counts once across public pages, projects and handler instances', async (t) => {
   const env = localDatabase(t)
+  mkdirSync(dirname(env.PORTFOLIO_VISITOR_DB_PATH))
+  const legacy = new DatabaseSync(env.PORTFOLIO_VISITOR_DB_PATH)
+  try {
+    legacy.exec(`
+      CREATE TABLE portfolio_visitors (path TEXT, fingerprint TEXT, PRIMARY KEY (path, fingerprint)) WITHOUT ROWID;
+      INSERT INTO portfolio_visitors VALUES ('/', 'legacy-home-hash'), ('/about', 'legacy-about-hash');
+    `)
+  } finally {
+    legacy.close()
+  }
   const handle = createVisitorHandler({ env })
   const first = await bootstrap(handle)
   const second = await bootstrap(handle)
@@ -56,8 +66,9 @@ test('a returning cookie counts once per page across route instances and only pe
     [handle, '/', first, 1],
     [handle, '/', first, 1],
     [handle, '/portfolio/prodsight-ai', first, 1],
-    [createVisitorHandler({ env }), '/', second, 2],
-    [handle, '/portfolio/prodsight-ai', first, 1]
+    [createVisitorHandler({ env }), '/contact', second, 2],
+    [handle, '/portfolio/prodsight-ai', first, 2],
+    [handle, '/about', second, 2]
   ]) {
     const response = await handler(visit(path, { headers: { cookie } }))
     assert.equal(response.status, 200)
@@ -66,11 +77,11 @@ test('a returning cookie counts once per page across route instances and only pe
 
   const database = new DatabaseSync(env.PORTFOLIO_VISITOR_DB_PATH, { readOnly: true })
   try {
-    const rows = database.prepare('SELECT * FROM portfolio_visitors').all()
-    assert.equal(rows.length, 3)
-    assert.equal(new Set(rows.map(row => row.fingerprint)).size, 3)
+    assert.equal(database.prepare('SELECT COUNT(*) AS count FROM portfolio_visitors').get().count, 2)
+    const rows = database.prepare('SELECT * FROM portfolio_site_visitors').all()
+    assert.equal(rows.length, 2)
     for (const row of rows) {
-      assert.deepEqual(Object.keys(row).sort(), ['fingerprint', 'path'])
+      assert.deepEqual(Object.keys(row), ['fingerprint'])
       assert.match(row.fingerprint, /^[0-9a-f]{64}$/)
     }
   } finally {
@@ -109,7 +120,7 @@ test('unconfigured public and Vercel requests return unavailable without assigni
   }
 })
 
-test('hosted counts use one atomic Redis request and accept a verified numeric result', async () => {
+test('hosted visits use one atomic Redis request with the same set and member across pages', async () => {
   const outbound = []
   const handle = createVisitorHandler({
     env: redisEnv,
@@ -128,7 +139,9 @@ test('hosted counts use one atomic Redis request and accept a verified numeric r
   assert.equal(response.status, 200)
   assert.deepEqual(await response.json(), { status: 'counted', count: 398 })
   assert.equal(response.headers.get('set-cookie'), null)
-  assert.equal(outbound.length, 1)
+  const next = await handle(visit('/contact', { origin: hostedOrigin, headers: { cookie } }))
+  assert.deepEqual(await next.json(), { status: 'counted', count: 398 })
+  assert.equal(outbound.length, 2)
   const [{ url, options }] = outbound
   assert.equal(url, 'https://portfolio.upstash.io/multi-exec')
   assert.equal(options.method, 'POST')
@@ -137,7 +150,8 @@ test('hosted counts use one atomic Redis request and accept a verified numeric r
   const [[add, key, fingerprint], [cardinality, sameKey]] = JSON.parse(options.body)
   assert.deepEqual([add, cardinality], ['SADD', 'SCARD'])
   assert.equal(key, sameKey)
-  assert.match(key, /:\/about$/)
+  assert.equal(JSON.parse(outbound[1].options.body)[0][1], key)
+  assert.equal(JSON.parse(outbound[1].options.body)[0][2], fingerprint)
   assert.match(fingerprint, /^[0-9a-f]{64}$/)
   assert.ok(!options.body.includes(cookie.split('=')[1]))
 })

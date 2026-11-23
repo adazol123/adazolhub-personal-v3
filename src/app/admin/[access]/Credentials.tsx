@@ -27,7 +27,7 @@ function CredentialForm({ provider, summary, enabled, update }: {
   enabled: boolean
   update: Update
 }) {
-  const { status, revision } = summary
+  const { status, revision, addresses } = summary
   const [result, action, pending] = useActionState(update.bind(null, provider, revision), { message: '', error: false })
   const { name, description } = providers[provider]
   const hasOverride = status === 'saved' || status === 'unreadable'
@@ -37,18 +37,23 @@ function CredentialForm({ provider, summary, enabled, update }: {
     <form action={action} className={styles.group}>
       <h3>{name}</h3>
       <p>{description}</p>
-      <p className={styles.credentialStatus}>{statusText[status]}</p>
+      <p className={styles.credentialStatus}>
+        {isContactEmail && status === 'missing' ? 'No contact addresses configured' : statusText[status]}
+        {isContactEmail && status === 'unreadable' && addresses && '. Showing the server environment addresses.'}
+      </p>
       <div className={styles.fields}>
-        {enabled && (isContactEmail ? <>
+        {isContactEmail ? <>
           <label>Sender
-            <input name="from" placeholder="Portfolio <contact@example.com>" autoComplete="off" spellCheck={false} maxLength={512} disabled={pending} />
+            <input key={addresses?.from} name="from" defaultValue={addresses?.from} placeholder="Portfolio <contact@example.com>"
+              autoComplete="off" spellCheck={false} maxLength={512} readOnly={!enabled} disabled={pending} />
           </label>
           <label>Recipient
-            <input type="email" name="to" placeholder="inbox@example.com" autoComplete="off" spellCheck={false} maxLength={254} disabled={pending} />
+            <input key={addresses?.to} type="email" name="to" defaultValue={addresses?.to} placeholder="inbox@example.com"
+              autoComplete="off" spellCheck={false} maxLength={254} readOnly={!enabled} disabled={pending} />
           </label>
-        </> : <label>New {name} token
+        </> : enabled && <label>New {name} token
           <input type="password" name="token" autoComplete="new-password" spellCheck={false} maxLength={2048} disabled={pending} />
-        </label>)}
+        </label>}
         {result.message && <p role={result.error ? 'alert' : 'status'} className={result.error ? styles.error : styles.success}>{result.message}</p>}
         <div className={styles.rowActions}>
           {enabled && <button type="submit" name="intent" value="save" className={styles.primary} disabled={pending}>{isContactEmail ? 'Save addresses' : 'Save token'}</button>}
@@ -74,7 +79,7 @@ export function Credentials({ enabled, statuses, update }: {
         {!statuses
           ? <p role="alert">Credential storage is temporarily unavailable.</p>
           : <>
-            {enabled && <p>Saved values are encrypted and the panel displays their status. Removing an override restores the server environment settings, if configured.</p>}
+            {enabled && <p>Saved values are encrypted. Removing an override restores the server environment settings, if configured.</p>}
             {(Object.keys(providers) as CredentialProvider[]).map(provider => (
               <CredentialForm key={provider} provider={provider} summary={statuses[provider]} enabled={enabled} update={update} />
             ))}

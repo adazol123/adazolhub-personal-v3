@@ -1,4 +1,5 @@
 import { career, caseStudies, currentRole, fieldNotes, profiles, skills, workAvailability } from './portfolio-content.ts'
+import { defaultContactTemplates, validateContactTemplates, type ContactTemplates } from './contact-email-templates.ts'
 
 export const sceneThemes = {
   'server-aisle': { label: 'Server Aisle', description: 'Move through a live rack aisle, past mesh panels, status LEDs and overhead cable trays.' },
@@ -101,7 +102,7 @@ export const defaultAssistantSettings = {
 }
 
 export type AssistantSettings = typeof defaultAssistantSettings
-export const defaultEditorContent = { ...defaultSiteContent, assistant: defaultAssistantSettings }
+export const defaultEditorContent = { ...defaultSiteContent, assistant: defaultAssistantSettings, contactTemplates: defaultContactTemplates }
 export type EditorContent = typeof defaultEditorContent
 export type SiteSection = keyof EditorContent
 
@@ -117,7 +118,8 @@ export const siteSections: Record<SiteSection, string> = {
   notes: 'Field notes',
   resume: 'Resume',
   site: 'Site details',
-  assistant: 'Dan AI'
+  assistant: 'Dan AI',
+  contactTemplates: 'Contact email templates'
 }
 
 export function isSiteSection(value: string): value is SiteSection {
@@ -161,6 +163,7 @@ function validateField(template: unknown, value: unknown, path: string[]): strin
   if (typeof template === 'boolean') return typeof value === 'boolean' ? null : `${name} must be on or off.`
   if (typeof template === 'string') {
     if (typeof value !== 'string' || value.length > 6000) return `${name} must be text up to 6,000 characters.`
+    if (section === 'contactTemplates') return null
     if (section === 'assistant') {
       if (key === 'model' && value.trim() && !isGeminiModel(value.trim())) return 'Enter a Gemini model ID starting with gemini-.'
       return null
@@ -205,6 +208,7 @@ export function validateSiteSection(section: SiteSection, value: unknown): strin
   const error = validateField(defaultEditorContent[section], value, [section])
   if (error) return error
   if (new TextEncoder().encode(JSON.stringify(value)).byteLength > maxSectionBytes) return 'This section is too large to publish.'
+  if (section === 'contactTemplates') return validateContactTemplates(value as ContactTemplates)
   if (section === 'work') {
     const { projects } = value as SiteContent['work']
     if (new Set(projects.map(project => project.slug)).size !== projects.length) return 'Every project needs a unique URL slug.'

@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict'
+import { mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
 import { createContactHandler } from '../src/lib/portfolio-contact-server.ts'
 import { contactDraftHref } from '../src/lib/portfolio-contact.ts'
+import { defaultEditorContent, validateSiteSection } from '../src/lib/site-content.ts'
+import { publishSiteSection } from '../src/lib/site-content-store.ts'
 
 const origin = 'https://portfolio.example.com'
 const validFields = {
@@ -46,7 +51,7 @@ test('the email draft encodes the subject and message without allowing additiona
   assert.equal(draft.searchParams.get('body'), 'Name: María & Co.\r\nEmail: visitor+hello@example.net\r\n\r\nHello!\r\nPlease sign #42?bcc=someone@example.net & send it back.\r\nThanks.')
 })
 
-test('a verified provider acceptance sends an email to the fixed inbox with Reply-To and a stable idempotency key', async () => {
+test('an accepted submission sends separate owner and visitor emails with stable idempotency keys', async () => {
   const outbound = []
   const handle = createContactHandler({
     env,
@@ -59,22 +64,90 @@ test('a verified provider acceptance sends an email to the fixed inbox with Repl
   for (let attempt = 0; attempt < 2; attempt += 1) {
     const response = await handle(request())
     assert.equal(response.status, 202)
-    assert.deepEqual(await response.json(), { status: 'accepted' })
+    assert.deepEqual(await response.json(), { status: 'accepted', summary: 'accepted' })
   }
 
-  assert.equal(outbound.length, 2)
-  for (const { url, options } of outbound) {
+  assert.equal(outbound.length, 4)
+  for (const [index, { url, options }] of outbound.entries()) {
     assert.equal(url, 'https://api.resend.com/emails')
     assert.equal(options.method, 'POST')
     const headers = new Headers(options.headers)
     assert.equal(headers.get('authorization'), 'Bearer fake-key')
-    assert.equal(headers.get('idempotency-key'), `portfolio-contact/${validFields.requestId}`)
     assert.equal(typeof options.body, 'string')
     const payload = JSON.parse(options.body as string)
     assert.equal(payload.from, env.CONTACT_FROM_EMAIL)
+    if (index % 2) {
+      assert.equal(headers.get('idempotency-key'), `portfolio-contact-summary/${validFields.requestId}`)
+      assert.deepEqual(payload.to, ['research+hello@example.net'])
+      assert.equal(payload.reply_to, undefined)
+      assert.equal(payload.headers['Auto-Submitted'], 'auto-replied')
+      assert.match(payload.text, /Name: A Researcher\nEmail: research\+hello@example.net\n\nCan we talk about your work\?\nThanks!/)
+      continue
+    }
+    assert.equal(headers.get('idempotency-key'), `portfolio-contact/${validFields.requestId}`)
     assert.deepEqual(payload.to, [env.CONTACT_TO_EMAIL])
     assert.equal(payload.reply_to, 'research+hello@example.net')
     assert.equal(payload.text, 'Name: A Researcher\nEmail: research+hello@example.net\n\nCan we talk about your work?\nThanks!')
+  }
+})
+
+test('a rejected confirmation leaves the owner submission accepted', async () => {
+  let attempts = 0
+  const handle = createContactHandler({
+    env,
+    send: async () => ++attempts === 1
+      ? Response.json({ id: 'owner-email-id' })
+      : Response.json({ message: 'Private provider error' }, { status: 429 })
+  })
+  const response = await handle(request())
+  assert.equal(response.status, 202)
+  assert.deepEqual(await response.json(), { status: 'accepted', summary: 'unconfirmed' })
+})
+
+test('published templates render both email payloads and escape form input in HTML', async t => {
+  const directory = mkdtempSync(join(tmpdir(), 'portfolio-contact-templates-'))
+  const originalEnv = process.env
+  process.env = { NODE_ENV: 'test', PORTFOLIO_CONTENT_DB_PATH: join(directory, 'content.sqlite') }
+  t.after(() => {
+    process.env = originalEnv
+    rmSync(directory, { recursive: true, force: true })
+  })
+  const templates = structuredClone(defaultEditorContent.contactTemplates)
+  templates.notification.subject = 'Inquiry from {{name}}'
+  templates.notification.replyTo = 'support@example.org'
+  templates.notification.customHeaders = 'X-Portfolio-Type: inquiry'
+  templates.confirmation.text = 'Hello {{name}}.\n{{email}}\n{{message}}'
+  templates.confirmation.html = '<p>Hello {{name}}</p><pre>{{message}}</pre>'
+  const outbound = []
+  const handle = createContactHandler({
+    env,
+    send: async (_url, options) => {
+      outbound.push(JSON.parse(options.body as string))
+      return Response.json({ id: 'provider-email-id' })
+    }
+  })
+  assert.equal(validateSiteSection('contactTemplates', templates), null)
+  assert.ok(await publishSiteSection('contactTemplates', '', templates))
+  const message = '<img src=x onerror=alert(1)> {{email}}'
+  assert.equal((await handle(request({ ...validFields, name: 'A & B', message }))).status, 202)
+  assert.equal(outbound[0].subject, 'Inquiry from A & B')
+  assert.equal(outbound[0].reply_to, 'support@example.org')
+  assert.deepEqual(outbound[0].headers, { 'X-Portfolio-Type': 'inquiry' })
+  assert.equal(outbound[1].text, `Hello A & B.\nresearch+hello@example.net\n${message}`)
+  assert.equal(outbound[1].html, '<p>Hello A &amp; B</p><pre>&lt;img src=x onerror=alert(1)&gt; {{email}}</pre>')
+})
+
+test('template validation rejects routing headers, duplicate custom headers and unsafe placeholder contexts', () => {
+  const defaults = defaultEditorContent.contactTemplates
+  for (const patch of [
+    { customHeaders: 'Bcc: extra@example.org' },
+    { customHeaders: 'X-Example: one\nx-example: two' },
+    { subject: 'Hello\nBcc: extra@example.org' },
+    { subject: '{{message}}' },
+    { html: '<a href="{{message}}">Open</a>' },
+    { replyTo: 'first@example.org, second@example.org' }
+  ]) {
+    assert.ok(validateSiteSection('contactTemplates', { ...defaults, confirmation: { ...defaults.confirmation, ...patch } }))
   }
 })
 
@@ -130,9 +203,11 @@ test('a rejection or missing provider email id never looks like success', async 
     Response.json({ error: 'unexpected payload' }),
     new Response('not JSON', { status: 200 })
   ]) {
-    const handle = createContactHandler({ env, send: async () => providerResponse })
+    let attempts = 0
+    const handle = createContactHandler({ env, send: async () => { attempts += 1; return providerResponse } })
     const response = await handle(request())
     assert.equal(response.status, 502)
+    assert.equal(attempts, 1)
     const body = await response.json()
     assert.equal(body.status, 'error')
     assert.doesNotMatch(JSON.stringify(body), /private rejection details/)

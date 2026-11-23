@@ -12,7 +12,11 @@ export const credentialProviders = {
 
 export type CredentialProvider = keyof typeof credentialProviders
 export type CredentialStatus = 'saved' | 'environment' | 'missing' | 'unreadable'
-export type CredentialSummary = { status: CredentialStatus; revision: string }
+export type CredentialSummary = {
+  status: CredentialStatus
+  revision: string
+  addresses?: NonNullable<ReturnType<typeof readContactAddresses>>
+}
 
 const providers = Object.keys(credentialProviders) as CredentialProvider[]
 const keyPrefix = 'adazol:portfolio:credentials:v1:'
@@ -149,16 +153,18 @@ export async function readCredentialStatuses(): Promise<Record<CredentialProvide
   const statuses = {} as Record<CredentialProvider, CredentialSummary>
   for (const [index, provider] of providers.entries()) {
     const entry = entries[index]
-    let status: CredentialStatus = environmentCredential(provider) ? 'environment' : 'missing'
+    let value = environmentCredential(provider)
+    let status: CredentialStatus = value ? 'environment' : 'missing'
     if (entry !== null && key) {
       try {
-        decrypt(provider, entry, key)
+        value = decrypt(provider, entry, key)
         status = 'saved'
       } catch {
         status = 'unreadable'
       }
     }
-    statuses[provider] = { status, revision: revisionOf(entry) }
+    const addresses = provider === 'contactEmail' ? parseContactEmailCredential(value) : null
+    statuses[provider] = { status, revision: revisionOf(entry), ...(addresses && { addresses }) }
   }
   return statuses
 }

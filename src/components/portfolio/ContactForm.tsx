@@ -27,7 +27,7 @@ export default function ContactForm({ enabled }: { enabled: boolean }) {
   const retry = useRef<{ body: string, requestId: string }>(null)
   const [errors, setErrors] = useState<ContactErrors>({})
   const [sending, setSending] = useState(false)
-  const [accepted, setAccepted] = useState(false)
+  const [receipt, setReceipt] = useState('')
   const [problem, setProblem] = useState('')
   const [draftOpened, setDraftOpened] = useState(false)
 
@@ -62,7 +62,7 @@ export default function ContactForm({ enabled }: { enabled: boolean }) {
     const values = new FormData(form)
     const { fields, errors: validation } = readFields(values)
     setErrors(validation)
-    setAccepted(false)
+    setReceipt('')
     setProblem('')
     setDraftOpened(false)
     if (Object.keys(validation).length) return
@@ -81,13 +81,15 @@ export default function ContactForm({ enabled }: { enabled: boolean }) {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ ...submission, requestId: retry.current.requestId }),
-        signal: AbortSignal.timeout(15_000)
+        signal: AbortSignal.timeout(20_000)
       })
       const result = await response.json()
       if (response.status === 202 && result.status === 'accepted') {
         form.reset()
         retry.current = null
-        setAccepted(true)
+        setReceipt(result.summary === 'accepted'
+          ? 'Thanks for reaching out. Your message was accepted for delivery. Check your inbox for a copy.'
+          : 'Thanks for reaching out. Your message was accepted for delivery. We couldn’t confirm delivery of your email copy.')
       } else if (result.errors && typeof result.errors === 'object') {
         setErrors(result.errors)
       } else {
@@ -157,7 +159,7 @@ export default function ContactForm({ enabled }: { enabled: boolean }) {
       )}
       <p role="status" className={styles.status}>
         {sending && <span className={styles.visuallyHidden}>Sending your message.</span>}
-        {accepted && 'Thanks for reaching out. Your message was accepted for delivery.'}
+        {receipt}
         {draftOpened && 'If your email app opened, review and send the draft there.'}
       </p>
     </form>

@@ -98,11 +98,11 @@ export function createVisitorHandler ({ env = process.env, send = fetch, isTrack
       return reply({ status: 'cookie-required' }, 202, { 'set-cookie': cookie })
     }
 
-    const fingerprint = createHash('sha256').update(`${path}\0${visitorId}`).digest('hex')
+    const fingerprint = createHash('sha256').update(`portfolio-visitor\0${visitorId}`).digest('hex')
     try {
       const count = local
-        ? recordLocalVisitor(localPath, path, fingerprint)
-        : await redis!(path, fingerprint, request.signal)
+        ? recordLocalVisitor(localPath, fingerprint)
+        : await redis!(fingerprint, request.signal)
       return reply({ status: 'counted', count }, 200)
     } catch {
       return reply({ status: 'unavailable' }, 503)

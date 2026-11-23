@@ -30,7 +30,7 @@ Open [localhost:3000](http://localhost:3000). The portfolio, static portrait, re
 | `UPSTASH_REDIS_REST_TOKEN` | Server-side token for the visitor and site content database. |
 | `PORTFOLIO_VISITOR_DB_PATH` | Optional SQLite path for a separate localhost visitor database. |
 
-Keep provider keys in server-side secrets. Dan AI selects from public portfolio facts and returns links from the curated source list. The contact endpoint uses provider idempotency and confirms acceptance only when Resend returns a message ID. The email draft opens in the visitor’s mail app for them to send.
+Keep provider keys in server-side secrets. Dan AI selects from public portfolio facts and returns links from the curated source list. After Resend accepts the inbox notification, the contact endpoint sends a separate summary to the visitor’s submitted email address. Both sends use their own idempotency keys. If the summary cannot be confirmed, the contact page still acknowledges the accepted submission and reports that the email copy could not be confirmed. The email draft opens in the visitor’s mail app for them to send.
 
 Before deploying to `adazol.com`, verify Gemini with the preview deployment key and test delivery to the intended inbox. The app applies per-instance limits, with per-client addresses from Vercel’s managed header on that host. Configure host-level rate limits or quotas if needed for the expected production traffic.
 
@@ -59,15 +59,23 @@ Set `PORTFOLIO_CREDENTIALS_KEY` in the server environment to a random 64-charact
 
 In **Service credentials**, enter Gemini and Resend API keys to override their server environment values. The same section lets you save and check a fine-grained GitHub token with no extra permissions using the [authenticated-user endpoint](https://docs.github.com/en/rest/users/users#get-the-authenticated-user). The visitor-facing calendar continues to use public data. Use the smallest permissions needed and a sending-only Resend key. Changing or removing a saved override updates future requests. Revoke old credentials through the provider when rotating them there.
 
-Under **Contact email**, save the Resend-verified sender and the recipient inbox together. A sender can be an address or a display name followed by an address in angle brackets. The saved pair takes effect without redeploying and takes precedence over `CONTACT_FROM_EMAIL` and `CONTACT_TO_EMAIL`. Removing it restores the environment pair when both variables are set. The contact page uses its existing email draft fallback when delivery is unavailable.
+Under **Contact email**, view or update the active Resend-verified sender and recipient inbox. A sender can be an address or a display name followed by an address in angle brackets. The saved pair takes effect without redeploying and takes precedence over `CONTACT_FROM_EMAIL` and `CONTACT_TO_EMAIL`. Removing it restores the environment pair when both variables are set. The contact page uses its existing email draft fallback when delivery is unavailable.
 
-The panel displays only credential status. Credentials are encrypted with AES-256-GCM before storage and are never included in public content. The database connection, encryption key and admin accounts belong in the server environment.
+API keys and tokens are write-only in the admin panel. Saved overrides are encrypted with AES-256-GCM before storage. The database connection, encryption key and admin accounts belong in the server environment.
+
+### Contact email templates
+
+Open **Contact email templates** to edit the **Inbox notification** and the **Visitor summary**, then select **Publish changes**. Each template has a subject, Reply-To, plain-text body, optional HTML body, and optional custom `X-` headers. The published templates apply to the next contact submission. Built-in templates are used until you publish your own.
+
+Use `{{name}}`, `{{email}}`, and `{{message}}` in the bodies to insert submitted details. In HTML, put placeholders in text between tags. Subjects accept `{{name}}` and `{{email}}`. Reply-To accepts a literal address or `{{email}}`. A blank Reply-To lets email clients reply to the sender. Enter custom headers one per line, for example `X-Portfolio-Type: contact`.
 
 ## Activity and visitor counts
 
 The Activity page shows the calendar published on Daniel’s public GitHub profile. The server caches the calendar and displays a dated public snapshot if GitHub is unavailable.
 
-The footer counts unique browsers on each page using a first-party cookie. Refreshing a URL with the same cookie keeps its count unchanged. Counts begin when the counter is enabled in an environment and can vary when visitors use additional browsers or clear their cookies. The store uses a hashed browser identifier scoped to each page to calculate its count.
+The footer shows one unique-browser total across public portfolio pages and published case studies. A first-party cookie identifies returning browsers, and the store keeps a hash of that identifier. Navigation and refreshes with the same cookie count once. Using a different browser or clearing cookies can count as another visit.
+
+The site-wide total starts fresh when this version is enabled. Historical page counts use page-specific hashes and cannot be combined into a reliable unique total.
 
 On localhost, counts are persisted in `.local/portfolio-visitors.sqlite`. Configure the two Upstash variables for persistent counts on a hosted deployment. Use a dedicated database for production to keep its counts independent of testing and preview traffic.
 

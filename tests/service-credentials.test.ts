@@ -68,8 +68,13 @@ test('contact delivery uses an encrypted address pair and restores environment a
   process.env.CONTACT_FROM_EMAIL = 'fallback@example.com'
   process.env.CONTACT_TO_EMAIL = 'fallback@example.net'
   assert.deepEqual(await getContactConfig(), { apiKey, from, to })
-  const { contactEmail } = await readCredentialStatuses()
+  const statuses = await readCredentialStatuses()
+  const { contactEmail } = statuses
   assert.equal(contactEmail.status, 'saved')
+  assert.deepEqual(contactEmail.addresses, { from, to })
+  assert.deepEqual(Object.keys(statuses.resend).sort(), ['revision', 'status'])
+  assert.doesNotMatch(JSON.stringify(statuses), /fake-resend-key/)
   assert.equal(await removeServiceCredential('contactEmail', contactEmail.revision), true)
   assert.deepEqual(await getContactConfig(), { apiKey, from: 'fallback@example.com', to: 'fallback@example.net' })
+  assert.deepEqual((await readCredentialStatuses()).contactEmail.addresses, { from: 'fallback@example.com', to: 'fallback@example.net' })
 })

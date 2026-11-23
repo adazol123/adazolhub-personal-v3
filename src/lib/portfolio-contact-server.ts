@@ -1,6 +1,8 @@
 import { isIP } from 'node:net'
+import { renderContactEmail } from './contact-email-templates.ts'
 import { parseContactEmailCredential, readServiceCredentials } from './service-credentials.ts'
-import { contactMessage, readContactAddresses, validateContactFields, type ContactErrors } from './portfolio-contact.ts'
+import { readContactTemplates } from './site-content-store.ts'
+import { readContactAddresses, validateContactFields, type ContactErrors } from './portfolio-contact.ts'
 
 const MAX_BODY_BYTES = 32_768
 const WINDOW_MS = 600_000
@@ -109,8 +111,32 @@ type ContactDependencies = {
   getConfig?: () => ReturnType<typeof readContactConfig> | Promise<ReturnType<typeof readContactConfig>>
 }
 
-export function createContactHandler ({ env = process.env, send = fetch, now = Date.now, providerTimeoutMs = 8_000, getConfig = () => readContactConfig(env) }: ContactDependencies = {}) {
+export function createContactHandler ({
+  env = process.env, send = fetch, now = Date.now, providerTimeoutMs = 8_000,
+  getConfig = () => readContactConfig(env)
+}: ContactDependencies = {}) {
   const retryAfter = createRateLimit(now)
+
+  async function acceptEmail (apiKey: string, key: string, email: ReturnType<typeof renderContactEmail>, signal: AbortSignal) {
+    const result = await send('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${apiKey}`,
+        'content-type': 'application/json',
+        'idempotency-key': key
+      },
+      body: JSON.stringify(email),
+      cache: 'no-store',
+      redirect: 'error',
+      signal
+    })
+    if (!result.ok) {
+      void result.body?.cancel().catch(() => {})
+      return false
+    }
+    const accepted = await result.json()
+    return typeof accepted?.id === 'string' && Boolean(accepted.id.trim())
+  }
 
   return async function handleContactRequest (request: Request) {
     const onVercel = env.VERCEL === '1'
@@ -138,39 +164,27 @@ export function createContactHandler ({ env = process.env, send = fetch, now = D
     const delay = retryAfter(forwardedIp && isIP(forwardedIp) ? forwardedIp : 'anonymous')
     if (delay) return errorResponse(429, 'Too many attempts. Please wait a few minutes or email me directly.', { retryAfter: delay })
 
-    const config = await getConfig()
-    if (!config) return errorResponse(503, 'The contact form is unavailable. Please email me directly.')
+    const settings = await Promise.all([getConfig(), readContactTemplates()]).catch(() => null)
+    if (!settings?.[0]) return errorResponse(503, 'The contact form is unavailable. Please email me directly.')
+    const [config, templates] = settings
 
     const timeout = AbortSignal.timeout(providerTimeoutMs)
     const unconfirmed = 'I couldn’t confirm your message was sent. Please try again or email me directly.'
+    const requestId = data.requestId.toLowerCase()
     try {
-      const result = await send('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${config.apiKey}`,
-          'content-type': 'application/json',
-          'idempotency-key': `portfolio-contact/${data.requestId.toLowerCase()}`
-        },
-        body: JSON.stringify({
-          from: config.from,
-          to: [config.to],
-          reply_to: fields.email,
-          subject: 'New portfolio contact message',
-          text: contactMessage(fields)
-        }),
-        cache: 'no-store',
-        redirect: 'error',
-        signal: timeout
-      })
-      if (!result.ok) {
-        void result.body?.cancel().catch(() => {})
-        return errorResponse(502, unconfirmed)
-      }
-      const accepted = await result.json()
-      if (typeof accepted?.id !== 'string' || !accepted.id.trim()) return errorResponse(502, unconfirmed)
-      return Response.json({ status: 'accepted' }, { status: 202, headers: { 'cache-control': 'no-store' } })
+      const notification = renderContactEmail(templates.notification, fields, config)
+      if (!await acceptEmail(config.apiKey, `portfolio-contact/${requestId}`, notification, timeout)) return errorResponse(502, unconfirmed)
     } catch {
       return errorResponse(timeout.aborted ? 504 : 502, unconfirmed)
     }
+
+    const confirmation = renderContactEmail(templates.confirmation, fields, config, true)
+    const summaryAccepted = await acceptEmail(
+      config.apiKey, `portfolio-contact-summary/${requestId}`, confirmation, AbortSignal.timeout(Math.min(providerTimeoutMs, 5000))
+    ).catch(() => false)
+    return Response.json(
+      { status: 'accepted', summary: summaryAccepted ? 'accepted' : 'unconfirmed' },
+      { status: 202, headers: { 'cache-control': 'no-store' } }
+    )
   }
 }
