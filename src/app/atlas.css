@@ -95,11 +95,11 @@ body:has(.atlas-hero) .ambient-background { opacity: .08; }
 .plot-shadow { stop-color: var(--portfolio-success); }
 .plot-face { fill: color-mix(in srgb, var(--portfolio-inset) 92%, var(--portfolio-heading-tint)); }
 .terrain-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 0 1.15rem 1.05rem; gap: .45rem; }
-.terrain-options { display: inline-flex; padding: 3px; background: var(--portfolio-inset); border: 1px solid var(--atlas-line); border-radius: 99px; }
+.terrain-options { display: inline-grid; position: relative; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 3px; background: var(--portfolio-inset); border: 1px solid var(--atlas-line); border-radius: 99px; }
 .terrain-options button { position: relative; isolation: isolate; padding: .4rem .82rem; min-height: 44px; cursor: pointer; color: var(--portfolio-muted); border-radius: 99px; }
 .terrain-options button[aria-pressed=true] { color: var(--portfolio-paper); }
-.terrain-selection { position: absolute; inset: 0; border-radius: inherit; background: var(--portfolio-raised); border: 1px solid var(--atlas-line); z-index: -1; }
-.terrain-reset { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--atlas-line); background: var(--portfolio-inset); cursor: pointer; }
+.terrain-selection { position: absolute; pointer-events: none; inset: 3px auto 3px 3px; width: calc((100% - 6px) / 3); border-radius: inherit; background: var(--portfolio-raised); border: 1px solid var(--atlas-line); }
+.terrain-reset { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--atlas-line); background: var(--portfolio-inset); cursor: pointer; }
 .terrain-reset:hover, .terrain-options button:hover { color: var(--portfolio-heading-tint); }
 .terrain-help { position: absolute; top: 100%; right: 0; display: flex; align-items: center; gap: .4rem; font: .75rem/1.5 var(--atlas-label); color: var(--portfolio-muted); margin: .52rem 0 0; }
 .field-strip, .field-strip > div, .field-strip :is(a, span) { display: flex; align-items: center; }
@@ -133,6 +133,7 @@ body:has(.atlas-hero) .ambient-background { opacity: .08; }
 .note-index a { padding-block: 1.2rem; }
 .footer-invitation { padding-block: 3rem; }
 @media (prefers-reduced-motion: no-preference) {
+  .terrain-selection { transition: transform .25s cubic-bezier(.22,.8,.25,1); }
   .atlas-intro > * { animation: atlas-enter .65s cubic-bezier(.2,.75,.2,1) backwards; }
   .atlas-intro h1 { animation-delay: .04s; }
   .atlas-description { animation-delay: .09s; }

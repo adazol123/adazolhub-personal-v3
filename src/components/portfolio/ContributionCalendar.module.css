@@ -48,11 +48,11 @@
   background: var(--activity-level);
 }
 
-.figure [data-level='0'] { --activity-level: var(--portfolio-raised); }
-.figure [data-level='1'] { --activity-level: var(--color-forest-green-600); }
-.figure [data-level='2'] { --activity-level: var(--color-forest-green-500); }
-.figure [data-level='3'] { --activity-level: var(--color-forest-green-400); }
-.figure [data-level='4'] { --activity-level: var(--color-forest-green-200); }
+.figure [data-level='0'] { --activity-level: color-mix(in oklab, var(--portfolio-inset) 91%, var(--portfolio-paper)); }
+.figure [data-level='1'] { --activity-level: color-mix(in oklab, var(--portfolio-inset), var(--portfolio-success) 30%); }
+.figure [data-level='2'] { --activity-level: color-mix(in oklab, var(--portfolio-inset), var(--portfolio-success) 52%); }
+.figure [data-level='3'] { --activity-level: color-mix(in oklab, var(--portfolio-inset), var(--portfolio-success) 76%); }
+.figure [data-level='4'] { --activity-level: var(--portfolio-success); }
 
 .day:hover { outline: 1px solid var(--portfolio-paper); outline-offset: 1px; }
 

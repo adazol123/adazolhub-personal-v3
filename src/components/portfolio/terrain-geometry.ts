@@ -25,32 +25,64 @@ function elevation(x: number, y: number, type: TerrainType) {
   return taper * (spine * (0.95 + 0.14 * fold + 0.07 * ripple) + 0.45 * shoulder)
 }
 
-const resolution = 92
-const strips = 68
+// Store only height. Every strip shares the same evenly spaced horizontal samples.
+const intervals = 64
+const stripCount = 69
+const halfWidth = 224
+const heightScale = 149
+const horizontalStep = (2 * halfWidth) / intervals
 
-export function sampleTerrain(type: TerrainType) {
-  return Array.from({ length: strips + 1 }, (_, row) => {
-    const y = row * 2 / strips - 1
-    return Array.from({ length: resolution + 1 }, (_, col) => {
-      const x = col * 2 / resolution - 1
-      return { x, y, z: elevation(x, y, type) }
-    })
+export function sampleTerrain(type: TerrainType): Float32Array[] {
+  return Array.from({ length: stripCount }, (_, row) => {
+    const y = row * 2 / (stripCount - 1) - 1
+    return Float32Array.from({ length: intervals + 1 }, (_, col) =>
+      elevation(col * 2 / intervals - 1, y, type) * heightScale)
   })
 }
 
-export function projectTerrain(rows: ReturnType<typeof sampleTerrain>, turn: number) {
+export function interpolateTerrain(from: Float32Array[], target: Float32Array[], progress: number) {
+  if (progress <= 0) return from
+  if (progress >= 1) return target
+  return target.map((row, index) => row.map((height, col) =>
+    from[index][col] + (height - from[index][col]) * progress))
+}
+
+export function traceStrip(heights: Float32Array) {
+  const points = ['M0 0']
+
+  // Replace a run with one line when every sample stays within a fraction
+  // of a viewBox pixel. Smooth flat areas need far fewer SVG coordinates.
+  function appendSegment(start: number, end: number) {
+    const slope = (heights[end] - heights[start]) / (end - start)
+    let maxError = 0.35
+    let split = start
+    for (let i = start + 1; i < end; i++) {
+      const error = Math.abs(heights[i] - (heights[start] + slope * (i - start)))
+      if (error > maxError) {
+        maxError = error
+        split = i
+      }
+    }
+    if (split !== start) {
+      appendSegment(start, split)
+      appendSegment(split, end)
+      return
+    }
+    points.push((end * horizontalStep) + ' ' + Number((-heights[end]).toFixed(1)))
+  }
+
+  appendSegment(0, intervals)
+  return { path: points.join(' '), peak: Math.max(...heights) / heightScale }
+}
+
+export function stripTransforms(turn: number) {
   const angle = (turn - 18) * Math.PI / 180
   const cos = Math.cos(angle)
   const sin = Math.sin(angle)
-  return rows.map(row => {
-    let path = ''
-    let peak = 0
-    for (const point of row) {
-      const x = 320 + (point.x * cos - point.y * sin) * 226
-      const y = 226 + (point.x * sin + point.y * cos) * 69 - point.z * 149
-      path += (path ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1)
-      peak = Math.max(peak, point.z)
-    }
-    return { path, peak }
+  return Array.from({ length: stripCount }, (_, row) => {
+    const y = row * 2 / (stripCount - 1) - 1
+    const left = 320 - (cos + y * sin) * halfWidth
+    const top = 226 + (y * cos - sin) * 69
+    return `matrix(${cos.toFixed(5)} ${(sin * 69 / halfWidth).toFixed(5)} 0 1 ${left.toFixed(2)} ${top.toFixed(2)})`
   })
 }
