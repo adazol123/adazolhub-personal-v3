@@ -9,8 +9,8 @@ export default async function ConnectPage() {
   const { site } = await getSiteContent()
   return (
     <div className="interior-page">
-      <header className="page-heading"><h1>Find me <em>elsewhere.</em></h1><p>Code, design, and professional profiles.</p></header>
-      <ul className="note-index profile-index">
+      <header data-reveal-children className="page-heading"><h1>Find me <em>elsewhere.</em></h1><p>Code, design, and professional profiles.</p></header>
+      <ul data-reveal-children className="note-index profile-index">
         {Object.entries(site.profiles).map(([label, href]) => <li key={label}><a href={href}>{label}<ArrowUpRight size={16} aria-hidden="true" /></a></li>)}
       </ul>
       <div className="hero-actions"><Link className="portfolio-button" href="/contact">Get in touch</Link></div>

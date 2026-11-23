@@ -45,7 +45,7 @@ export default function HardwareStudy() {
   }
 
   return (
-    <figure className="hardware-study">
+    <figure data-reveal className="hardware-study">
       <figcaption>
         <span><Cpu size={18} aria-hidden="true" /> Microcontroller anatomy</span>
         <span className="hardware-caption">Illustrated cutaway</span>

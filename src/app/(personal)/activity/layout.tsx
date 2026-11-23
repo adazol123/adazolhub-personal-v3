@@ -7,7 +7,7 @@ import styles from './activity.module.css'
 export default function ActivityLayout({ children }: { children: ReactNode }) {
   return (
     <article className="interior-page interior-page--contained">
-      <header className={`page-heading ${styles.heading}`}>
+      <header data-reveal-children className={`page-heading ${styles.heading}`}>
         <div>
           <h1>GitHub <em>activity.</em></h1>
           <p>A year of contributions as displayed on my public GitHub profile.</p>

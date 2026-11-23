@@ -44,7 +44,7 @@ export default function ContributionCalendar({ days }: { days: readonly GitHubCo
   const splitIndex = firstWeeks * 7 - offset
 
   return (
-    <figure className={styles.figure}>
+    <figure data-reveal className={styles.figure}>
       <div className={styles.calendar} aria-hidden="true">
         <CalendarSegment days={days.slice(0, splitIndex)} weeks={firstWeeks} offset={offset} />
         <CalendarSegment days={days.slice(splitIndex)} weeks={weeks - firstWeeks} offset={0} />

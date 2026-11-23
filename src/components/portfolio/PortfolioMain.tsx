@@ -1,12 +1,14 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { useLayoutEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { observeScrollReveals } from './scroll-reveals'
 
 export default function PortfolioMain({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const previousPath = useRef(pathname)
   const historyDestination = useRef<string | null>(null)
+  const revealed = useRef(new WeakSet<Element>())
   const mainRef = useRef<HTMLElement>(null)
 
   useLayoutEffect(() => {
@@ -34,20 +36,11 @@ export default function PortfolioMain({ children }: { children: ReactNode }) {
       window.scrollTo({ top: 0, behavior: 'instant' })
     }
     if (!main.contains(document.activeElement)) main.focus({ preventScroll: true })
+  }, [pathname])
 
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (fragment || motion.matches || !main.animate) return
-
-    const animation = main.animate([{ opacity: 0.84 }, { opacity: 1 }], {
-      duration: 160,
-      easing: 'ease-out'
-    })
-    const stop = () => animation.cancel()
-    motion.addEventListener('change', stop, { once: true })
-
-    return () => {
-      motion.removeEventListener('change', stop)
-      stop()
+  useEffect(() => {
+    if (mainRef.current && !pathname?.startsWith('/admin/')) {
+      return observeScrollReveals(mainRef.current, revealed.current)
     }
   }, [pathname])
 

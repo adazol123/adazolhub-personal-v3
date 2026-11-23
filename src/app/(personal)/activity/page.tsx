@@ -25,7 +25,7 @@ function MonthlyTotals({ days }: { days: readonly GitHubContributionDay[] }) {
   }
 
   return (
-    <details className={styles.details}>
+    <details data-reveal className={styles.details}>
       <summary>Monthly totals</summary>
       <table>
         <thead><tr><th scope="col">Month</th><th scope="col">Active days</th><th scope="col">Contributions</th></tr></thead>
@@ -60,11 +60,11 @@ export default async function ActivityPage() {
   return (
     <>
       <section className={styles.panel} aria-labelledby="calendar-heading">
-        <header className={styles.calendarHeading}>
+        <header data-reveal className={styles.calendarHeading}>
           <h2 id="calendar-heading">Contribution calendar</h2>
           <p>{dateRange}</p>
         </header>
-        <dl className={styles.stats}>
+        <dl data-reveal-children className={styles.stats}>
           {stats.map(({ label, value }) => (
             <div key={label}>
               <dt>{label}</dt>

@@ -7,7 +7,7 @@ import type { SiteContent } from '@/lib/site-content'
 export default function WorkList({ work, heading: Heading = 'h3' }: { work: SiteContent['work']; heading?: 'h2' | 'h3' }) {
   if (!work.projects.length) return <p>{work.emptyMessage}</p>
   return (
-    <ul className="project-gallery">
+    <ul data-reveal-children className="project-gallery">
       {work.projects.map(project => (
         <li key={project.slug}>
           <Link href={projectPath(project.slug)} className="project-entry">

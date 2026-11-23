@@ -38,7 +38,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <PortfolioMain>{children}</PortfolioMain>
         <footer className="site-footer">
           <div className="site-shell">
-            <div className="site-footer-main">
+            <div data-reveal-children className="site-footer-main">
               <div>
                 <Link href="/" className="site-mark"><span className="brand-symbol" aria-hidden="true">a</span>adazol<span className="brand-dot">.</span></Link>
                 <p>{site.footerName} <span className="separator-dot">·</span> {site.footerRole}</p>
@@ -53,7 +53,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 {Object.entries(site.profiles).map(([label, href]) => <a href={href} key={label}>{label}</a>)}
               </nav>
             </div>
-            <div className="site-footer-end">
+            <div data-reveal className="site-footer-end">
               <p>© {new Date().getFullYear()} {site.footerName}</p>
               {appearance.visitorCount && <VisitorCount projectPaths={work.projects.map(project => projectPath(project.slug))} />}
             </div>

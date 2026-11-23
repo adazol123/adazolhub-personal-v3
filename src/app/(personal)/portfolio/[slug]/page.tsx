@@ -35,18 +35,18 @@ export default async function CaseStudyPage({ params }: Props) {
     <article className="interior-page study-page">
       <Link className="index-link" href="/portfolio">All work</Link>
       <header className="study-intro">
-        <div className="page-heading">
+        <div data-reveal-children className="page-heading">
           <p className="atlas-kicker"><span aria-hidden="true" />{project.category}</p>
           <h1>{project.name}</h1>
           <p>{project.summary}</p>
         </div>
-        <div className="study-facts">
+        <div data-reveal className="study-facts">
           <dl><dt>My role</dt><dd>{project.role}</dd></dl>
           {project.stack.length > 0 && <dl><dt>Stack</dt><dd><ul>{project.stack.map(tool => <li key={tool}>{tool}</li>)}</ul></dd></dl>}
           {project.links.map((link, index) => <Link className="index-link" href={link.href} key={index}>{link.label}</Link>)}
         </div>
       </header>
-      {project.image && <div className="case-study-cover skeleton-media">
+      {project.image && <div data-reveal className="case-study-cover skeleton-media">
         <SkeletonImage src={project.image} alt={project.alt} fill sizes="(min-width: 1200px) 1100px, 94vw"
           priority unoptimized={!shouldOptimizeProjectImage(project.image)} />
       </div>}
@@ -54,14 +54,14 @@ export default async function CaseStudyPage({ params }: Props) {
         <nav aria-label="In this case study">
           {sections.map(section => <a key={section.id} className="index-link" href={'#' + section.id}>{section.label}</a>)}
         </nav>
-        <div className="study-chapters">
+        <div data-reveal-children className="study-chapters">
           {sections.map(section => <section key={section.id} aria-labelledby={section.id}>
             <h2 id={section.id} tabIndex={-1}>{section.label}</h2>
             <p>{section.text}</p>
           </section>)}
         </div>
       </div>
-      {nextProject && <Link className="study-next" href={projectPath(nextProject.slug)}>
+      {nextProject && <Link data-reveal className="study-next" href={projectPath(nextProject.slug)}>
         <span>Next case study</span><strong>{nextProject.name}</strong>
       </Link>}
     </article>

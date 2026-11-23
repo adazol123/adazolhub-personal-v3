@@ -8,7 +8,7 @@ export default async function ThreadsPage() {
   const { notes } = await getSiteContent()
   return (
     <div className="interior-page interior-page--contained">
-      <header className="page-heading">
+      <header data-reveal-children className="page-heading">
         <h1>{notes.title} <em>{notes.titleAccent}</em></h1>
         <p>{notes.introduction}</p>
       </header>
@@ -16,7 +16,7 @@ export default async function ThreadsPage() {
         {notes.entries.length > 1 && <nav aria-label="Field notes index">
           {notes.entries.map(note => <a href={'#' + note.slug} key={note.slug}>{note.title}</a>)}
         </nav>}
-        <div className="thread-list">
+        <div data-reveal-children className="thread-list">
           {!notes.entries.length && <p>{notes.emptyMessage}</p>}
           {notes.entries.map(note => <article className="reading-body reading-card" id={note.slug} key={note.slug} aria-labelledby={`${note.slug}-heading`} tabIndex={-1}>
             <p className="eyebrow">{note.topic}</p>
