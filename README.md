@@ -19,7 +19,6 @@ Open [localhost:3000](http://localhost:3000). The portfolio, static portrait, re
 | Variable | Purpose |
 | --- | --- |
 | `GEMINI_API_KEY` | Enables the Gemini question service. Missing credentials, a timeout, or a provider error leaves a labeled public portfolio index available. |
-| `GEMINI_MODEL` | Optional model override. Defaults to `gemini-3.5-flash-lite`. |
 | `GITHUB_TOKEN` | Optional fallback token for the admin GitHub connection check. |
 | `RESEND_API_KEY` | Optional fallback Resend API key for contact form delivery. |
 | `CONTACT_FROM_EMAIL` | Optional fallback Resend-verified sender address. Set it together with `CONTACT_TO_EMAIL`. |
@@ -47,6 +46,12 @@ Choose a section, then select **Publish changes** to update the site without reb
 ### Background themes
 
 Open **Appearance** to choose Server Aisle, Exposed CPU, or Fiber Patch Bay, then publish. Each scene responds to scroll position. Turn off **Animate background on scroll** to keep the scene still or turn off **Ambient Background** to show only the theme palette. The site also respects the visitor’s reduced-motion preference. Server Aisle uses a photo fallback when WebGL is unavailable.
+
+### Dan AI
+
+Open **Dan AI** in the admin panel to edit the Gemini model ID and the custom prompt, then select **Publish changes**. The new settings apply to the next chat request. The prompt guides how Gemini selects public portfolio facts. Leave either field blank to use its built-in default. The default model is `gemini-3.5-flash-lite`.
+
+If you previously set `GEMINI_MODEL`, publish that model ID in **Dan AI** to keep using it. Manage the API key under **Service credentials** or through `GEMINI_API_KEY`.
 
 ### Service credentials
 

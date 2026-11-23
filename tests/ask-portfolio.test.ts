@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { afterEach, beforeEach, test } from 'node:test'
 import { POST } from '../src/app/api/ask/route.ts'
 import { ASK_SUGGESTIONS } from '../src/lib/portfolio-assistant.ts'
+import { publishSiteSection } from '../src/lib/site-content-store.ts'
 
 const testKey = 'mock-gemini-key'
 const originalEnv = process.env
@@ -102,9 +106,9 @@ test('project implementation questions draw on published case study details', as
 
 test('Gemini sees only bounded question context and returns curated evidence', async t => {
   process.env.GEMINI_API_KEY = testKey
-  process.env.GEMINI_MODEL = 'gemini-test-model'
+  process.env.GEMINI_MODEL = 'gemini-legacy-model'
   const fetchGemini = t.mock.method(globalThis, 'fetch', (url: string, request: RequestInit) => {
-    assert.equal(url, 'https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent')
+    assert.equal(url, 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent')
     assert.equal(new Headers(request.headers).get('x-goog-api-key'), testKey)
     assert.ok(request.signal instanceof AbortSignal)
     assert.equal(request.redirect, 'error')
@@ -125,6 +129,44 @@ test('Gemini sees only bounded question context and returns curated evidence', a
   assert.match(result.text, /Next\.js.*Supabase/)
   assert.deepEqual(result.sources, [{ href: '/portfolio/prodsight-ai', label: 'ProdSight AI' }])
   assert.doesNotMatch(JSON.stringify(result), /mock-gemini-key/)
+})
+
+test('Dan AI uses published model and prompt settings on the next request', async t => {
+  const dir = await mkdtemp(join(tmpdir(), 'dan-ai-settings-'))
+  t.after(() => rm(dir, { recursive: true, force: true }))
+  delete process.env.VERCEL
+  delete process.env.UPSTASH_REDIS_REST_URL
+  delete process.env.UPSTASH_REDIS_REST_TOKEN
+  process.env.PORTFOLIO_CONTENT_DB_PATH = join(dir, 'content.sqlite')
+  process.env.GEMINI_API_KEY = testKey
+
+  const fetchGemini = t.mock.method(globalThis, 'fetch', (_url: string, _request: RequestInit) => Promise.resolve(geminiResponse(['prodsight-stack'])))
+  const question = 'What was the stack for ProdSight AI?'
+  const first = await POST(post({ question }))
+  assert.equal((await first.json()).kind, 'answer')
+
+  const prompt = 'Prioritize implementation details.\nPrefer specific technologies.'
+  const revision = await publishSiteSection('assistant', '', { model: 'gemini-test-model', prompt })
+  assert.ok(revision)
+  const response = await POST(post({ question }))
+  const result = await response.json()
+  assert.equal(result.kind, 'answer')
+  assert.doesNotMatch(JSON.stringify(result), /Prioritize implementation details/)
+  assert.equal(fetchGemini.mock.callCount(), 2)
+  const [url, request] = fetchGemini.mock.calls[1].arguments
+  assert.equal(url, 'https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent')
+  const instruction = JSON.parse(String(request.body)).systemInstruction.parts[0].text
+  assert.ok(instruction.includes(prompt))
+  assert.match(instruction, /untrusted visitor text/)
+  assert.match(instruction, /Use only the following evidence/)
+
+  assert.ok(await publishSiteSection('assistant', revision, { model: '', prompt: '' }))
+  assert.equal((await (await POST(post({ question }))).json()).kind, 'answer')
+  const [resetUrl, resetRequest] = fetchGemini.mock.calls[2].arguments
+  assert.equal(resetUrl, 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent')
+  const resetInstruction = JSON.parse(String(resetRequest.body)).systemInstruction.parts[0].text
+  assert.match(resetInstruction, /question-and-answer desk/)
+  assert.ok(!resetInstruction.includes(prompt))
 })
 
 test('private and unrelated questions are refused before calling Gemini', async t => {

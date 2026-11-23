@@ -2,8 +2,8 @@ import { isIP } from 'node:net'
 import { MAX_ASK_HISTORY, MAX_ASK_LENGTH } from '../../../lib/portfolio-assistant.ts'
 import { readServiceToken } from '../../../lib/service-credentials.ts'
 import { isExcludedQuestion } from '../../../lib/portfolio-assistant-sources.ts'
-import { defaultSiteContent } from '../../../lib/site-content.ts'
-import { contentStore, getSiteContent } from '../../../lib/site-content-store.ts'
+import { defaultEditorContent, defaultSiteContent } from '../../../lib/site-content.ts'
+import { readAssistantContent } from '../../../lib/site-content-store.ts'
 import { answerPortfolioQuestion } from '../../../lib/portfolio-assistant-server.ts'
 
 export const runtime = 'nodejs'
@@ -106,15 +106,15 @@ export async function POST(request: Request) {
   if (!input) return reply({ error: `Send a question of up to ${MAX_ASK_LENGTH} characters with up to ${MAX_ASK_HISTORY} previous questions.` }, 400)
 
   const excluded = isExcludedQuestion(input.question)
-  const [work, apiKey] = excluded ? [defaultSiteContent.work, undefined] : await Promise.all([
-    contentStore() ? getSiteContent().then(content => content.work) : defaultSiteContent.work,
+  const [{ work, assistant }, apiKey] = excluded ? [defaultEditorContent, undefined] : await Promise.all([
+    readAssistantContent(),
     readServiceToken('gemini')
   ])
   return reply(await answerPortfolioQuestion(
     input.question,
     input.history,
     apiKey,
-    process.env.GEMINI_MODEL,
+    assistant,
     request.signal,
     work === defaultSiteContent.work ? undefined : work.projects
   ))

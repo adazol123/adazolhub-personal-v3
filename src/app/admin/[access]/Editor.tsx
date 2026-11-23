@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useId, useState, useTransition, type ReactNode } from 'react'
 import { ArrowDown, ArrowUp, Plus } from 'lucide-react'
-import { defaultSiteContent, fieldLabel, isSceneTheme, sceneThemes, siteSections, siteThemes, type SiteContent, type SiteSection } from '@/lib/site-content'
+import { defaultAssistantSettings, defaultEditorContent, fieldLabel, isSceneTheme, sceneThemes, siteSections, siteThemes, type EditorContent, type SiteSection } from '@/lib/site-content'
 import styles from './admin.module.css'
 
 export function LoginForm({ action }: { action: (previous: string, form: FormData) => Promise<string> }) {
@@ -57,6 +57,18 @@ function Field({ name, value, template, onChange, path }: {
   }
   if (typeof value === 'string') {
     if (name === 'theme') return <ThemeField value={value} onChange={onChange} />
+    if (path[0] === 'assistant' && name === 'model') return (
+      <label>{label}
+        <small>Enter a Gemini model ID. Leave blank to use {defaultAssistantSettings.model}.</small>
+        <input maxLength={70} value={value} onChange={event => onChange(event.target.value)} />
+      </label>
+    )
+    if (path[0] === 'assistant' && name === 'prompt') return (
+      <label>{label}
+        <small>Guide how Dan AI selects portfolio facts. Leave blank to use the default prompt.</small>
+        <textarea rows={8} maxLength={6000} value={value} onChange={event => onChange(event.target.value)} />
+      </label>
+    )
     const pdf = name === 'href' && (path.includes('standard') || path.includes('ats'))
     const long = typeof template === 'string' && (template.length > 100 || ['paragraph', 'description', 'summary', 'outcome', 'problem', 'implementation'].includes(name))
     return (
@@ -120,7 +132,7 @@ function Field({ name, value, template, onChange, path }: {
 type PublishResult = { error: string; revision?: never } | { revision: string; error?: never }
 
 export function Editor({ content, revisions, publish, credentials }: {
-  content: SiteContent
+  content: EditorContent
   credentials: ReactNode
   revisions: Record<SiteSection, string>
   publish: (section: string, revision: string, json: string) => Promise<PublishResult>
@@ -181,7 +193,7 @@ export function Editor({ content, revisions, publish, credentials }: {
         </div>
         {feedback?.section === section && <p role={feedback.error ? 'alert' : 'status'} className={feedback.error ? styles.error : styles.success}>{feedback.text}</p>}
         <fieldset disabled={pending} className={styles.formFields} key={section}>
-          <Field name={section} template={defaultSiteContent[section]} value={draft[section]} path={[]}
+          <Field name={section} template={defaultEditorContent[section]} value={draft[section]} path={[]}
             onChange={value => {
               setDraft(prior => ({ ...prior, [section]: value }))
               setFeedback(undefined)

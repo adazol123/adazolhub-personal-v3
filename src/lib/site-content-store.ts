@@ -3,11 +3,12 @@ import { existsSync, mkdirSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { cache } from 'react'
 import { connection } from 'next/server.js'
-import { defaultSiteContent, siteSections, validateSiteSection, type SiteContent, type SiteSection } from './site-content.ts'
+import { defaultEditorContent, defaultSiteContent, validateSiteSection, type EditorContent, type SiteContent, type SiteSection } from './site-content.ts'
 
 type Entry = { revision: string; value: unknown }
 
-const sections = Object.keys(siteSections) as SiteSection[]
+const publicSections = Object.keys(defaultSiteContent) as (keyof SiteContent)[]
+const editorSections = Object.keys(defaultEditorContent) as SiteSection[]
 const keyPrefix = 'adazol:portfolio:content:v1:'
 
 export function contentStore() {
@@ -79,7 +80,7 @@ export async function redisCommand(store: Extract<Store, { driver: 'redis' }>, c
   return payload.result
 }
 
-async function readEntries(store: Store): Promise<(Entry | null)[]> {
+async function readEntries(store: Store, sections: readonly SiteSection[]): Promise<(Entry | null)[]> {
   if (store.driver === 'sqlite') {
     if (!existsSync(store.file)) return sections.map(() => null)
     const db = openContentDatabase(store.file)
@@ -121,30 +122,46 @@ function restoreSection(template: unknown, published: unknown): unknown {
   return published
 }
 
-export async function readPublishedContent() {
+async function readSections<Section extends SiteSection>(sections: readonly Section[]) {
   const store = contentStore()
-  const entries = store ? await readEntries(store) : sections.map(() => null)
-  const content = { ...defaultSiteContent }
-  const revisions = {} as Record<SiteSection, string>
+  const entries = store ? await readEntries(store, sections) : sections.map(() => null)
+  const content = {} as Pick<EditorContent, Section>
+  const revisions = {} as Record<Section, string>
   for (const [index, section] of sections.entries()) {
+    const fallback = defaultEditorContent[section]
     const entry = entries[index]
-    revisions[section] = ''
-    if (!entry) continue
-    const restored = restoreSection(defaultSiteContent[section], entry.value)
-    if (!entry.revision || !isContentRevision(entry.revision) || validateSiteSection(section, restored)) {
-      throw new Error('Invalid published content')
+    if (entry) {
+      const restored = restoreSection(fallback, entry.value)
+      if (!entry.revision || !isContentRevision(entry.revision) || validateSiteSection(section, restored)) {
+        throw new Error('Invalid published content')
+      }
+      Object.assign(content, { [section]: restored })
+    } else {
+      content[section] = fallback
     }
-    Object.assign(content, { [section]: restored })
-    revisions[section] = entry.revision
+    revisions[section] = entry?.revision ?? ''
   }
   return { content, revisions }
+}
+
+export function readPublishedContent() {
+  return readSections(editorSections)
+}
+
+export async function readAssistantContent() {
+  try {
+    return (await readSections(['work', 'assistant'])).content
+  } catch {
+    console.error('Unable to read published Dan AI settings or Work content')
+    return { work: defaultSiteContent.work, assistant: defaultEditorContent.assistant }
+  }
 }
 
 export const getSiteContent = cache(async (): Promise<SiteContent> => {
   await connection()
   if (!contentStore()) return defaultSiteContent
   try {
-    return (await readPublishedContent()).content
+    return (await readSections(publicSections)).content
   } catch {
     console.error('Unable to read published portfolio content')
     return defaultSiteContent

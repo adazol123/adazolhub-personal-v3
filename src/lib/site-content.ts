@@ -94,7 +94,20 @@ export const defaultSiteContent = {
 }
 
 export type SiteContent = typeof defaultSiteContent
-export type SiteSection = keyof SiteContent
+
+export const defaultAssistantSettings = {
+  model: 'gemini-3.5-flash-lite',
+  prompt: 'You select facts for a question-and-answer desk about the public portfolio of software engineer Daniel Lozada.'
+}
+
+export type AssistantSettings = typeof defaultAssistantSettings
+export const defaultEditorContent = { ...defaultSiteContent, assistant: defaultAssistantSettings }
+export type EditorContent = typeof defaultEditorContent
+export type SiteSection = keyof EditorContent
+
+export function isGeminiModel(value: string) {
+  return /^gemini-[a-z0-9.-]{1,63}$/i.test(value)
+}
 
 export const siteSections: Record<SiteSection, string> = {
   appearance: 'Appearance',
@@ -103,7 +116,8 @@ export const siteSections: Record<SiteSection, string> = {
   work: 'Work',
   notes: 'Field notes',
   resume: 'Resume',
-  site: 'Site details'
+  site: 'Site details',
+  assistant: 'Dan AI'
 }
 
 export function isSiteSection(value: string): value is SiteSection {
@@ -112,7 +126,7 @@ export function isSiteSection(value: string): value is SiteSection {
 
 export function fieldLabel(key: string) {
   const spaced = key.replace(/([a-z])([A-Z])/g, '$1 $2')
-  return ({ scrollBackground: 'Animate background on scroll', href: 'Link URL', slug: 'URL anchor', image: 'Cover image URL', alt: 'Cover image alt text', standard: 'Standard PDF', ats: 'ATS PDF' } as Record<string, string>)[key]
+  return ({ scrollBackground: 'Animate background on scroll', href: 'Link URL', slug: 'URL anchor', image: 'Cover image URL', alt: 'Cover image alt text', standard: 'Standard PDF', ats: 'ATS PDF', model: 'Gemini model', prompt: 'Custom prompt' } as Record<string, string>)[key]
     ?? spaced.charAt(0).toUpperCase() + spaced.slice(1)
 }
 
@@ -147,6 +161,10 @@ function validateField(template: unknown, value: unknown, path: string[]): strin
   if (typeof template === 'boolean') return typeof value === 'boolean' ? null : `${name} must be on or off.`
   if (typeof template === 'string') {
     if (typeof value !== 'string' || value.length > 6000) return `${name} must be text up to 6,000 characters.`
+    if (section === 'assistant') {
+      if (key === 'model' && value.trim() && !isGeminiModel(value.trim())) return 'Enter a Gemini model ID starting with gemini-.'
+      return null
+    }
     if ((section === 'resume' && (key === 'href' || key === 'organization')) && value === '') return null
     if (section === 'work' && (key === 'image' || key === 'alt') && value === '') return null
     if (!value.trim()) return `${name} is required.`
@@ -184,7 +202,7 @@ function validateField(template: unknown, value: unknown, path: string[]): strin
 export const maxSectionBytes = 90_000
 
 export function validateSiteSection(section: SiteSection, value: unknown): string | null {
-  const error = validateField(defaultSiteContent[section], value, [section])
+  const error = validateField(defaultEditorContent[section], value, [section])
   if (error) return error
   if (new TextEncoder().encode(JSON.stringify(value)).byteLength > maxSectionBytes) return 'This section is too large to publish.'
   if (section === 'work') {
