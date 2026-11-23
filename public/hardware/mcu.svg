@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mask" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#466d60"/><stop offset=".49" stop-color="#264e48"/><stop offset="1" stop-color="#173832"/>
+    </linearGradient>
+    <linearGradient id="epoxy" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#626a67"/><stop offset=".48" stop-color="#414846"/><stop offset="1" stop-color="#303534"/>
+    </linearGradient>
+    <linearGradient id="gold" x2="1" y2=".45" gradientUnits="objectBoundingBox">
+      <stop stop-color="#825b37"/><stop offset=".35" stop-color="#f5d29a"/><stop offset=".65" stop-color="#bd8954"/><stop offset="1" stop-color="#f6d5a4"/>
+    </linearGradient>
+    <linearGradient id="metal" x2="1" y2=".65" gradientUnits="objectBoundingBox">
+      <stop stop-color="#777f80"/><stop offset=".33" stop-color="#dce0d9"/><stop offset=".54" stop-color="#949d9c"/><stop offset="1" stop-color="#596262"/>
+    </linearGradient>
+    <pattern id="grain" width="3.5" height="4" patternUnits="userSpaceOnUse">
+      <path d="M.3.5h.55M2.4 2.8h.35" stroke="#fff" stroke-width=".4" opacity=".26"/>
+      <path d="M1.1 2h.35" stroke="#000" stroke-width=".5"/>
+    </pattern>
+    <pattern id="memory" width="3.2" height="4" patternUnits="userSpaceOnUse">
+      <rect width="3.2" height="4" fill="#586458"/><path d="M0 1h3m-3 1.5h3" stroke="#c3b397" stroke-width=".45"/>
+      <path d="M2.7 0v4" stroke="#283b36" stroke-width=".4"/>
+    </pattern>
+    <pattern id="cells" width="7" height="6" patternUnits="userSpaceOnUse">
+      <rect width="7" height="6" fill="#766356"/><path d="M0 1h4v3h3M1 6V3h2" stroke="#d9bd88" stroke-width=".65" fill="none"/>
+      <path d="M4.8 0v2.3H7" stroke="#575a4d" stroke-width="1"/>
+    </pattern>
+    <pattern id="lands" width="6" height="7" patternUnits="userSpaceOnUse">
+      <rect x=".8" width="3.8" height="7" rx=".7" fill="url(#gold)"/>
+    </pattern>
+    <pattern id="contacts" width="6" height="16" patternUnits="userSpaceOnUse">
+      <path d="M.8 0h3.7v6l-.4 6.8H5v3H.2v-3h.6z" fill="url(#metal)" stroke="#424b47" stroke-width=".5"/>
+    </pattern>
+    <g id="via"><circle r="2.1" fill="#c5a974"/><circle r="1.15" fill="#122b27"/></g>
+    <g id="hole"><circle r="5" fill="#d0b788"/><circle r="3.3" fill="#152825" stroke="#8a9a86" stroke-width=".7"/></g>
+    <g id="smd"><rect x="-5.2" y="-2.8" width="10.4" height="6" rx=".6" fill="#142923"/>
+      <rect x="-5" y="-3.3" width="10" height="5.4" rx=".6" fill="url(#metal)"/><rect x="-3" y="-3.3" width="6" height="5.3" fill="#ac906e"/></g>
+    <g id="routes" fill="none" stroke="#bba56c" stroke-width=".8" opacity=".82">
+      <path d="M-32-45v-11l-8-8h-32l-8-8h-28m82 27v-13l-9-9h-33l-7-7h-34m89 29v-16l-9-9h-32l-8-8h-39"/>
+      <path d="M-44-15h-20l-9-9h-23l-10-10h-15m77 25h-24l-11-11h-18l-12-12h-12m77 29h-28l-12-12h-18l-11-10h-8"/>
+      <path d="M-44 9h-18l-12 12h-28l-10 10h-10m78-16h-16l-12 12h-26l-10 10h-15m79-16h-13l-12 12h-26l-10 10h-15"/>
+      <path d="M-32 45v9l-14 14h-25m45-23v13l-14 14h-22m42-27v16l-15 15h-16"/>
+    </g>
+    <g id="board-edge"><path d="M-120-81H114l10 10V68l-12 12h-228l-9-9V-73z"/></g>
+    <g id="land-row"><rect x="-36" y="-48" width="72" height="7" fill="url(#lands)"/></g>
+    <g id="lead-row">
+      <rect x="-36" y="32" width="72" height="16" fill="url(#contacts)"/>
+      <path d="M-34 32v5m6-5v5m6-5v5m6-5v5m6-5v5m6-5v5m6-5v5m6-5v5m6-5v5m6-5v5m6-5v5m6-5v5" stroke="#d2a769" stroke-width="2.6"/>
+    </g>
+    <g id="wire-row" fill="none" stroke="url(#gold)" stroke-width=".76" stroke-linecap="round">
+      <path d="M-20-20Q-29-36-32-35M-16-20Q-23-36-26-35M-12-20Q-17-36-20-35M-8-20Q-12-36-14-35M-4-20Q-6-36-8-35M0-20Q-1-36-2-35M4-20Q5-36 4-35M8-20Q11-36 10-35M12-20Q17-36 16-35M16-20Q23-36 22-35M20-20Q28-36 28-35"/>
+    </g>
+  </defs>
+  <!-- Component drawings share the board's top-down coordinate system. -->
+  <g id="board">
+    <use href="#board-edge" fill="#121e19" transform="translate(2 6)"/>
+    <use href="#board-edge" fill="#b2a06c" transform="translate(1 3.5)"/>
+    <use href="#board-edge" fill="url(#mask)" stroke="#759482" stroke-width="1.2"/>
+    <use href="#board-edge" fill="url(#grain)" opacity=".65"/>
+    <use href="#routes"/><use href="#routes" transform="rotate(180)"/>
+    <g stroke="#c9d1bc" fill="none" stroke-width=".9" opacity=".85">
+      <path d="M-111-59v-12h18m187-1h13v14m-3 111v15H89m-180 1h-19v-13"/>
+      <path d="M-45-27v-16h16m57 0h15v16m0 55v15H28m-57 0h-16V28"/>
+      <rect x="64" y="-56" width="38" height="17" rx="2"/><rect x="-102" y="37" width="36" height="13" rx="1"/>
+    </g>
+    <use href="#hole" x="-113" y="-70"/><use href="#hole" x="111" y="-68"/><use href="#hole" x="-113" y="66"/><use href="#hole" x="111" y="66"/>
+    <use href="#land-row"/><use href="#land-row" transform="rotate(90)"/><use href="#land-row" transform="rotate(180)"/><use href="#land-row" transform="rotate(270)"/>
+    <g fill="#d8e4cc" font-family="monospace" font-size="5.4">
+      <text x="-52" y="-47">U1</text><text x="-103" y="33">C4 C5 C6</text><text x="67" y="-60">Y1</text><text x="68" y="64">J1</text>
+    </g>
+    <g><use href="#via" x="-106" y="-32"/><use href="#via" x="-107" y="31"/><use href="#via" x="-62" y="72"/><use href="#via" x="-51" y="76"/>
+      <use href="#via" x="62" y="-72"/><use href="#via" x="51" y="-76"/><use href="#via" x="106" y="32"/><use href="#via" x="108" y="-32"/></g>
+    <use href="#smd" x="-95" y="44"/><use href="#smd" x="-83" y="44"/><use href="#smd" x="-71" y="44"/>
+    <use href="#smd" x="76" y="15"/><use href="#smd" x="89" y="15"/>
+    <rect x="66" y="-54" width="33" height="13" rx="3" fill="url(#metal)" stroke="#414f48"/>
+    <path d="M70-51h25" stroke="#edf0db" stroke-width="1.2"/>
+    <g fill="#cdb890" stroke="#182b25" stroke-width="1"><circle cx="72" cy="52" r="3.8"/><circle cx="83" cy="52" r="3.8"/><circle cx="94" cy="52" r="3.8"/></g>
+  </g>
+  <g id="die">
+    <use href="#lead-row"/><use href="#lead-row" transform="rotate(90)"/><use href="#lead-row" transform="rotate(180)"/><use href="#lead-row" transform="rotate(270)"/>
+    <rect x="-28" y="-28" width="56" height="56" rx="2" fill="#624d39" stroke="#ebc59a"/>
+    <rect x="-26" y="-26" width="52" height="52" fill="#222e2e" stroke="url(#metal)" stroke-width="1.7"/>
+    <rect x="-23" y="-23" width="46" height="46" fill="url(#cells)" stroke="#c4ac84" stroke-width="1"/>
+    <rect x="-20" y="-20" width="17" height="28" fill="url(#memory)" stroke="#b7ae8d" stroke-width=".7"/>
+    <rect x="1" y="-17" width="18" height="12" fill="url(#memory)" stroke="#c1b18d" stroke-width=".7"/>
+    <path d="M-20 11H-1V0h21M-20 14H2V3h18" stroke="#c6ab77" stroke-width=".8" fill="none"/>
+    <use href="#wire-row"/><use href="#wire-row" transform="rotate(90)"/><use href="#wire-row" transform="rotate(180)"/><use href="#wire-row" transform="rotate(270)"/>
+  </g>
+  <g id="package">
+    <rect x="-38" y="-38" width="77" height="78" rx="3" fill="#202827" transform="translate(1 5)"/>
+    <path d="M-39-34l5-5h69l4 4v69l-4 5h-70l-4-5z" fill="url(#epoxy)" stroke="#848b83" stroke-width=".8"/>
+    <path d="M-39-34l5-5h69l4 4v69l-4 5h-70l-4-5z" fill="url(#grain)"/>
+    <circle cx="-30" cy="-29" r="3" fill="#292f2d" stroke="#858e80" stroke-width=".7"/>
+    <text x="0" y="1" text-anchor="middle" fill="#dfdfce" font-family="monospace" font-size="12" letter-spacing="1">MCU</text>
+    <path d="M-15 8h30m-30 3h18" stroke="#a0a693" stroke-width="1.1"/>
+  </g>
+</svg>

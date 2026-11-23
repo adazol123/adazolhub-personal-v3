@@ -8,11 +8,11 @@ export default async function AvailabilityPage() {
   const { site } = await getSiteContent()
   return (
     <div className="interior-page">
-      <header className="page-heading">
+      <header data-reveal-children className="page-heading">
         <h1>{site.availability}</h1>
         <p>{site.availabilityIntroduction}</p>
       </header>
-      <div className="reading-body reading-card">
+      <div data-reveal-children className="reading-body reading-card">
         <h2>{site.availabilityHeading}</h2>
         <p>{site.availabilityDetails}</p>
         <div className="hero-actions"><Link className="portfolio-button" href="/contact">Get in touch</Link><Link className="text-link" href="/cv">Read my resume</Link></div>

@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 
 type JumpLinkProps = {
   href: `#${string}`
-  className: string
+  className?: string
   smooth?: boolean
   children: ReactNode
 }

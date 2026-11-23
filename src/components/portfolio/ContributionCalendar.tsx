@@ -44,14 +44,14 @@ export default function ContributionCalendar({ days }: { days: readonly GitHubCo
   const splitIndex = firstWeeks * 7 - offset
 
   return (
-    <figure className={styles.figure}>
+    <figure data-reveal className={styles.figure}>
       <div className={styles.calendar} aria-hidden="true">
         <CalendarSegment days={days.slice(0, splitIndex)} weeks={firstWeeks} offset={offset} />
         <CalendarSegment days={days.slice(splitIndex)} weeks={weeks - firstWeeks} offset={0} />
       </div>
       <figcaption className={styles.caption}>
         <p>Each square represents a day.</p>
-        <div className={styles.legend} role="img" aria-label="Brighter squares indicate more contributions">
+        <div className={styles.legend} role="img" aria-label="Color intensity increases from fewer contributions to more contributions">
           <span aria-hidden="true">Less</span>
           {[0, 1, 2, 3, 4].map(level => <span key={level} className={styles.swatch} data-level={level} aria-hidden="true" />)}
           <span aria-hidden="true">More</span>

@@ -10,7 +10,7 @@ export default async function ResumePage() {
   const labels = [resume.standard.label, resume.ats.label]
   return (
     <article className="interior-page interior-page--contained resume-page">
-      <header className="page-heading">
+      <header data-reveal-children className="page-heading">
         <h1>{resume.title}</h1>
         <p>{resume.introduction}</p>
         <div className="hero-actions">
@@ -25,7 +25,7 @@ export default async function ResumePage() {
       <div className="reading-layout">
         <section className="reading-body reading-card">
           <h2>{resume.experienceHeading}</h2>
-          <ol className="career-list">
+          <ol data-reveal-children className="career-list">
             {resume.career.map((job, index) => <li key={index}>
               <p className="eyebrow">{job.period}</p>
               <h3>{job.role}{job.organization && <span> · {job.organization}</span>}</h3>
@@ -33,7 +33,7 @@ export default async function ResumePage() {
             </li>)}
           </ol>
         </section>
-        <aside className="detail-aside" aria-label={resume.skillsHeading}>
+        <aside data-reveal className="detail-aside" aria-label={resume.skillsHeading}>
           <h2 className="eyebrow">{resume.skillsHeading}</h2>
           <ul className="plain-list compact-skills">{resume.skills.map((skill, index) => <li key={index}><strong>{skill.label}</strong><p>{skill.description}</p></li>)}</ul>
         </aside>

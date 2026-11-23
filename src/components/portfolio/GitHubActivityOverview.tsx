@@ -21,7 +21,7 @@ function LoadingOverview() {
 export default function GitHubActivityOverview() {
   return (
     <section className="editorial-section" aria-labelledby="home-github-activity">
-      <div className={`section-heading ${styles.heading}`}>
+      <div data-reveal-children className={`section-heading ${styles.heading}`}>
         <h2 id="home-github-activity">GitHub activity</h2>
         <Link className="quiet-link" href="/activity">View full activity <ArrowUpRight aria-hidden="true" size={16} /></Link>
       </div>

@@ -11,7 +11,7 @@ export default async function PortfolioPage() {
   const { work } = await getSiteContent()
   return (
     <div className="interior-page">
-      <header className="page-heading">
+      <header data-reveal-children className="page-heading">
         <h1>{work.title} <em>{work.titleAccent}</em></h1>
         <p>{work.introduction}</p>
       </header>

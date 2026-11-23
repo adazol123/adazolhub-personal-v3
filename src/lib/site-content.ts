@@ -17,7 +17,7 @@ export function isSceneTheme(theme: string): theme is SceneTheme {
 
 export const defaultSiteContent = {
   appearance: {
-    theme: 'forest' as SiteTheme,
+    theme: 'server-aisle' as SiteTheme,
     ambientBackground: true,
     scrollBackground: true,
     visitorCount: true
@@ -27,7 +27,7 @@ export const defaultSiteContent = {
     location: 'Philippines',
     firstName: 'Daniel',
     lastName: 'Lozada.',
-    introduction: `I work on ${currentRole.focus} at ${currentRole.organization}. My background in systems support shapes how I build and maintain web products, APIs, and cloud services.`,
+    introduction: `I build web products, APIs, and cloud services at ${currentRole.organization}, drawing on a background in systems support and a focus on ${currentRole.focus}.`,
     workButton: 'Explore my work',
     assistantButton: 'Ask Dan AI',
     selectedWorkHeading: 'Selected work',

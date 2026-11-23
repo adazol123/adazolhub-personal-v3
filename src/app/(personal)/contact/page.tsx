@@ -20,7 +20,7 @@ export default async function ContactPage() {
   const { site } = await getSiteContent()
   return (
     <section className={`interior-page ${styles.page}`}>
-      <header className={`page-heading ${styles.intro}`}>
+      <header data-reveal-children className={`page-heading ${styles.intro}`}>
         <h1>Get in <em>touch.</em></h1>
         <p>Have a role, project, or question in mind? I’d be glad to hear from you.</p>
         <dl className={styles.channels}>

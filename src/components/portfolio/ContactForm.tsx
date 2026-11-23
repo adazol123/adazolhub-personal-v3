@@ -116,7 +116,7 @@ export default function ContactForm({ enabled }: { enabled: boolean }) {
   }
 
   return (
-    <form ref={formRef} action="/api/contact" method="post" noValidate onSubmit={submit} className={styles.form}>
+    <form data-reveal ref={formRef} action="/api/contact" method="post" noValidate onSubmit={submit} className={styles.form}>
       {!enabled && (
         <p className={styles.unavailable} id="contact-unavailable">
           Online sending is currently unavailable. You can open a draft in your email app below.

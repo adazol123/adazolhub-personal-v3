@@ -1,34 +1,26 @@
-import SkeletonImage from '@/components/portfolio/SkeletonImage'
 import Link from 'next/link'
-import { ArrowUpRight } from 'lucide-react'
+import { Layers3 } from 'lucide-react'
+import SkeletonImage from './SkeletonImage'
 import { projectPath, shouldOptimizeProjectImage } from '@/lib/portfolio-content'
 import type { SiteContent } from '@/lib/site-content'
 
 export default function WorkList({ work, heading: Heading = 'h3' }: { work: SiteContent['work']; heading?: 'h2' | 'h3' }) {
   if (!work.projects.length) return <p>{work.emptyMessage}</p>
   return (
-    <ul className="work-grid">
-      {work.projects.map((project, index) => (
+    <ul data-reveal-children className="project-gallery">
+      {work.projects.map(project => (
         <li key={project.slug}>
-          <Link href={projectPath(project.slug)} className={`work-card ${index === 0 ? 'work-card-featured' : 'work-card-compact'}`} data-cover={Boolean(project.image)}>
-            {project.image && <div className="work-cover skeleton-media">
-              <SkeletonImage
-                src={project.image}
-                alt=""
-                fill
-                unoptimized={!shouldOptimizeProjectImage(project.image)}
-                sizes={index === 0 ? '(min-width: 960px) 55vw, 94vw' : '(min-width: 960px) 185px, 27vw'}
-              />
-            </div>}
-            <div className="work-card-copy">
-              <p className="eyebrow">{project.category}</p>
-              <div className="work-card-title">
-                <Heading>{project.name}</Heading>
-                <ArrowUpRight aria-hidden="true" size={19} />
-              </div>
-              <p className="work-card-description">{index === 0 ? project.outcome : project.summary}</p>
-              {index === 0 && <dl className="work-card-role"><dt>My role</dt><dd>{project.role}</dd></dl>}
+          <Link href={projectPath(project.slug)} className="project-entry">
+            <div className="project-art skeleton-media">
+              {project.image ? <SkeletonImage
+                src={project.image} alt="" fill unoptimized={!shouldOptimizeProjectImage(project.image)}
+                sizes="(min-width: 960px) 390px, (min-width: 680px) 45vw, 92vw"
+              /> : <Layers3 aria-hidden="true" size={46}/>}
+              <span className="project-cue">Read case study</span>
             </div>
+            <div className="project-meta"><span>{project.category}</span></div>
+            <Heading>{project.name}</Heading>
+            <p>{project.summary}</p>
           </Link>
         </li>
       ))}

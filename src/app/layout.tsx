@@ -9,6 +9,7 @@ import { projectPath, siteOrigin } from '@/lib/portfolio-content'
 import { getSiteContent } from '@/lib/site-content-store'
 import './globals.css'
 import './portfolio.css'
+import './atlas.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
@@ -28,7 +29,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <JumpLink className="skip-link" href="#main-content">Skip to content</JumpLink>
         <header className="site-header">
           <div className="site-shell site-header-row">
-            <Link href="/" className="site-mark" aria-label="Adazol home">adazol<span>.</span></Link>
+            <Link href="/" className="site-mark" aria-label="Adazol home"><span className="brand-symbol" aria-hidden="true">a</span>adazol<span className="brand-dot">.</span></Link>
             <PortfolioNavigation placement="desktop" />
             <HeaderContact />
           </div>
@@ -37,9 +38,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <PortfolioMain>{children}</PortfolioMain>
         <footer className="site-footer">
           <div className="site-shell">
-            <div className="site-footer-main">
+            <div data-reveal-children className="site-footer-main">
               <div>
-                <Link href="/" className="site-mark">adazol<span>.</span></Link>
+                <Link href="/" className="site-mark"><span className="brand-symbol" aria-hidden="true">a</span>adazol<span className="brand-dot">.</span></Link>
                 <p>{site.footerName} <span className="separator-dot">·</span> {site.footerRole}</p>
               </div>
               <nav aria-label="More about Daniel" className="site-footer-links">
@@ -52,7 +53,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 {Object.entries(site.profiles).map(([label, href]) => <a href={href} key={label}>{label}</a>)}
               </nav>
             </div>
-            <div className="site-footer-end">
+            <div data-reveal className="site-footer-end">
               <p>© {new Date().getFullYear()} {site.footerName}</p>
               {appearance.visitorCount && <VisitorCount projectPaths={work.projects.map(project => projectPath(project.slug))} />}
             </div>
