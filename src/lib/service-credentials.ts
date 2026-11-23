@@ -1,11 +1,13 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
 import { existsSync } from 'node:fs'
+import { readContactAddresses } from './portfolio-contact.ts'
 import { contentStore, openContentDatabase, redisCommand } from './site-content-store.ts'
 
 export const credentialProviders = {
   gemini: 'GEMINI_API_KEY',
   github: 'GITHUB_TOKEN',
-  resend: 'RESEND_API_KEY'
+  resend: 'RESEND_API_KEY',
+  contactEmail: null
 } as const
 
 export type CredentialProvider = keyof typeof credentialProviders
@@ -32,6 +34,22 @@ export function isServiceToken(value: unknown): value is string {
   return typeof value === 'string' && /^[\x21-\x7e]{16,2048}$/.test(value)
 }
 
+export function parseContactEmailCredential(value: string | undefined) {
+  if (!value) return null
+  try {
+    const addresses = JSON.parse(value)
+    return readContactAddresses(addresses?.from, addresses?.to)
+  } catch {
+    return null
+  }
+}
+
+function isCredentialValue(provider: CredentialProvider, value: string) {
+  return provider === 'contactEmail'
+    ? value.length <= 2048 && Boolean(parseContactEmailCredential(value))
+    : isServiceToken(value)
+}
+
 // The random nonce is also an opaque revision for compare-and-set updates.
 function revisionOf(entry: string | null) {
   return entry === null ? '' : /^v1\.([\w-]{16})\./.exec(entry)?.[1] ?? 'invalid'
@@ -56,7 +74,7 @@ function decrypt(provider: CredentialProvider, entry: string, key: Buffer) {
   decipher.setAAD(Buffer.from(keyPrefix + provider))
   decipher.setAuthTag(Buffer.from(tag, 'base64url'))
   const token = Buffer.concat([decipher.update(Buffer.from(ciphertext, 'base64url')), decipher.final()]).toString('utf8')
-  if (!isServiceToken(token)) throw new Error('Invalid credential value')
+  if (!isCredentialValue(provider, token)) throw new Error('Invalid credential value')
   return token
 }
 
@@ -91,21 +109,37 @@ async function readEntries(store: Store, selected: CredentialProvider[]): Promis
   return entries
 }
 
-function environmentToken(provider: CredentialProvider) {
-  return process.env[credentialProviders[provider]]?.trim() || undefined
+function environmentCredential(provider: CredentialProvider) {
+  const variable = credentialProviders[provider]
+  if (variable) return process.env[variable]?.trim() || undefined
+  const addresses = readContactAddresses(process.env.CONTACT_FROM_EMAIL, process.env.CONTACT_TO_EMAIL)
+  return addresses ? JSON.stringify(addresses) : undefined
 }
 
 export async function readServiceToken(provider: CredentialProvider) {
-  const fallback = environmentToken(provider)
+  const [value] = await readServiceCredentials([provider])
+  return value
+}
+
+export async function readServiceCredentials(selected: CredentialProvider[]) {
+  const fallbacks = selected.map(environmentCredential)
   const key = encryptionKey()
   const store = key ? contentStore() : null
-  if (!store || !key) return fallback
+  if (!store || !key) return fallbacks
+  let entries: (string | null)[]
   try {
-    const [entry] = await readEntries(store, [provider])
-    return entry ? decrypt(provider, entry, key) : fallback
+    entries = await readEntries(store, selected)
   } catch {
-    return fallback
+    return fallbacks
   }
+  return selected.map((provider, index) => {
+    const entry = entries[index]
+    try {
+      return entry ? decrypt(provider, entry, key) : fallbacks[index]
+    } catch {
+      return fallbacks[index]
+    }
+  })
 }
 
 export async function readCredentialStatuses(): Promise<Record<CredentialProvider, CredentialSummary>> {
@@ -115,7 +149,7 @@ export async function readCredentialStatuses(): Promise<Record<CredentialProvide
   const statuses = {} as Record<CredentialProvider, CredentialSummary>
   for (const [index, provider] of providers.entries()) {
     const entry = entries[index]
-    let status: CredentialStatus = environmentToken(provider) ? 'environment' : 'missing'
+    let status: CredentialStatus = environmentCredential(provider) ? 'environment' : 'missing'
     if (entry !== null && key) {
       try {
         decrypt(provider, entry, key)
@@ -176,14 +210,14 @@ async function updateEntry(store: Store, provider: CredentialProvider, revision:
   }
 }
 
-export async function saveServiceToken(provider: CredentialProvider, revision: string, token: string) {
+export async function saveServiceCredential(provider: CredentialProvider, revision: string, value: string) {
   const key = encryptionKey()
   const store = key ? contentStore() : null
-  if (!store || !key || !isServiceToken(token)) throw new Error('Credential cannot be saved')
-  return updateEntry(store, provider, revision, encrypt(provider, token, key))
+  if (!store || !key || !isCredentialValue(provider, value)) throw new Error('Credential cannot be saved')
+  return updateEntry(store, provider, revision, encrypt(provider, value, key))
 }
 
-export async function removeServiceToken(provider: CredentialProvider, revision: string) {
+export async function removeServiceCredential(provider: CredentialProvider, revision: string) {
   const store = credentialStorageEnabled() ? contentStore() : null
   if (!store) throw new Error('Credential storage is unavailable')
   return updateEntry(store, provider, revision, '')

@@ -1,6 +1,6 @@
 import { isIP } from 'node:net'
-import { readServiceToken } from './service-credentials.ts'
-import { contactMessage, isContactEmail, validateContactFields, type ContactErrors } from './portfolio-contact.ts'
+import { parseContactEmailCredential, readServiceCredentials } from './service-credentials.ts'
+import { contactMessage, readContactAddresses, validateContactFields, type ContactErrors } from './portfolio-contact.ts'
 
 const MAX_BODY_BYTES = 32_768
 const WINDOW_MS = 600_000
@@ -11,17 +11,14 @@ const UUID_V4 = /^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}
 type ContactEnv = Record<string, string | undefined>
 
 export function readContactConfig (env: ContactEnv = process.env, apiKey = env.RESEND_API_KEY?.trim()) {
-  const from = env.CONTACT_FROM_EMAIL?.trim()
-  const to = env.CONTACT_TO_EMAIL?.trim()
-  if (!apiKey || !from || !to || !isContactEmail(to) || /[\r\n]/.test(from)) return null
-
-  // Resend also accepts a single sender in the form "Portfolio <contact@example.com>".
-  const senderAddress = /^[^<>]+<([^<>]+)>$/.exec(from)?.[1] ?? from
-  return isContactEmail(senderAddress) ? { apiKey, from, to } : null
+  const addresses = readContactAddresses(env.CONTACT_FROM_EMAIL, env.CONTACT_TO_EMAIL)
+  return apiKey && addresses ? { apiKey, ...addresses } : null
 }
 
 export async function getContactConfig () {
-  return readContactConfig(process.env, await readServiceToken('resend'))
+  const [apiKey, value] = await readServiceCredentials(['resend', 'contactEmail'])
+  const addresses = parseContactEmailCredential(value)
+  return apiKey && addresses ? { apiKey, ...addresses } : null
 }
 
 function isSameOrigin (request: Request, onVercel: boolean) {

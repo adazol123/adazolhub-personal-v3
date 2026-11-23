@@ -1,10 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { readContactAddresses } from '@/lib/portfolio-contact'
 import { getAdminSession } from '@/lib/site-admin-auth'
 import {
   credentialStorageEnabled, isCredentialProvider, isCredentialRevision, isServiceToken, readServiceToken,
-  removeServiceToken, saveServiceToken, type CredentialProvider
+  removeServiceCredential, saveServiceCredential, type CredentialProvider
 } from '@/lib/service-credentials'
 
 type Result = { message: string; error: boolean }
@@ -38,12 +39,20 @@ export async function updateCredential(path: string, provider: CredentialProvide
   let changed: boolean
   try {
     if (intent === 'save') {
-      const value = form.get('token')
-      const token = typeof value === 'string' ? value.trim() : value
-      if (!isServiceToken(token)) return { message: 'Enter a valid token with 16–2,048 characters and no spaces.', error: true }
-      changed = await saveServiceToken(provider, revision, token)
+      if (provider === 'contactEmail') {
+        const addresses = readContactAddresses(form.get('from'), form.get('to'))
+        if (!addresses || addresses.from.length > 512) {
+          return { message: 'Enter one valid sender and one valid recipient email address.', error: true }
+        }
+        changed = await saveServiceCredential(provider, revision, JSON.stringify(addresses))
+      } else {
+        const token = form.get('token')
+        const value = typeof token === 'string' ? token.trim() : token
+        if (!isServiceToken(value)) return { message: 'Enter a valid token with 16–2,048 characters and no spaces.', error: true }
+        changed = await saveServiceCredential(provider, revision, value)
+      }
     } else if (intent === 'remove') {
-      changed = await removeServiceToken(provider, revision)
+      changed = await removeServiceCredential(provider, revision)
     } else {
       return { message: 'Choose an action to continue.', error: true }
     }
@@ -52,5 +61,7 @@ export async function updateCredential(path: string, provider: CredentialProvide
   }
   revalidatePath(`/admin/${path}`)
   if (!changed) return { message: 'The credential changed in another session. Check its current status before trying again.', error: true }
-  return { message: intent === 'save' ? 'Credential saved.' : 'Saved override removed.', error: false }
+  if (provider === 'contactEmail' || provider === 'resend') revalidatePath('/contact')
+  if (intent === 'remove') return { message: 'Saved override removed.', error: false }
+  return { message: provider === 'contactEmail' ? 'Contact addresses saved.' : 'Credential saved.', error: false }
 }

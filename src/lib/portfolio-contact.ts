@@ -21,6 +21,17 @@ export function isContactEmail (email: string) {
   return local.length <= 64 && !local.startsWith('.') && !local.endsWith('.') && !local.includes('..')
 }
 
+export function readContactAddresses (sender: unknown, recipient: unknown) {
+  if (typeof sender !== 'string' || typeof recipient !== 'string') return null
+  const from = sender.trim()
+  const to = recipient.trim()
+  if (!isContactEmail(to) || /[\r\n]/.test(from)) return null
+
+  // Resend accepts a single sender with an optional display name.
+  const senderAddress = /^[^<>]+<([^<>]+)>$/.exec(from)?.[1] ?? from
+  return isContactEmail(senderAddress) ? { from, to } : null
+}
+
 export function validateContactFields ({ name, email, message }: Partial<Record<keyof ContactFields, unknown>>) {
   const fields = {
     name: typeof name === 'string' ? name.trim() : '',

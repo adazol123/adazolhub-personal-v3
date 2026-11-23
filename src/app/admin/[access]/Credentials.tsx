@@ -7,7 +7,8 @@ import styles from './admin.module.css'
 const providers = {
   gemini: { name: 'Gemini', description: 'API key used by Dan AI to answer portfolio questions.' },
   github: { name: 'GitHub', description: 'Optional token for the connection check below. The public activity feed uses public GitHub data.' },
-  resend: { name: 'Resend', description: 'API key used to send contact form messages. Sender and recipient addresses come from the server configuration.' }
+  resend: { name: 'Resend', description: 'API key used to send contact form messages.' },
+  contactEmail: { name: 'Contact email', description: 'Use a verified Resend sender and the inbox that should receive contact form messages.' }
 }
 
 const statusText: Record<CredentialStatus, string> = {
@@ -30,6 +31,7 @@ function CredentialForm({ provider, summary, enabled, update }: {
   const [result, action, pending] = useActionState(update.bind(null, provider, revision), { message: '', error: false })
   const { name, description } = providers[provider]
   const hasOverride = status === 'saved' || status === 'unreadable'
+  const isContactEmail = provider === 'contactEmail'
 
   return (
     <form action={action} className={styles.group}>
@@ -37,15 +39,22 @@ function CredentialForm({ provider, summary, enabled, update }: {
       <p>{description}</p>
       <p className={styles.credentialStatus}>{statusText[status]}</p>
       <div className={styles.fields}>
-        {enabled && <label>New {name} token
+        {enabled && (isContactEmail ? <>
+          <label>Sender
+            <input name="from" placeholder="Portfolio <contact@example.com>" autoComplete="off" spellCheck={false} maxLength={512} disabled={pending} />
+          </label>
+          <label>Recipient
+            <input type="email" name="to" placeholder="inbox@example.com" autoComplete="off" spellCheck={false} maxLength={254} disabled={pending} />
+          </label>
+        </> : <label>New {name} token
           <input type="password" name="token" autoComplete="new-password" spellCheck={false} maxLength={2048} disabled={pending} />
-        </label>}
+        </label>)}
         {result.message && <p role={result.error ? 'alert' : 'status'} className={result.error ? styles.error : styles.success}>{result.message}</p>}
         <div className={styles.rowActions}>
-          {enabled && <button type="submit" name="intent" value="save" className={styles.primary} disabled={pending}>Save token</button>}
+          {enabled && <button type="submit" name="intent" value="save" className={styles.primary} disabled={pending}>{isContactEmail ? 'Save addresses' : 'Save token'}</button>}
           {provider === 'github' && <button type="submit" name="intent" value="check" className={styles.button}
             disabled={pending || status === 'missing' || status === 'unreadable'}>Check connection</button>}
-          {enabled && hasOverride && <button type="submit" name="intent" value="remove" className={styles.button} disabled={pending}>Remove override</button>}
+          {enabled && hasOverride && <button type="submit" name="intent" value="remove" className={styles.button} disabled={pending} formNoValidate>Remove override</button>}
         </div>
       </div>
     </form>
@@ -65,7 +74,7 @@ export function Credentials({ enabled, statuses, update }: {
         {!statuses
           ? <p role="alert">Credential storage is temporarily unavailable.</p>
           : <>
-            {enabled && <p>Saved tokens are encrypted and never displayed. Removing an override restores the server environment value, if configured.</p>}
+            {enabled && <p>Saved values are encrypted and the panel displays their status. Removing an override restores the server environment settings, if configured.</p>}
             {(Object.keys(providers) as CredentialProvider[]).map(provider => (
               <CredentialForm key={provider} provider={provider} summary={statuses[provider]} enabled={enabled} update={update} />
             ))}

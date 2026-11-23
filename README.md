@@ -21,9 +21,9 @@ Open [localhost:3000](http://localhost:3000). The portfolio, static portrait, re
 | `GEMINI_API_KEY` | Enables the Gemini question service. Missing credentials, a timeout, or a provider error leaves a labeled public portfolio index available. |
 | `GEMINI_MODEL` | Optional model override. Defaults to `gemini-3.5-flash-lite`. |
 | `GITHUB_TOKEN` | Optional fallback token for the admin GitHub connection check. |
-| `RESEND_API_KEY` | Enables delivery through Resend when both addresses below are configured. |
-| `CONTACT_FROM_EMAIL` | Resend-verified sender address. |
-| `CONTACT_TO_EMAIL` | Inbox that should receive portfolio messages. |
+| `RESEND_API_KEY` | Optional fallback Resend API key for contact form delivery. |
+| `CONTACT_FROM_EMAIL` | Optional fallback Resend-verified sender address. Set it together with `CONTACT_TO_EMAIL`. |
+| `CONTACT_TO_EMAIL` | Optional fallback recipient inbox. Set it together with `CONTACT_FROM_EMAIL`. |
 | `RESUME_URL` | Default PDF target for `/resume` until a destination is published in the admin panel. |
 | `RESUME_DETAILED_URL` | Default PDF target for `/resume_detailed` until a destination is published in the admin panel. |
 | `DOMAIN_OLD_URL` | Optional origin for `/old` links. Defaults to `https://daniel-lozada.web.app`. |
@@ -53,6 +53,8 @@ Open **Appearance** to choose Server Aisle, Exposed CPU, or Fiber Patch Bay, the
 Set `PORTFOLIO_CREDENTIALS_KEY` in the server environment to a random 64-character hex string generated with `openssl rand -hex 32`. Keep it alongside your other server secrets and use a separate key per environment. Configure this before saving tokens, since existing overrides require the same key to decrypt. If you replace the encryption key, re-enter the provider tokens.
 
 In **Service credentials**, enter Gemini and Resend API keys to override their server environment values. The same section lets you save and check a fine-grained GitHub token with no extra permissions using the [authenticated-user endpoint](https://docs.github.com/en/rest/users/users#get-the-authenticated-user). The visitor-facing calendar continues to use public data. Use the smallest permissions needed and a sending-only Resend key. Changing or removing a saved override updates future requests. Revoke old credentials through the provider when rotating them there.
+
+Under **Contact email**, save the Resend-verified sender and the recipient inbox together. A sender can be an address or a display name followed by an address in angle brackets. The saved pair takes effect without redeploying and takes precedence over `CONTACT_FROM_EMAIL` and `CONTACT_TO_EMAIL`. Removing it restores the environment pair when both variables are set. The contact page uses its existing email draft fallback when delivery is unavailable.
 
 The panel displays only credential status. Credentials are encrypted with AES-256-GCM before storage and are never included in public content. The database connection, encryption key and admin accounts belong in the server environment.
 
