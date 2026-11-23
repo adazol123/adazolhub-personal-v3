@@ -1,5 +1,7 @@
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Skeleton, SkeletonLines, SkeletonRegion } from '@/components/portfolio/Skeleton'
 import { adminEnabled, getAdminSession } from '@/lib/site-admin-auth'
 import { contentStore, readPublishedContent } from '@/lib/site-content-store'
 import { credentialStorageEnabled, readCredentialStatuses } from '@/lib/service-credentials'
@@ -23,11 +25,6 @@ export default async function AdminPage({ params }: { params: Promise<{ access: 
     </section>
   )
 
-  const [published, statuses] = await Promise.all([
-    contentStore() ? readPublishedContent().catch(() => null) : null,
-    readCredentialStatuses().catch(() => null)
-  ])
-  const credentials = <Credentials enabled={credentialStorageEnabled()} statuses={statuses} update={updateCredential.bind(null, access)} />
   return (
     <section className={styles.panel}>
       <header className={styles.header}>
@@ -39,9 +36,24 @@ export default async function AdminPage({ params }: { params: Promise<{ access: 
           <button className={styles.button} type="submit">Sign out</button>
         </form>
       </header>
-      {published
-        ? <Editor {...published} publish={publish.bind(null, access)} credentials={credentials} />
-        : <p role="alert" className={styles.feedback}>The content database is unavailable. Check the server configuration before publishing.</p>}
+      <Suspense fallback={<SkeletonRegion label="Loading site editor">
+        <div className="reading-card skeleton-stack">
+          <Skeleton className="skeleton-subtitle" /><SkeletonLines /><Skeleton className="skeleton-field" />
+        </div>
+      </SkeletonRegion>}>
+        <AdminEditor access={access} />
+      </Suspense>
     </section>
   )
+}
+
+async function AdminEditor({ access }: { access: string }) {
+  const [published, statuses] = await Promise.all([
+    contentStore() ? readPublishedContent().catch(() => null) : null,
+    readCredentialStatuses().catch(() => null)
+  ])
+  const credentials = <Credentials enabled={credentialStorageEnabled()} statuses={statuses} update={updateCredential.bind(null, access)} />
+  return published
+    ? <Editor {...published} publish={publish.bind(null, access)} credentials={credentials} />
+    : <p role="alert" className={styles.feedback}>The content database is unavailable. Check the server configuration before publishing.</p>
 }

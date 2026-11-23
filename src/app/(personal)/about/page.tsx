@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import SkeletonImage from '@/components/portfolio/SkeletonImage'
 import Link from 'next/link'
 import { getSiteContent } from '@/lib/site-content-store'
 
@@ -25,7 +25,7 @@ export default async function AboutPage() {
           </div>
         </div>
         <aside className="detail-aside about-photo">
-          <Image src="/work/daniel.webp" alt="Daniel Lozada" width={320} height={320} />
+          <div className="about-photo-image skeleton-media"><SkeletonImage src="/work/daniel.webp" alt="Daniel Lozada" width={320} height={320} /></div>
           <Link className="text-link" href="/cv">{about.resumeLink}</Link>
         </aside>
       </div>

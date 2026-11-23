@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ASK_SUGGESTIONS, MAX_ASK_HISTORY, MAX_ASK_LENGTH } from '../../lib/portfolio-assistant.ts'
 import type { AskReply } from '../../lib/portfolio-assistant.ts'
+import { SkeletonLines } from './Skeleton'
 import styles from './AskDan.module.css'
 
 type Exchange = { id: number; question: string; reply: AskReply }
@@ -48,6 +49,7 @@ export default function AskDan() {
     setPending(question)
     inputRef.current?.focus({ preventScroll: true })
 
+    const timeout = window.setTimeout(() => controller.abort(), 20_000)
     let response: Response | undefined
     try {
       const history = exchanges
@@ -72,8 +74,11 @@ export default function AskDan() {
       setDraft(current => current || question)
       setError(response?.status === 429
         ? 'Too many questions. Try again in a minute.'
-        : 'The question didn’t go through. Try again.')
+        : controller.signal.aborted
+          ? 'The answer took too long. Try again.'
+          : 'The question didn’t go through. Try again.')
     } finally {
+      window.clearTimeout(timeout)
       if (activeRequest.current === controller) {
         activeRequest.current = null
         setPending('')
@@ -157,7 +162,10 @@ export default function AskDan() {
           {pending && (
             <div className={styles.exchange}>
               <p className={styles.question}>{pending}</p>
-              <p className={styles.pending}>Checking portfolio sources…</p>
+              <div className={`${styles.answer} skeleton-answer`}>
+                <p>Checking portfolio sources…</p>
+                <SkeletonLines />
+              </div>
             </div>
           )}
         </div>

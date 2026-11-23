@@ -115,7 +115,8 @@ function prepareRenderer(canvas: HTMLCanvasElement, photo: HTMLImageElement) {
   }
 }
 
-export default function RackPassage({ progress, renderFrame }: {
+export default function RackPassage({ photo, progress, renderFrame }: {
+  photo: HTMLImageElement
   progress: RefObject<number>
   renderFrame: RefObject<((progress: number) => void) | null>
 }) {
@@ -127,7 +128,6 @@ export default function RackPassage({ progress, renderFrame }: {
     const canvas = element
 
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const photo = new Image()
     let renderer: ReturnType<typeof prepareRenderer> = null
 
     function stop() {
@@ -172,16 +172,14 @@ export default function RackPassage({ progress, renderFrame }: {
     motion.addEventListener('change', syncMotion)
     canvas.addEventListener('webglcontextlost', contextLost)
     canvas.addEventListener('webglcontextrestored', start)
-    photo.onload = start
-    photo.src = '/themes/server-aisle.webp'
+    start()
     return () => {
       motion.removeEventListener('change', syncMotion)
       canvas.removeEventListener('webglcontextlost', contextLost)
       canvas.removeEventListener('webglcontextrestored', start)
-      photo.onload = null
       stop()
     }
-  }, [progress, renderFrame])
+  }, [photo, progress, renderFrame])
 
   return <canvas className="scene-aisle-camera" ref={screen} />
 }

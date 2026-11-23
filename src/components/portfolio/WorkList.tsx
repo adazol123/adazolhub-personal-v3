@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import SkeletonImage from '@/components/portfolio/SkeletonImage'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { projectPath, shouldOptimizeProjectImage } from '@/lib/portfolio-content'
@@ -11,8 +11,8 @@ export default function WorkList({ work, heading: Heading = 'h3' }: { work: Site
       {work.projects.map((project, index) => (
         <li key={project.slug}>
           <Link href={projectPath(project.slug)} className={`work-card ${index === 0 ? 'work-card-featured' : 'work-card-compact'}`} data-cover={Boolean(project.image)}>
-            {project.image && <div className="work-cover">
-              <Image
+            {project.image && <div className="work-cover skeleton-media">
+              <SkeletonImage
                 src={project.image}
                 alt=""
                 fill

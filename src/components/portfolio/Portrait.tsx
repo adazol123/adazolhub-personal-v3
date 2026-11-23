@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import SkeletonImage from '@/components/portfolio/SkeletonImage'
 import { useEffect, useRef, useState } from 'react'
 import { centeredGaze, easeGaze, pointerGaze } from './portrait-gaze'
 import type { createPortraitRenderer } from './portrait-model'
@@ -187,10 +187,10 @@ export default function Portrait() {
   }, [])
 
   return (
-    <figure className={styles.frame} ref={frameRef} role="img" aria-label="Stylized 3D portrait of Daniel Lozada">
+    <figure className={`${styles.frame} skeleton-media`} data-media-ready={live} ref={frameRef} role="img" aria-label="Stylized 3D portrait of Daniel Lozada">
       <div className={styles.grid} aria-hidden="true" />
       <div className={styles.orbit} aria-hidden="true" />
-      <Image
+      <SkeletonImage
         ref={stillRef}
         className={styles.still}
         data-hidden={live}

@@ -1,6 +1,9 @@
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { ArrowUpRight } from 'lucide-react'
 import ContactForm from '@/components/portfolio/ContactForm'
+import { ContactFormSkeleton } from '@/components/portfolio/PageSkeleton'
+import { SkeletonRegion } from '@/components/portfolio/Skeleton'
 import styles from '@/components/portfolio/ContactForm.module.css'
 import { publicEmail } from '@/lib/portfolio-content'
 import { getSiteContent } from '@/lib/site-content-store'
@@ -39,7 +42,13 @@ export default async function ContactPage() {
           </div>
         </dl>
       </header>
-      <ContactForm enabled={Boolean(await getContactConfig())} />
+      <Suspense fallback={<SkeletonRegion label="Loading contact form"><ContactFormSkeleton /></SkeletonRegion>}>
+        <ConfiguredContactForm />
+      </Suspense>
     </section>
   )
+}
+
+async function ConfiguredContactForm() {
+  return <ContactForm enabled={Boolean(await getContactConfig())} />
 }

@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { isTrackedVisitorPath, requestVisitorCount } from '@/lib/portfolio-visitors'
+import { Skeleton } from './Skeleton'
 import styles from './VisitorCount.module.css'
 
 // Serialize requests in this document so concurrent effects do not race to set the first cookie.
@@ -36,12 +37,15 @@ export default function VisitorCount ({ projectPaths }: { projectPaths: string[]
 
   if (!tracked) return null
   const count = result?.path === pathname ? result.count : undefined
-  const value = count === undefined ? '…' : count === null ? 'Unavailable' : count.toLocaleString()
 
   return (
-    <span className={styles.metric} role="status" aria-busy={count === undefined}>
+    <span className={styles.metric} role="status">
       <span>Unique visitors on this page</span>
-      <strong className={styles.value}>{value}</strong>
+      <strong className={styles.value}>
+        {count === undefined
+          ? <><span className="sr-only">Loading visitor count</span><Skeleton className="skeleton-inline" /></>
+          : count === null ? 'Unavailable' : count.toLocaleString()}
+      </strong>
     </span>
   )
 }

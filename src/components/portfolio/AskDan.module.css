@@ -97,7 +97,7 @@
 }
 
 .transcript:focus-visible { outline-offset: -3px; }
-.empty, .pending { max-width: 31ch; color: var(--portfolio-muted); }
+.empty { max-width: 31ch; color: var(--portfolio-muted); }
 .exchange { min-width: 0; overflow-wrap: anywhere; }
 .exchange + .exchange { border-top: 1px solid var(--portfolio-rule); padding-top: .8rem; }
 .question { font-weight: 650; margin-bottom: .4rem; }

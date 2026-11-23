@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import SkeletonImage from '@/components/portfolio/SkeletonImage'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
@@ -31,8 +31,8 @@ export default async function CaseStudyPage({ params }: Props) {
         <h1>{project.name}</h1>
         <p>{project.summary}</p>
       </header>
-      {project.image && <div className="case-study-cover">
-        <Image src={project.image} alt={project.alt} fill sizes="(max-width: 960px) 94vw, 900px"
+      {project.image && <div className="case-study-cover skeleton-media">
+        <SkeletonImage src={project.image} alt={project.alt} fill sizes="(max-width: 960px) 94vw, 900px"
           priority unoptimized={!shouldOptimizeProjectImage(project.image)} />
       </div>}
       <div className="reading-layout">

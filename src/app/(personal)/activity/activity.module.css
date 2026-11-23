@@ -40,9 +40,6 @@
   font-size: .85rem;
 }
 
-.loading { min-block-size: clamp(23rem, 36vw, 30rem); }
-.loadingStatus { margin-top: .65rem; color: var(--portfolio-muted); }
-
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -59,6 +56,9 @@
   padding: .85rem clamp(.25rem, 1vw, .65rem) 1rem;
   text-align: center;
 }
+
+.stats > .loadingStat { align-items: center; gap: .45rem; }
+.loadingStat span:first-child { width: 65%; }
 
 .stats > div + div {
   border-inline-start: 1px solid var(--portfolio-rule);

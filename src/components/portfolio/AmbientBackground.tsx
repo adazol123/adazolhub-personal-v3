@@ -1,11 +1,34 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useEffect, useRef, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type ComponentProps, type CSSProperties, type RefObject } from 'react'
 import { isSceneTheme, type SiteTheme } from '@/lib/site-content'
+import SkeletonImage from './SkeletonImage'
 
 const RackPassage = dynamic(() => import('./RackPassage'), { ssr: false })
 const contours = Array.from({ length: 17 }, (_, level) => level)
+
+function SceneImage(props: Pick<ComponentProps<typeof SkeletonImage>, 'src' | 'sizes' | 'onLoad'>) {
+  return <SkeletonImage {...props} alt="" fill quality={65} fetchPriority="low" loading="eager" />
+}
+
+function AisleScene({ animate, progress, renderFrame }: {
+  animate: boolean
+  progress: RefObject<number>
+  renderFrame: RefObject<((progress: number) => void) | null>
+}) {
+  const [photo, setPhoto] = useState<HTMLImageElement | null>(null)
+
+  return (
+    <>
+      <div className="scene-aisle-poster scene-preview">
+        <SceneImage src="/themes/server-aisle.webp" sizes="(min-aspect-ratio: 16/9) 100vw, 178vh"
+          onLoad={event => setPhoto(event.currentTarget)} />
+      </div>
+      {animate && photo && <RackPassage photo={photo} progress={progress} renderFrame={renderFrame} />}
+    </>
+  )
+}
 
 export default function AmbientBackground({ theme, animate }: { theme: SiteTheme; animate: boolean }) {
   const background = useRef<HTMLDivElement>(null)
@@ -78,17 +101,23 @@ export default function AmbientBackground({ theme, animate }: { theme: SiteTheme
 
   return (
     <div className={`ambient-background ambient-background--scene ambient-background--${theme}`} data-motion={animate ? 'scroll' : 'still'} aria-hidden="true" ref={background}>
-      {theme === 'server-aisle' && <>
-        <div className="scene-aisle-poster" />
-        {animate && <RackPassage progress={progress} renderFrame={renderRack} />}
-      </>}
-      {theme === 'exposed-cpu' && <div className="scene-cpu-stage">
-        <div className="scene-cpu-part scene-cpu-part--die" />
-        <div className="scene-cpu-part scene-cpu-part--lid" />
+      {theme === 'server-aisle' && <AisleScene animate={animate} progress={progress} renderFrame={renderRack} />}
+      {theme === 'exposed-cpu' && <div className="scene-cpu-stage scene-preview">
+        <SceneImage src="/themes/cpu-board.webp" sizes="(min-aspect-ratio: 16/9) 111vw, 198vh" />
+        <div className="scene-cpu-part scene-cpu-part--die">
+          <SceneImage src="/themes/cpu-die.webp" sizes="(min-aspect-ratio: 16/9) 26vw, 46vh" />
+        </div>
+        <div className="scene-cpu-part scene-cpu-part--lid">
+          <SceneImage src="/themes/cpu-lid.webp" sizes="(min-aspect-ratio: 16/9) 26vw, 46vh" />
+        </div>
       </div>}
       {theme === 'fiber-patch-bay' && <>
-        <div className="scene-fiber-panel" />
-        <div className="scene-fiber-cables" />
+        <div className="scene-fiber-panel scene-preview">
+          <SceneImage src="/themes/fiber-bay.webp" sizes="(min-aspect-ratio: 16/9) 116vw, 205vh" />
+        </div>
+        <div className="scene-fiber-cables">
+          <SceneImage src="/themes/fiber-cables.webp" sizes="(min-aspect-ratio: 16/9) 107vw, 145vh" />
+        </div>
       </>}
     </div>
   )

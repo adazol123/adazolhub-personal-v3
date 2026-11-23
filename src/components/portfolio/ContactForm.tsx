@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react'
 import { publicEmail } from '@/lib/portfolio-content'
 import { contactDraftHref, contactLimits, validateContactFields, type ContactErrors, type ContactFields } from '@/lib/portfolio-contact'
+import { Skeleton } from './Skeleton'
 import styles from './ContactForm.module.css'
 
 const sendError = 'I couldn’t confirm your message was sent. Please try again or email me directly.'
@@ -145,7 +146,7 @@ export default function ContactForm({ enabled }: { enabled: boolean }) {
         </div>
         <button className={styles.submit} type="submit" aria-disabled={sending || undefined}>
           {sending ? 'Sending…' : enabled ? 'Send message' : 'Open email draft'}
-          <ArrowRight size={18} aria-hidden="true" />
+          {sending ? <Skeleton className={styles.sendingIndicator} /> : <ArrowRight size={18} aria-hidden="true" />}
         </button>
       </fieldset>
       <p role="alert" className={styles.alert}>{problem}</p>

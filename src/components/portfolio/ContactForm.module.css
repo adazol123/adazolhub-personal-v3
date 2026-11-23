@@ -149,6 +149,8 @@
   cursor: wait;
 }
 
+.submit .sendingIndicator { width: 18px; height: .6rem; background: currentColor; }
+
 .draftButton {
   min-height: 2.75rem;
   border: 0;
