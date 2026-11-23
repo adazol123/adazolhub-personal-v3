@@ -9,6 +9,7 @@ import { projectPath, siteOrigin } from '@/lib/portfolio-content'
 import { getSiteContent } from '@/lib/site-content-store'
 import './globals.css'
 import './portfolio.css'
+import './atlas.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
@@ -28,7 +29,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <JumpLink className="skip-link" href="#main-content">Skip to content</JumpLink>
         <header className="site-header">
           <div className="site-shell site-header-row">
-            <Link href="/" className="site-mark" aria-label="Adazol home">adazol<span>.</span></Link>
+            <Link href="/" className="site-mark" aria-label="Adazol home"><span className="brand-symbol" aria-hidden="true">a</span>adazol<span className="brand-dot">.</span></Link>
             <PortfolioNavigation placement="desktop" />
             <HeaderContact />
           </div>
@@ -39,7 +40,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <div className="site-shell">
             <div className="site-footer-main">
               <div>
-                <Link href="/" className="site-mark">adazol<span>.</span></Link>
+                <Link href="/" className="site-mark"><span className="brand-symbol" aria-hidden="true">a</span>adazol<span className="brand-dot">.</span></Link>
                 <p>{site.footerName} <span className="separator-dot">·</span> {site.footerRole}</p>
               </div>
               <nav aria-label="More about Daniel" className="site-footer-links">

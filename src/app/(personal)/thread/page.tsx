@@ -12,7 +12,11 @@ export default async function ThreadsPage() {
         <h1>{notes.title} <em>{notes.titleAccent}</em></h1>
         <p>{notes.introduction}</p>
       </header>
-      <div className="thread-list">
+      <div className="notes-reading">
+        {notes.entries.length > 1 && <nav aria-label="Field notes index">
+          {notes.entries.map(note => <a href={'#' + note.slug} key={note.slug}>{note.title}</a>)}
+        </nav>}
+        <div className="thread-list">
         {!notes.entries.length && <p>{notes.emptyMessage}</p>}
         {notes.entries.map(note => <article className="reading-body reading-card" id={note.slug} key={note.slug} aria-labelledby={`${note.slug}-heading`} tabIndex={-1}>
           <p className="eyebrow">{note.topic}</p>
@@ -20,6 +24,7 @@ export default async function ThreadsPage() {
           {note.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
           <Link className="text-link" href={note.link.href}>{note.link.label}</Link>
         </article>)}
+        </div>
       </div>
     </div>
   )

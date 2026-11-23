@@ -1,9 +1,10 @@
 import Link from 'next/link'
-import { ArrowDown, ArrowUpRight } from 'lucide-react'
+import { AudioLines, Compass, MapPin, Mouse } from 'lucide-react'
 import AskDan from '@/components/portfolio/AskDan'
 import GitHubActivityOverview from '@/components/portfolio/GitHubActivityOverview'
 import JumpLink from '@/components/portfolio/JumpLink'
 import Portrait from '@/components/portfolio/Portrait'
+import TerrainStudy from '@/components/portfolio/TerrainStudy'
 import WorkList from '@/components/portfolio/WorkList'
 import { getSiteContent } from '@/lib/site-content-store'
 
@@ -13,32 +14,39 @@ export default async function Home() {
   const { landing, notes, site, work } = await getSiteContent()
   return (
     <>
-      <section className="portfolio-hero" data-portrait={landing.showPortrait} aria-labelledby="intro-title">
-        <div className="hero-copy">
-          <p className="eyebrow hero-kicker">{landing.role} <span aria-hidden="true">/</span> {landing.location}</p>
-          <h1 id="intro-title">{landing.firstName} <em>{landing.lastName}</em></h1>
-          <p className="hero-description">{landing.introduction}</p>
+      <section className="atlas-hero" aria-labelledby="intro-title">
+        <div className="atlas-intro">
+          <p className="atlas-kicker"><span aria-hidden="true" />{landing.role}</p>
+          <h1 id="intro-title"><span>{landing.firstName}</span> <em>{landing.lastName}</em></h1>
+          <p className="atlas-description">{landing.introduction}</p>
           <div className="hero-actions">
-            <JumpLink className="portfolio-button" href="#featured-work" smooth>{landing.workButton} <ArrowDown aria-hidden="true" size={16} /></JumpLink>
-            <JumpLink className="quiet-link" href="#ask-dan" smooth>{landing.assistantButton} <ArrowDown aria-hidden="true" size={15} /></JumpLink>
+            <JumpLink className="portfolio-button" href="#featured-work" smooth><Compass size={17} aria-hidden="true" />{landing.workButton}</JumpLink>
+            <JumpLink className="quiet-link" href="#ask-dan" smooth><AudioLines size={17} aria-hidden="true" />{landing.assistantButton}</JumpLink>
           </div>
-          <Link className="hero-availability" href="/availability"><span aria-hidden="true" />{site.availability}</Link>
         </div>
-        {landing.showPortrait && <div className="hero-portrait"><Portrait /></div>}
-        <div className="home-assistant"><AskDan /></div>
+        <TerrainStudy />
       </section>
-      <section className="editorial-section" aria-labelledby="featured-work">
+      <div className="field-strip">
+        <div><span><MapPin size={14} aria-hidden="true"/>{landing.location}</span>
+          <Link className="field-status" href="/availability"><i aria-hidden="true"/>{site.availability}</Link></div>
+        <JumpLink href="#featured-work" smooth><Mouse size={14} aria-hidden="true"/> Scroll to work</JumpLink>
+      </div>
+      <section className="editorial-section work-section" aria-labelledby="featured-work">
         <div className="section-heading">
           <h2 id="featured-work" tabIndex={-1}>{landing.selectedWorkHeading}</h2>
-          <Link className="quiet-link" href="/portfolio">{landing.portfolioLink} <ArrowUpRight aria-hidden="true" size={16} /></Link>
+          <Link className="index-link" href="/portfolio">{landing.portfolioLink}</Link>
         </div>
         <WorkList work={work} />
       </section>
+      <div className="assistant-desk" data-portrait={landing.showPortrait}>
+        {landing.showPortrait && <Portrait />}
+        <AskDan />
+      </div>
       {landing.showActivity && <GitHubActivityOverview />}
       {landing.showNotes && notes.entries.length > 0 && <section className="editorial-section" aria-labelledby="field-notes">
         <div className="section-heading">
           <h2 id="field-notes">{landing.notesHeading}</h2>
-          <Link className="quiet-link" href="/thread">{landing.notesLink} <ArrowUpRight aria-hidden="true" size={16} /></Link>
+          <Link className="index-link" href="/thread">{landing.notesLink}</Link>
         </div>
         <ul className="note-index">
           {notes.entries.map(note => <li key={note.slug}>

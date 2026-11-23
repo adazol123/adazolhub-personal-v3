@@ -1,50 +1,32 @@
 import { CalendarSkeleton, Skeleton, SkeletonLines, SkeletonRegion } from './Skeleton'
-import portraitStyles from './Portrait.module.css'
 import contactStyles from './ContactForm.module.css'
 
 export function WorkSkeleton() {
   return (
-    <div className="work-grid">
-      {[0, 1, 2].map(index => (
-        <div key={index}>
-          <div className={`work-card ${index === 0 ? 'work-card-featured' : 'work-card-compact'}`} data-cover="true">
-            <div className="work-cover"><Skeleton className="skeleton-fill" /></div>
-            <div className="work-card-copy">
-              <Skeleton className="skeleton-short" />
-              <Skeleton className="skeleton-subtitle" />
-              <SkeletonLines />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function AssistantSkeleton() {
-  return (
-    <div className="reading-card skeleton-stack">
-      <Skeleton className="skeleton-subtitle" />
-      <SkeletonLines />
-      <Skeleton className="skeleton-field" />
-    </div>
+    <ul className="project-gallery" aria-hidden="true">
+      {[0, 1, 2].map(index => <li key={index} className="project-entry">
+        <div className="project-art"><Skeleton className="skeleton-fill" /></div>
+        <div className="project-meta"><Skeleton className="skeleton-short" /></div>
+        <Skeleton className="skeleton-subtitle" /><SkeletonLines />
+      </li>)}
+    </ul>
   )
 }
 
 export function HomeSkeleton() {
   return (
     <SkeletonRegion label="Loading home">
-      <div className="portfolio-hero">
-        <div className="hero-copy skeleton-stack">
+      <div className="atlas-hero">
+        <div className="atlas-intro skeleton-stack">
           <Skeleton className="skeleton-short" />
+          <Skeleton className="skeleton-hero-title" />
           <Skeleton className="skeleton-hero-title" />
           <SkeletonLines />
           <div className="hero-actions"><Skeleton className="skeleton-button" /><Skeleton className="skeleton-button" /></div>
-          <Skeleton className="skeleton-short" />
         </div>
-        <div className="hero-portrait"><div className={portraitStyles.frame}><Skeleton className="skeleton-fill" /></div></div>
-        <div className="home-assistant"><AssistantSkeleton /></div>
+        <div className="terrain-study terrain-placeholder"><Skeleton className="skeleton-fill" /></div>
       </div>
+      <div className="field-strip"><Skeleton className="skeleton-short" /></div>
       <div className="editorial-section">
         <div className="section-heading"><Skeleton className="skeleton-subtitle" /><Skeleton className="skeleton-button" /></div>
         <WorkSkeleton />

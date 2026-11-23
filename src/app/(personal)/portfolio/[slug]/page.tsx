@@ -1,58 +1,69 @@
 import type { Metadata } from 'next'
 import SkeletonImage from '@/components/portfolio/SkeletonImage'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { projectPath, shouldOptimizeProjectImage } from '@/lib/portfolio-content'
 import { getSiteContent } from '@/lib/site-content-store'
 
 type Props = { params: Promise<{ slug: string }> }
 
-async function findPublishedProject(params: Props['params']) {
+async function getProjectNavigation(params: Props['params']) {
   const { slug } = await params
   const { work } = await getSiteContent()
-  return work.projects.find(project => project.slug === slug)
+  const index = work.projects.findIndex(project => project.slug === slug)
+  return {
+    project: work.projects[index],
+    nextProject: work.projects.length > 1 ? work.projects[(index + 1) % work.projects.length] : undefined
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = await findPublishedProject(params)
+  const { project } = await getProjectNavigation(params)
   if (!project) return {}
   return { title: project.name, description: project.summary, alternates: { canonical: projectPath(project.slug) } }
 }
 
 export default async function CaseStudyPage({ params }: Props) {
-  const project = await findPublishedProject(params)
+  const { project, nextProject } = await getProjectNavigation(params)
   if (!project) notFound()
+  const sections = [
+    { label: 'The problem', id: 'problem', text: project.problem },
+    { label: 'My contribution', id: 'contribution', text: project.implementation },
+    { label: 'Outcome', id: 'outcome', text: project.outcome }
+  ]
   return (
-    <article className="interior-page">
-      <Link className="text-link back-link" href="/portfolio"><ArrowLeft aria-hidden="true" size={16} /> All work</Link>
-      <header className="page-heading">
-        <p className="eyebrow">{project.category}</p>
-        <h1>{project.name}</h1>
-        <p>{project.summary}</p>
+    <article className="interior-page study-page">
+      <Link className="index-link" href="/portfolio">All work</Link>
+      <header className="study-intro">
+        <div className="page-heading">
+          <p className="atlas-kicker"><span aria-hidden="true" />{project.category}</p>
+          <h1>{project.name}</h1>
+          <p>{project.summary}</p>
+        </div>
+        <div className="study-facts">
+          <dl><dt>My role</dt><dd>{project.role}</dd></dl>
+          {project.stack.length > 0 && <dl><dt>Stack</dt><dd><ul>{project.stack.map(tool => <li key={tool}>{tool}</li>)}</ul></dd></dl>}
+          {project.links.map((link, index) => <Link className="index-link" href={link.href} key={index}>{link.label}</Link>)}
+        </div>
       </header>
       {project.image && <div className="case-study-cover skeleton-media">
-        <SkeletonImage src={project.image} alt={project.alt} fill sizes="(max-width: 960px) 94vw, 900px"
+        <SkeletonImage src={project.image} alt={project.alt} fill sizes="(min-width: 1200px) 1100px, 94vw"
           priority unoptimized={!shouldOptimizeProjectImage(project.image)} />
       </div>}
-      <div className="reading-layout">
-        <div className="reading-body reading-card case-study-copy">
-          <h2>The problem</h2>
-          <p>{project.problem}</p>
-          <h2>My contribution</h2>
-          <p>{project.implementation}</p>
-          <h2>Outcome</h2>
-          <p>{project.outcome}</p>
+      <div className="study-reading">
+        <nav aria-label="In this case study">
+          {sections.map(section => <a key={section.id} className="index-link" href={'#' + section.id}>{section.label}</a>)}
+        </nav>
+        <div className="study-chapters">
+          {sections.map(section => <section key={section.id} aria-labelledby={section.id}>
+            <h2 id={section.id} tabIndex={-1}>{section.label}</h2>
+            <p>{section.text}</p>
+          </section>)}
         </div>
-        <aside className="detail-aside" aria-label="Project details">
-          <dl><dt className="eyebrow">My role</dt><dd>{project.role}</dd></dl>
-          {project.stack.length > 0 && <>
-            <h2 className="eyebrow">Stack</h2>
-            <ul className="plain-list">{project.stack.map((tool, index) => <li key={index}>{tool}</li>)}</ul>
-          </>}
-          {project.links.map((link, index) => <Link className="text-link" href={link.href} key={index}>{link.label}</Link>)}
-        </aside>
       </div>
+      {nextProject && <Link className="study-next" href={projectPath(nextProject.slug)}>
+        <span>Next case study</span><strong>{nextProject.name}</strong>
+      </Link>}
     </article>
   )
 }

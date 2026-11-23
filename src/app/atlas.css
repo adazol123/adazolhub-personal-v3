@@ -1,0 +1,222 @@
+/* The public portfolio shares the colors of the selected scene with its plot. */
+.portfolio-site {
+  --atlas-line: color-mix(in srgb, var(--portfolio-muted) 22%, transparent);
+  --atlas-faint: color-mix(in srgb, var(--portfolio-muted) 10%, transparent);
+  --atlas-label: 'Portfolio Tektur', ui-monospace, monospace;
+  --atlas-type: Arial, Helvetica, sans-serif;
+  --portfolio-radius: .75rem;
+  --portfolio-field-radius: .45rem;
+  --portfolio-raised-shadow: none;
+  --portfolio-inset-shadow: none;
+  font-family: var(--atlas-type);
+}
+.ambient-background { opacity: .22; }
+body:has(.atlas-hero) .ambient-background { opacity: .08; }
+.site-shell { width: min(calc(100% - 2 * var(--safe-gutter)), 1320px); }
+.site-header { border-color: var(--atlas-line); }
+.site-header-row { min-height: 4.7rem; }
+.site-mark {
+  gap: 0;
+  font: 700 1.55rem/1 var(--atlas-type);
+  letter-spacing: -.08em;
+}
+.site-mark .brand-symbol {
+  display: grid;
+  place-items: center;
+  width: 1.22rem;
+  height: 1.55rem;
+  margin-right: .48rem;
+  background: repeating-linear-gradient(to top, var(--portfolio-heading-tint) 0 2px, transparent 2px 4px);
+  clip-path: polygon(36% 0, 66% 0, 100% 100%, 74% 100%, 52% 29%, 28% 100%, 0 100%);
+  font-size: 0;
+}
+.site-mark .brand-dot { color: var(--portfolio-heading-tint); }
+.site-nav-desktop { background: none; gap: .65rem; }
+.site-nav-desktop a { position: relative; border-radius: .25rem; font-weight: 500; padding-inline: .6rem; }
+.site-nav-desktop a[aria-current] { color: var(--portfolio-heading-tint); background: transparent; }
+.site-nav-desktop a::after {
+  content: ''; position: absolute; height: 1px; bottom: 4px; inset-inline: .65rem;
+  background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .2s ease;
+}
+.site-nav-desktop a:is(:hover, [aria-current])::after { transform: scaleX(1); }
+.site-contact-link { border: 1px solid var(--atlas-line); padding-inline: 1.15rem; background: transparent; }
+.contact-mark { width: .5rem; height: .5rem; border-radius: 50%; border: 1px solid var(--portfolio-heading-tint); }
+.portfolio-button { background: var(--portfolio-heading-tint); color: var(--portfolio-canvas); }
+.portfolio-button:hover { background: var(--portfolio-paper); }
+.quiet-link { border: 1px solid var(--atlas-line); background: transparent; }
+.atlas-hero {
+  display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); align-items: center;
+  gap: clamp(2rem, 5vw, 5rem); padding-block: clamp(3.5rem, 5.6vw, 6rem);
+}
+.atlas-intro { min-width: 0; }
+.atlas-kicker, .terrain-study figcaption, .field-strip, .project-meta, .terrain-options, .index-link {
+  font-family: var(--atlas-label); font-size: .77rem; font-weight: 500;
+}
+.atlas-kicker {
+  display: flex; gap: .75rem; align-items: center; color: var(--portfolio-muted);
+  text-transform: uppercase; letter-spacing: .16em; margin-bottom: 1.5rem;
+}
+.atlas-kicker > span { width: 2.1rem; height: 1px; background: var(--portfolio-heading-tint); }
+.atlas-intro h1 {
+  font: 400 clamp(6rem, 9.4vw, 9rem)/.87 var(--portfolio-display);
+  letter-spacing: -.079em; overflow-wrap: anywhere;
+}
+.atlas-intro h1 > * { display: block; }
+.atlas-intro h1 em { padding: 0 .07em .05em 0; }
+.atlas-description { max-width: 43ch; margin-top: 1.45rem; font-size: clamp(1rem, 1.23vw, 1.15rem); line-height: 1.62; color: var(--portfolio-muted); text-wrap: pretty; }
+.atlas-hero .hero-actions { margin-top: 1.45rem; gap: .65rem; }
+.hero-actions :is(.portfolio-button, .quiet-link) { padding-inline: 1.2rem; }
+.terrain-study {
+  position: relative; margin: 0; min-width: 0; isolation: isolate;
+  background-color: color-mix(in srgb, var(--portfolio-canvas) 93%, var(--portfolio-heading-tint));
+  border: 1px solid var(--atlas-line); border-radius: .75rem;
+  background-image: radial-gradient(ellipse at 50% 50%, transparent 15%, color-mix(in srgb, var(--portfolio-inset) 56%, transparent) 100%),
+    linear-gradient(var(--atlas-faint) 1px, transparent 1px), linear-gradient(90deg,var(--atlas-faint) 1px, transparent 1px);
+  background-size: 100% 100%, 2.1rem 2.1rem, 2.1rem 2.1rem;
+  background-position: center;
+}
+.terrain-study::before, .terrain-study::after {
+  content: ''; position: absolute; width: .65rem; height: .65rem; top: 48%;
+  background: linear-gradient(var(--portfolio-muted), var(--portfolio-muted)) center / 1px 100% no-repeat,
+    linear-gradient(var(--portfolio-muted), var(--portfolio-muted)) center / 100% 1px no-repeat;
+  opacity: .75; pointer-events: none;
+}
+.terrain-study::before { left: .8rem; }
+.terrain-study::after { right: .8rem; }
+.terrain-study figcaption { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem 0; }
+.terrain-study figcaption > span:first-child { display: inline-flex; align-items: center; gap: .55rem; color: var(--portfolio-paper); }
+.terrain-format { text-transform: uppercase; font-size: .68rem; letter-spacing: .12em; color: var(--portfolio-muted); }
+.terrain-plot { cursor: grab; touch-action: pan-y; user-select: none; }
+.terrain-plot:active { cursor: grabbing; }
+.terrain-plot:focus-visible { outline-offset: -4px; }
+.terrain-surface { display: block; width: 100%; height: auto; }
+.plot-highlight { stop-color: var(--portfolio-paper); }
+.plot-mid { stop-color: var(--portfolio-heading-tint); }
+.plot-shadow { stop-color: var(--portfolio-success); }
+.plot-face { fill: color-mix(in srgb, var(--portfolio-inset) 92%, var(--portfolio-heading-tint)); }
+.terrain-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 0 1.15rem 1.05rem; gap: .45rem; }
+.terrain-options { display: inline-flex; padding: 3px; background: var(--portfolio-inset); border: 1px solid var(--atlas-line); border-radius: 99px; }
+.terrain-options button { position: relative; isolation: isolate; padding: .4rem .82rem; min-height: 44px; cursor: pointer; color: var(--portfolio-muted); border-radius: 99px; }
+.terrain-options button[aria-pressed=true] { color: var(--portfolio-paper); }
+.terrain-selection { position: absolute; inset: 0; border-radius: inherit; background: var(--portfolio-raised); border: 1px solid var(--atlas-line); z-index: -1; }
+.terrain-reset { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--atlas-line); background: var(--portfolio-inset); cursor: pointer; }
+.terrain-reset:hover, .terrain-options button:hover { color: var(--portfolio-heading-tint); }
+.terrain-help { position: absolute; top: 100%; right: 0; display: flex; align-items: center; gap: .4rem; font: .75rem/1.5 var(--atlas-label); color: var(--portfolio-muted); margin: .52rem 0 0; }
+.field-strip, .field-strip > div, .field-strip :is(a, span) { display: flex; align-items: center; }
+.field-strip { justify-content: space-between; gap: 1rem; min-height: 3.4rem; border-block: 1px solid var(--atlas-line); color: var(--portfolio-muted); }
+.field-strip > div { column-gap: clamp(1rem, 3vw, 3rem); flex-wrap: wrap; }
+.field-strip :is(a, span) { gap: .5rem; min-height: 44px; }
+.field-strip a:hover { color: var(--portfolio-paper); }
+.field-status i { width: .45rem; height: .45rem; background: var(--portfolio-success); border-radius: 50%; }
+.editorial-section { margin-block: clamp(3rem, 5.5vw, 5.8rem); }
+.section-heading { align-items: end; margin-bottom: 1.7rem; }
+.section-heading h2 { font-size: clamp(2.6rem, 4.3vw, 4.1rem); }
+.index-link { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 5px !important; }
+.index-link:hover { color: var(--portfolio-heading-tint); }
+.project-gallery { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: clamp(1rem, 2vw, 2rem); list-style: none; padding: 0; }
+.project-gallery li { min-width: 0; }
+.project-entry { display: block; height: 100%; border-top: 1px solid var(--atlas-line); padding-top: .8rem; }
+.project-art { display: grid; place-items: center; position: relative; isolation: isolate; overflow: hidden; aspect-ratio: 1.8; background: var(--portfolio-raised); border-radius: .35rem; }
+.project-art img { width: 100%; height: 100%; object-fit: contain; transition: transform .45s ease; }
+.project-entry:is(:hover,:focus-visible) .project-art img { transform: scale(1.045); }
+.project-cue { position: absolute; bottom: .65rem; right: .65rem; background: var(--portfolio-paper); color: var(--portfolio-inset); padding: .4rem .75rem; border-radius: 99px; font-size: .78rem; opacity: 0; transform: translateY(5px); transition: opacity .2s, transform .2s; }
+.project-entry:is(:hover,:focus-visible) .project-cue { opacity: 1; transform: translateY(0); }
+.project-meta { display: flex; color: var(--portfolio-heading-tint); text-transform: uppercase; letter-spacing: .1em; margin: 1.1rem 0 .55rem; font-size: .72rem; }
+.project-entry :is(h2,h3) { font: 400 clamp(1.75rem, 2.6vw, 2.5rem)/1.04 var(--portfolio-display); letter-spacing: -.05em; }
+.project-entry p { color: var(--portfolio-muted); margin-top: .55rem; line-height: 1.5; }
+.assistant-desk { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0,1.2fr); align-items: center; gap: clamp(1.15rem, 4vw, 4rem); padding-block: clamp(2rem, 4vw, 4rem); border-block: 1px solid var(--atlas-line); }
+.assistant-desk[data-portrait=false] { grid-template-columns: minmax(0, 50rem); justify-content: center; }
+.reading-card, .detail-aside { border: 1px solid var(--atlas-line); }
+.page-heading { border-bottom: 1px solid var(--atlas-line); padding-bottom: 1.6rem; }
+.interior-page .page-heading h1 { font-size: clamp(3.4rem, 7vw, 6.6rem); }
+.note-index { background: transparent; padding-inline: 0; border-radius: 0; border-block: 1px solid var(--atlas-line); }
+.note-index a { padding-block: 1.2rem; }
+.footer-invitation { padding-block: 3rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .atlas-intro > * { animation: atlas-enter .65s cubic-bezier(.2,.75,.2,1) backwards; }
+  .atlas-intro h1 { animation-delay: .04s; }
+  .atlas-description { animation-delay: .09s; }
+  .atlas-intro .hero-actions { animation-delay: .14s; }
+  .terrain-study { animation: atlas-enter .8s cubic-bezier(.2,.75,.2,1) backwards; }
+  .portfolio-button, .quiet-link, .terrain-reset { transition: transform .18s ease, background .18s ease; }
+  .portfolio-button:active, .quiet-link:active, .terrain-reset:active { transform: scale(.97); }
+}
+@keyframes atlas-enter { from { opacity: .35; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (min-width: 42.5rem) { .portfolio-site { --portfolio-gutter: clamp(2rem, 4.5vw, 5rem); } }
+@media (max-width: 58rem) {
+  .atlas-hero { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 1.6rem; }
+  .atlas-intro h1 { font-size: clamp(4.7rem, 9.5vw, 6rem); }
+  .site-nav-desktop { gap: 0; }
+  .project-gallery { gap: 1rem; }
+}
+@media (max-width: 47rem) {
+  .atlas-hero { grid-template-columns: minmax(0, 1fr); padding-block: 2.6rem 3rem; gap: 1.8rem; }
+  .atlas-intro h1 { font-size: clamp(5rem, 15vw, 7rem); }
+  .atlas-description { max-width: 53ch; margin-top: 1rem; }
+  .atlas-kicker { margin-bottom: 1.1rem; }
+  .atlas-intro h1 > * { display: inline; }
+  .terrain-study { width: 100%; }
+  .terrain-plot { max-width: 33rem; margin-inline: auto; }
+  .project-gallery { grid-template-columns: repeat(2,minmax(0,1fr)); row-gap: 2rem; }
+  .assistant-desk { grid-template-columns: 1fr; }
+  .assistant-desk figure { width: min(100%, 22rem); justify-self: center; }
+}
+@media (max-width: 34rem) {
+  .site-header-row { min-height: 3.8rem; }
+  .project-gallery { grid-template-columns: minmax(0,1fr); }
+  .atlas-intro h1 > * { display: block; }
+  .atlas-intro h1 { font-size: clamp(5.4rem, 19vw, 6.5rem); }
+  .terrain-study figcaption { padding: .8rem .9rem 0; }
+  .terrain-toolbar { padding: 0 .75rem .65rem; }
+  .terrain-options button { padding-inline: .67rem; min-height: 44px; }
+  .field-strip { font-size: .72rem; gap: .5rem; }
+  .field-strip > a { display: none; }
+  .field-strip > div { width: 100%; justify-content: space-between; }
+  .section-heading { margin-bottom: 1rem; }
+  .section-heading h2 { font-size: 2.55rem; }
+  .hero-actions :is(.portfolio-button,.quiet-link) { padding-inline: .9rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav-desktop a::after, .project-art img, .project-cue { transition: none; }
+  .project-entry:is(:hover,:focus-visible) .project-art img { transform: none; }
+}
+.terrain-placeholder { aspect-ratio: 1.4; overflow: hidden; }
+.study-page { width: min(100%, 69rem); margin-inline: auto; }
+.study-intro { display: grid; grid-template-columns: minmax(0,1.8fr) minmax(0,1fr); align-items: center; gap: 3rem; margin: 1.2rem 0 2.4rem; }
+.study-intro .page-heading { margin: 0; padding-bottom: 0; border: 0; }
+.study-intro .atlas-kicker { color: var(--portfolio-heading-tint); }
+.study-facts { border-left: 1px solid var(--atlas-line); padding-left: 1.5rem; }
+.study-facts dl + dl { margin-top: 1rem; }
+.study-facts dt, .study-next span { font: .78rem/1.4 var(--atlas-label); letter-spacing: .07em; color: var(--portfolio-muted); text-transform: uppercase; }
+.study-facts dd { margin-top: .4rem; }
+.study-facts ul { display: flex; flex-wrap: wrap; gap: .4rem; }
+.study-facts li { padding: .1rem .65rem; border: 1px solid var(--atlas-line); border-radius: 99px; font-size: .83rem; }
+.study-page .case-study-cover { margin: 0; max-width: none; }
+.study-reading { display: grid; grid-template-columns: minmax(11rem,.65fr) minmax(0,2fr); gap: 2rem; margin-block: 3rem; }
+.study-reading nav { position: sticky; align-self: start; top: 1.2rem; display: grid; justify-items: start; }
+.study-chapters section { padding: 1.5rem 0; border-top: 1px solid var(--atlas-line); }
+.study-chapters h2 { font: 400 clamp(2rem,4vw,3rem)/1.1 var(--portfolio-display); letter-spacing: -.05em; }
+.study-chapters p { margin-top: .8rem; max-width: 65ch; color: var(--portfolio-muted); white-space: pre-line; }
+.study-next { display: flex; flex-wrap: wrap; gap: .5rem 2rem; align-items: center; justify-content: space-between; padding: 1.5rem 0; border-block: 1px solid var(--atlas-line); }
+.study-next strong { font: italic 400 clamp(1.8rem,4vw,3.5rem)/1.1 var(--portfolio-display); color: var(--portfolio-heading-tint); letter-spacing: -.04em; }
+.study-next:hover strong { text-decoration: underline; text-decoration-thickness: 1px; }
+@media (max-width: 42.499rem) {
+  .study-intro, .study-reading { grid-template-columns: 1fr; gap: 1.4rem; }
+  .study-facts { padding: 1rem 0 0; border-left: none; border-top: 1px solid var(--atlas-line); }
+  .study-reading { margin-block: 1.5rem; }
+  .study-reading nav { position: static; display: flex; flex-wrap: wrap; gap: 0 1.2rem; }
+}
+.notes-reading:has(nav) { display: grid; grid-template-columns: minmax(10rem,.65fr) minmax(0,2fr); gap: clamp(1.25rem,3.5vw,3.5rem); }
+.notes-reading nav { display: grid; align-self: start; position: sticky; top: 1.2rem; border-top: 1px solid var(--atlas-line); }
+.notes-reading nav a { display: flex; align-items: center; min-height: 44px; padding-block: .65rem; border-bottom: 1px solid var(--atlas-line); font-size: .92rem; }
+.notes-reading nav a:hover { color: var(--portfolio-heading-tint); }
+.thread-list .reading-card { background: transparent; border: 0; padding: .25rem 0 1.5rem; border-radius: 0; }
+.thread-list .reading-card + .reading-card { border-top: 1px solid var(--atlas-line); padding-top: 1.5rem; }
+.thread-list .eyebrow, .career-list .eyebrow { color: var(--portfolio-heading-tint); }
+.career-list { margin-left: .25rem; }
+.career-list li { position: relative; padding: .15rem 0 1.5rem 1.2rem; border: 0; border-left: 1px solid var(--atlas-line); }
+.career-list li::before { content: ''; position: absolute; left: -.22rem; top: .9rem; border-radius: 50%; width: .38rem; height: .38rem; background: var(--portfolio-heading-tint); }
+@media (max-width: 42.499rem) {
+  .notes-reading:has(nav) { grid-template-columns: 1fr; }
+  .notes-reading nav { position: static; }
+}

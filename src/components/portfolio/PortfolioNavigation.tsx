@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowUpRight, Briefcase, ChartNoAxesColumn, FileText, NotebookPen, UserRound } from 'lucide-react'
+import { Briefcase, ChartNoAxesColumn, FileText, NotebookPen, UserRound } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -36,7 +36,7 @@ export function HeaderContact() {
 
   return (
     <Link href="/contact" className="site-contact-link" aria-current={pathname === '/contact' ? 'page' : undefined}>
-      Get in touch <ArrowUpRight aria-hidden="true" size={15} />
+      <span aria-hidden="true" className="contact-mark" /> Get in touch
     </Link>
   )
 }
