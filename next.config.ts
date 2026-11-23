@@ -1,48 +1,23 @@
 import type { NextConfig } from 'next'
+import { PHASE_DEVELOPMENT_SERVER } from 'next/constants'
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  images: {
-    remotePatterns: [
-      { hostname: 'localhost' },
-      { hostname: 'adazol.com' },
-      { hostname: 'ik.imagekit.io' }
-    ]
+const nextConfig = (phase: string): NextConfig => ({
+  distDir: phase === PHASE_DEVELOPMENT_SERVER ? '.next-dev' : '.next',
+  async headers() {
+    return [{
+      source: '/admin/:path*',
+      headers: [
+        { key: 'Cache-Control', value: 'private, no-store' },
+        { key: 'Referrer-Policy', value: 'no-referrer' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-Robots-Tag', value: 'noindex, nofollow' }
+      ]
+    }]
   },
-
-  async rewrites () {
-    return [
-      {
-        source: '/_/assets/:path',
-        destination: `${process.env.MEDIA_URL}/assets/:path`
-      },
-      {
-        source: '/resume',
-        destination: process.env.RESUME_URL
-      },
-      {
-        source: '/old/:path',
-        destination: `${process.env.DOMAIN_OLD_URL}/:path`
-      },
-      {
-        source: '/_/chat',
-        destination: `${process.env.API_URL}/chat`
-      }
-    ]
-  },
-  headers: async () => {
-    return [
-      {
-        source: '/sw.js',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=0, must-revalidate'
-          }
-        ]
-      }
-    ]
+  async redirects() {
+    const legacy = process.env.DOMAIN_OLD_URL || 'https://daniel-lozada.web.app'
+    return [{ source: '/old/:path*', destination: `${legacy.replace(/\/$/, '')}/:path*`, permanent: false }]
   }
-}
+})
 
 export default nextConfig

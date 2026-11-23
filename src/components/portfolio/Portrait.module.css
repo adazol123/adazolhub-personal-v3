@@ -1,0 +1,131 @@
+.frame {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 28 / 25;
+  border: 1px solid var(--portfolio-rule);
+  border-radius: var(--portfolio-radius);
+  background:
+    radial-gradient(ellipse at 50% 34%, var(--color-forest-green-700), transparent 68%),
+    linear-gradient(145deg, var(--portfolio-raised), var(--portfolio-inset) 80%);
+  box-shadow: var(--portfolio-raised-shadow);
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, #c5e1ca1a 1px, transparent 1px),
+    linear-gradient(#c5e1ca1a 1px, transparent 1px);
+  background-position: center;
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at 50% 50%, transparent 19%, #000 100%);
+  pointer-events: none;
+}
+
+.orbit {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  width: 74%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  border: 1px solid #c5e1ca38;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orbit::before,
+.orbit::after {
+  position: absolute;
+  border: 1px solid #c5e1ca26;
+  border-radius: 50%;
+  content: "";
+}
+
+.orbit::before {
+  inset: 6%;
+  border-style: dashed;
+}
+
+.orbit::after {
+  inset: 13%;
+}
+
+.still,
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.still {
+  object-fit: fill;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .still {
+    transform:
+      perspective(720px)
+      translate(
+        calc(var(--portrait-gaze-x, 0) * 12px),
+        calc(var(--portrait-gaze-y, 0) * -8px)
+      )
+      rotateX(calc(var(--portrait-gaze-y, 0) * -6deg))
+      rotateY(calc(var(--portrait-gaze-x, 0) * 9deg));
+    transform-origin: center 65%;
+  }
+}
+
+.canvas {
+  visibility: hidden;
+}
+
+.canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas[data-visible="true"] {
+  visibility: visible;
+}
+
+.still[data-hidden="true"] {
+  visibility: hidden;
+}
+
+.markings {
+  position: absolute;
+  inset: 3.8%;
+  border: 1px solid #c5e1ca2e;
+  border-radius: var(--portfolio-field-radius);
+  pointer-events: none;
+}
+
+.markings::before,
+.markings::after {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: var(--portfolio-heading-tint);
+  border-style: solid;
+  content: "";
+}
+
+.markings::before {
+  inset: 0 auto auto 0;
+  border-width: 1px 0 0 1px;
+  border-top-left-radius: var(--portfolio-field-radius);
+}
+
+.markings::after {
+  inset: auto 0 0 auto;
+  border-width: 0 1px 1px 0;
+  border-bottom-right-radius: var(--portfolio-field-radius);
+}

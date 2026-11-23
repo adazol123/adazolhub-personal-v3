@@ -1,0 +1,106 @@
+.heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+}
+
+.heading h1 { max-width: none; }
+
+.heading p {
+  margin-top: 1rem;
+  max-width: 53ch;
+  color: var(--portfolio-muted);
+  text-wrap: pretty;
+}
+
+.panel, .details {
+  padding: clamp(1rem, 3vw, 2rem);
+  border-radius: var(--portfolio-radius);
+  background: var(--portfolio-raised);
+  box-shadow: var(--portfolio-raised-shadow);
+}
+
+.calendarHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .3rem 1rem;
+}
+
+.calendarHeading h2 {
+  font: 400 clamp(1.65rem, 3.5vw, 2.45rem)/1.07 var(--portfolio-display);
+  letter-spacing: -.04em;
+}
+
+.calendarHeading p, .updated {
+  color: var(--portfolio-muted);
+  font-size: .85rem;
+}
+
+.loading { min-block-size: clamp(23rem, 36vw, 30rem); }
+.loadingStatus { margin-top: .65rem; color: var(--portfolio-muted); }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.15rem 0 clamp(1.1rem, 3vw, 2rem);
+  border-radius: var(--portfolio-field-radius);
+  background: var(--portfolio-inset);
+  box-shadow: var(--portfolio-inset-shadow);
+}
+
+.stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  padding: .85rem clamp(.25rem, 1vw, .65rem) 1rem;
+  text-align: center;
+}
+
+.stats > div + div {
+  border-inline-start: 1px solid var(--portfolio-rule);
+}
+
+.stats dt { margin-top: .3rem; color: var(--portfolio-muted); font-size: clamp(.72rem, 1.5vw, .94rem); text-wrap: balance; }
+.stats dd {
+  font: 500 clamp(1.3rem, 4.8vw, 3.25rem)/1 var(--portfolio-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.045em;
+}
+
+.updated { margin-top: 1rem; }
+
+.daily {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .45rem .9rem;
+  margin-top: 1rem;
+  font-size: .875rem;
+  font-variant-numeric: tabular-nums;
+}
+.daily label { font-weight: 600; }
+.daily input {
+  min-height: 44px;
+  max-width: 100%;
+  padding: .4rem .65rem;
+  border: 1px solid var(--portfolio-rule);
+  border-radius: var(--portfolio-field-radius);
+  background: var(--portfolio-inset);
+  color: inherit;
+}
+.dailyCount { color: var(--portfolio-muted); }
+
+.details {
+  margin-top: 1rem;
+  padding-block: 0;
+}
+.details summary { padding: .8rem .25rem; cursor: pointer; font-weight: 600; }
+.details summary:hover { text-decoration: underline; }
+.details table { width: 100%; margin-bottom: .8rem; border-collapse: collapse; font-size: .88rem; }
+.details th, .details td { padding: .45rem .25rem; text-align: end; border-top: 1px solid var(--portfolio-rule); font-variant-numeric: tabular-nums; }
+.details th:first-child { text-align: start; }
+.details tbody th { font-weight: 450; }

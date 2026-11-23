@@ -1,0 +1,10 @@
+.metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .6rem;
+}
+
+.value {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

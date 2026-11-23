@@ -1,0 +1,220 @@
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  align-items: start;
+  gap: clamp(1.5rem, 5vw, 4.5rem);
+}
+
+.intro { margin-bottom: 0; }
+
+.channels {
+  max-width: 23rem;
+  margin: clamp(1.1rem, 3vw, 2.4rem) 0 0;
+}
+
+.channels > div {
+  display: grid;
+  grid-template-columns: minmax(3.75rem, 21%) minmax(0, 1fr);
+  column-gap: .5rem;
+  align-items: center;
+  padding-block: 0.2rem;
+  border-top: 1px solid var(--portfolio-rule);
+}
+
+.channels > div:last-child {
+  border-bottom: 1px solid var(--portfolio-rule);
+}
+
+.channels dt {
+  color: var(--portfolio-muted);
+  font-size: 0.875rem;
+}
+
+.channels dd {
+  margin: 0;
+}
+
+.channels a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  max-width: 100%;
+  font-weight: 600;
+  text-underline-offset: 0.23em;
+  overflow-wrap: anywhere;
+}
+
+.channels a svg {
+  flex: none;
+  color: var(--portfolio-heading-tint);
+}
+
+.channels a:hover {
+  text-decoration: underline;
+}
+
+.form {
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 1.85rem);
+  border-radius: var(--portfolio-radius);
+  background: var(--portfolio-raised);
+  box-shadow: var(--portfolio-raised-shadow);
+}
+
+.form fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.3rem 1rem;
+}
+
+.field {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  border: 1px solid var(--portfolio-rule);
+  border-radius: var(--portfolio-field-radius);
+  background: var(--portfolio-inset);
+  box-shadow: var(--portfolio-inset-shadow);
+  color: var(--portfolio-paper);
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  line-height: 1.5;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 10rem;
+}
+
+.field input[aria-invalid],
+.field textarea[aria-invalid] {
+  border-color: var(--portfolio-error);
+}
+
+.message {
+  grid-column: 1 / -1;
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 3rem;
+  margin-top: 1.4rem;
+  border: 1px solid transparent;
+  border-radius: var(--portfolio-pill);
+  background: var(--portfolio-paper);
+  color: var(--portfolio-inset);
+  font: inherit;
+  font-weight: 650;
+  padding: 0.65rem 1.1rem 0.65rem 1.3rem;
+  cursor: pointer;
+}
+
+.submit:hover:not(:disabled, [aria-disabled='true']) {
+  background: var(--portfolio-heading-tint);
+}
+
+.submit:active:not(:disabled, [aria-disabled='true']) { background: var(--portfolio-muted); }
+
+.submit:disabled {
+  background: var(--portfolio-inset);
+  color: var(--portfolio-muted);
+  cursor: default;
+}
+
+.submit[aria-disabled='true'] {
+  cursor: wait;
+}
+
+.draftButton {
+  min-height: 2.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--portfolio-paper);
+  font: inherit;
+  font-weight: 650;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.form :is(input, textarea, button, a):focus-visible,
+.channels a:focus-visible {
+  outline: 2px solid var(--portfolio-paper);
+  outline-offset: 3px;
+}
+
+.fieldError,
+.alert {
+  color: var(--portfolio-error);
+}
+
+.status { color: var(--portfolio-success); }
+
+.fieldError {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.status:not(:empty),
+.alert:not(:empty) {
+  margin: 0.75rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.unavailable {
+  margin: 0 0 1.4rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--portfolio-rule);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 53.999rem) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 460px) {
+  .channels a { font-size: .9rem; }
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

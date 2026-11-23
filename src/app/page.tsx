@@ -1,120 +1,55 @@
-import SocialCard from '@/components/ui/cards/social-card'
-import * as Icons from '@tabler/icons-react'
-import CoreCompetencies from './(personal)/(home)/_components/competencies.section'
-import { PersonSchema, PersonSchemaProps } from '@/seo/person.schema'
-import { Badge } from '@/components/shared/elements/badge'
-import { Button } from '@/components/shared/elements/button'
-import { Separator } from '@/components/shared/elements/separator'
 import Link from 'next/link'
-import { alumniPayload, infoPayload } from '@/_temp/information.temp'
-import { getServerDomain } from '@/lib/domain.parser'
-import GetInTouchSection from './(personal)/(home)/_components/get-in-touch.section'
-import ProjectSection from './(personal)/(home)/_components/projects.section'
-import ClientHeartbeat from '@/components/ui/client-heartbeat'
+import { ArrowDown, ArrowUpRight } from 'lucide-react'
+import AskDan from '@/components/portfolio/AskDan'
+import GitHubActivityOverview from '@/components/portfolio/GitHubActivityOverview'
+import JumpLink from '@/components/portfolio/JumpLink'
+import Portrait from '@/components/portfolio/Portrait'
+import WorkList from '@/components/portfolio/WorkList'
+import { getSiteContent } from '@/lib/site-content-store'
 
-const personSchema: PersonSchemaProps = {
-  name: infoPayload.name,
-  jobTitle: infoPayload.job,
-  description: infoPayload.summary,
-  familyName: infoPayload.last_name,
-  givenName: infoPayload.first_name,
-  brand: infoPayload.brand,
-  gender: infoPayload.gender,
-  sameAs: infoPayload.url_github,
-  url: infoPayload.url,
-  telephone: infoPayload.telephone,
-  nationality: infoPayload.nationality,
-  email: infoPayload.email,
-  knowsAbout: infoPayload.knows_about,
-  skills: infoPayload.skills,
-  image: infoPayload.image,
-  hasOccupation: infoPayload.occupation,
-  address: {
-    postalCode: infoPayload.address.postal_code,
-    addressRegion: infoPayload.address.region,
-    addressLocality: infoPayload.address.locality
-  },
-  alumni: alumniPayload
-}
+export const revalidate = 21600
 
-export default async function Home () {
-  const domain = await getServerDomain()
+export default async function Home() {
+  const { landing, notes, site, work } = await getSiteContent()
   return (
     <>
-      <PersonSchema {...personSchema} />
-      <ClientHeartbeat />
-      <div className='container mx-auto max-w-prose space-y-16 min-h-svh'>
-        <header
-          id='headline'
-          aria-label='Professional Overview'
-          className='grid place-content-center text-center min-h-[50dvh] sm:min-h-[60dvh] gap-1 sm:gap-2'
-        >
-          <Badge variant='secondary' className='text-xs mb-1 mx-auto'>
-            {infoPayload.job}
-          </Badge>
-          <h1 className='font-semibold text-2xl sm:text-5xl text-forest-green-700'>
-            {infoPayload.name}
-          </h1>
-          <article id='summary' className='px-4 text-center mx-auto'>
-            <p className='leading-relaxed text-sm text-neutral-400 max-w-[40ch]'>
-              {infoPayload.headline_short}
-            </p>
-          </article>
-          <div className='mx-auto mt-4 flex gap-2 items-center flex-wrap'>
-            <Button className='w-fit ' asChild>
-              <Link href='/availability'>
-                Open for work <Icons.IconArrowRight />
-              </Link>
-            </Button>
-            <Button variant='outline' className='w-fit ' asChild>
-              <Link
-                href={`${domain}/resume`}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                Resume <Icons.IconFileDownload />
-              </Link>
-            </Button>
+      <section className="portfolio-hero" data-portrait={landing.showPortrait} aria-labelledby="intro-title">
+        <div className="hero-copy">
+          <p className="eyebrow hero-kicker">{landing.role} <span aria-hidden="true">/</span> {landing.location}</p>
+          <h1 id="intro-title">{landing.firstName} <em>{landing.lastName}</em></h1>
+          <p className="hero-description">{landing.introduction}</p>
+          <div className="hero-actions">
+            <JumpLink className="portfolio-button" href="#featured-work" smooth>{landing.workButton} <ArrowDown aria-hidden="true" size={16} /></JumpLink>
+            <JumpLink className="quiet-link" href="#ask-dan" smooth>{landing.assistantButton} <ArrowDown aria-hidden="true" size={15} /></JumpLink>
           </div>
-        </header>
-        <div id='highlights' className='flex flex-col sm:flex-row gap-4'>
-          {infoPayload.highlights.map(highlight => (
-            <div
-              key={highlight.title}
-              className='p-4 rounded-2xl border border-dashed border-neutral-300 group flex-1 hover:bg-forest-green-100/20 backdrop-blur-lg max-w-3xs mx-auto grid place-content-center hover:border-forest-green-700 min-h-[84px]'
-            >
-              <p className='text-xs text-forest-green-600/80 group-hover:text-forest-green-700 text-center'>
-                {highlight.description}
-              </p>
-            </div>
-          ))}
+          <Link className="hero-availability" href="/availability"><span aria-hidden="true" />{site.availability}</Link>
         </div>
-        <Separator />
-        <CoreCompetencies
-          label={infoPayload.competencies_label}
-          competencies={infoPayload.competencies}
-        />
-        <ProjectSection />
-        <Separator />
-        <section id='social__information' className='grid mb-6'>
-          <Badge variant='secondary' className='text-xs mb-6 mx-auto'>
-            {infoPayload.social_information_label}
-          </Badge>
-          <div className='grid sm:grid-cols-2 gap-3'>
-            {infoPayload.social_information.map(social => (
-              <SocialCard
-                key={social.id}
-                icon={Icons[social.icon_name as keyof typeof Icons]}
-                title={social.label}
-                label={social.name}
-                description={social.description}
-                id={`card__${social.id}`}
-              />
-            ))}
-          </div>
-        </section>
-      </div>
-      <GetInTouchSection />
+        {landing.showPortrait && <div className="hero-portrait"><Portrait /></div>}
+        <div className="home-assistant"><AskDan /></div>
+      </section>
+      <section className="editorial-section" aria-labelledby="featured-work">
+        <div className="section-heading">
+          <h2 id="featured-work" tabIndex={-1}>{landing.selectedWorkHeading}</h2>
+          <Link className="quiet-link" href="/portfolio">{landing.portfolioLink} <ArrowUpRight aria-hidden="true" size={16} /></Link>
+        </div>
+        <WorkList work={work} />
+      </section>
+      {landing.showActivity && <GitHubActivityOverview />}
+      {landing.showNotes && notes.entries.length > 0 && <section className="editorial-section" aria-labelledby="field-notes">
+        <div className="section-heading">
+          <h2 id="field-notes">{landing.notesHeading}</h2>
+          <Link className="quiet-link" href="/thread">{landing.notesLink} <ArrowUpRight aria-hidden="true" size={16} /></Link>
+        </div>
+        <ul className="note-index">
+          {notes.entries.map(note => <li key={note.slug}>
+            <Link href={`/thread#${note.slug}`}><span>{note.title}</span><small>{note.topic}</small></Link>
+          </li>)}
+        </ul>
+      </section>}
+      <section className="footer-invitation" aria-labelledby="want-to-talk">
+        <h2 id="want-to-talk">{landing.contactHeading}</h2>
+        <div><Link className="portfolio-button" href="/contact">{landing.contactButton}</Link><a className="text-link" href={site.profiles.LinkedIn}>LinkedIn</a></div>
+      </section>
     </>
   )
 }

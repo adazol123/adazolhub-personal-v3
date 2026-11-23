@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
+@theme static {
   /* custom styles [theme colours] */
   --color-forest-green-950: oklch(0.151 0.01 164);
   --color-forest-green-900: oklch(0.178 0.014 164);

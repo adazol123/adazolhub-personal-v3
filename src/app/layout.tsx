@@ -1,65 +1,63 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import Link from 'next/link'
+import AmbientBackground from '@/components/portfolio/AmbientBackground'
+import JumpLink from '@/components/portfolio/JumpLink'
+import PortfolioMain from '@/components/portfolio/PortfolioMain'
+import PortfolioNavigation, { HeaderContact } from '@/components/portfolio/PortfolioNavigation'
+import VisitorCount from '@/components/portfolio/VisitorCount'
+import { projectPath, siteOrigin } from '@/lib/portfolio-content'
+import { getSiteContent } from '@/lib/site-content-store'
 import './globals.css'
-import RootTabs from '@/components/ui/navigations/root-tabs'
-import Header from '@/components/ui/navigations/header'
-import Footer from '@/components/ui/navigations/footer'
-import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import AnnouncementsSection from './(personal)/(home)/_components/annoucements.section'
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin']
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin']
-})
+import './portfolio.css'
 
 export const metadata: Metadata = {
-  title: 'Daniel Josaphat Lozada | Adazol - Personal',
-  description:
-    "Software Engineer with 3+ years' experience in full-stack development and 2+ years as a System Engineer providing technical support services. Specialized in backend technologies, cloud services, and scalable application development. Skilled in troubleshooting complex systems, delivering user-centric solutions, and collaborating with cross-functional teams to drive high-quality outcomes.",
-  other: {
-    'google-adsense-account': 'ca-pub-3357103377634730'
-  }
+  metadataBase: new URL(siteOrigin),
+  title: { default: 'Daniel Lozada — Adazol', template: '%s · Daniel Lozada' },
+  description: 'Selected work, engineering notes, and experience from Daniel Lozada, a software engineer in the Philippines.',
+  openGraph: { type: 'website', siteName: 'Adazol', locale: 'en_PH' }
 }
 
-export default function RootLayout ({
-  children
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export const viewport: Viewport = { viewportFit: 'cover' }
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const { appearance, site, work } = await getSiteContent()
   return (
-    <html lang='en'>
-      <head>
-        <meta
-          name='viewport'
-          content='width=device-width, initial-scale=1.0, user-scalable=no'
-        />
-        <meta name='google-adsense-account' content='ca-pub-3357103377634730' />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
-      >
-        {/* Announcement Banner */}
-        <AnnouncementsSection />
-        <main className='px-4 scroll-smooth'>
-          <Header />
-          {children}
-          <RootTabs />
-          <Footer />
-        </main>
-        {/* Gradient Background */}
-        <div className='fixed inset-0 select-none -z-1' aria-hidden>
-          <div className='absolute inset-x-0 -bottom-1/2 flex items-center justify-center'>
-            <div className='w-[160vw] h-[160vw] max-w-[1200px] max-h-[1200px] rounded-full bg-gradient-radial from-forest-green-200  to-transparent opacity-0 animate-pulse-light transition-all'></div>
+    <html lang="en">
+      <body className="portfolio-site" data-theme={appearance.theme}>
+        {appearance.ambientBackground && <AmbientBackground theme={appearance.theme} animate={appearance.scrollBackground} />}
+        <JumpLink className="skip-link" href="#main-content">Skip to content</JumpLink>
+        <header className="site-header">
+          <div className="site-shell site-header-row">
+            <Link href="/" className="site-mark" aria-label="Adazol home">adazol<span>.</span></Link>
+            <PortfolioNavigation placement="desktop" />
+            <HeaderContact />
           </div>
-        </div>
-        <Analytics />
-        <SpeedInsights />
+        </header>
+        <PortfolioNavigation placement="mobile" />
+        <PortfolioMain>{children}</PortfolioMain>
+        <footer className="site-footer">
+          <div className="site-shell">
+            <div className="site-footer-main">
+              <div>
+                <Link href="/" className="site-mark">adazol<span>.</span></Link>
+                <p>{site.footerName} <span className="separator-dot">·</span> {site.footerRole}</p>
+              </div>
+              <nav aria-label="More about Daniel" className="site-footer-links">
+                <Link href="/availability">Availability</Link>
+                <Link href="/testimonial">References</Link>
+                <Link href="/connect">Connect</Link>
+                <Link href="/contact">Contact</Link>
+              </nav>
+              <nav aria-label="Social profiles" className="site-footer-links">
+                {Object.entries(site.profiles).map(([label, href]) => <a href={href} key={label}>{label}</a>)}
+              </nav>
+            </div>
+            <div className="site-footer-end">
+              <p>© {new Date().getFullYear()} {site.footerName}</p>
+              {appearance.visitorCount && <VisitorCount projectPaths={work.projects.map(project => projectPath(project.slug))} />}
+            </div>
+          </div>
+        </footer>
       </body>
     </html>
   )

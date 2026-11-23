@@ -1,33 +1,21 @@
-import { Button } from '@/components/shared/elements/button'
-import UnderConstructionPlaceholder from '@/components/ui/placeholders/under-construction'
-import { IconExternalLink } from '@tabler/icons-react'
-import Link from 'next/link'
-import React from 'react'
+import type { Metadata } from 'next'
+import WorkList from '@/components/portfolio/WorkList'
+import { getSiteContent } from '@/lib/site-content-store'
 
-const PortfolioPage = () => {
+export async function generateMetadata(): Promise<Metadata> {
+  const { work } = await getSiteContent()
+  return { title: work.metadataTitle, description: work.introduction, alternates: { canonical: '/portfolio' } }
+}
+
+export default async function PortfolioPage() {
+  const { work } = await getSiteContent()
   return (
-    <div>
-      <UnderConstructionPlaceholder />
-      <div className='container mx-auto max-w-prose text-center px-6'>
-        <p className='text-sm text-forest-green-600 mb-4'>
-          While we&apos;re working on bringing you an enhanced portfolio
-          experience, you might want to check out my previous work showcase:
-        </p>
-        <Button variant='outline' asChild>
-          <Link
-            href='https://daniel-lozada.web.app/projects'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='inline-flex items-center gap-2'
-          >
-            Visit Previous Portfolio
-            <IconExternalLink className='h-4 w-4' />
-          </Link>
-        </Button>
-      </div>
+    <div className="interior-page">
+      <header className="page-heading">
+        <h1>{work.title} <em>{work.titleAccent}</em></h1>
+        <p>{work.introduction}</p>
+      </header>
+      <WorkList work={work} heading="h2" />
     </div>
   )
 }
-
-//https://daniel-lozada.web.app/projects
-export default PortfolioPage
